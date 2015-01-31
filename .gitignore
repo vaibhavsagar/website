@@ -213,3 +213,9 @@ pip-log.txt
 
 #Mr Developer
 .mr.developer.cfg
+
+#Custom
+output/
+fabfile.py
+publishconf.py
+develop_server.sh
