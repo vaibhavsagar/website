@@ -2,11 +2,29 @@
 # -*- coding: utf-8 -*- #
 from __future__ import unicode_literals
 
-AUTHOR = 'Vaibhav Sagar'
-SITENAME = "Vaibhav Sagar's Blog"
-SITEURL = 'http://www.vaibhavsagar.com'
+THEME = 'notmyidea'
 
 TIMEZONE = 'Australia/Sydney'
+
+AUTHOR = 'Vaibhav Sagar'
+SITENAME = "Vaibhav Sagar's Blog"
+SITEURL = ''
+OUTPUT_PATH = 'output/blog'
+
+ARTICLE_DIR = 'blog'
+ARTICLE_URL = 'blog/{category}/{slug}/'
+ARTICLE_SAVE_AS = 'blog/{category}/{slug}/index.html'
+
+PAGE_DIR = 'pages'
+PAGE_URL = '{slug}/'
+PAGE_SAVE_AS = '{slug}/index.html'
+
+CATEGORY_SAVE_AS = 'blog/{slug}/index.html'
+CATEGORY_URL = 'blog/{slug}/'
+
+ARCHIVES_SAVE_AS = 'blog/archives/index.html'
+
+INDEX_SAVE_AS = 'blog/index.html'
 
 DEFAULT_LANG = 'en'
 
