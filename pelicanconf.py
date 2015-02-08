@@ -11,11 +11,11 @@ SITENAME = "Vaibhav Sagar's Blog"
 SITEURL = ''
 OUTPUT_PATH = 'output/blog'
 
-ARTICLE_DIR = 'blog'
+ARTICLE_PATHS = ['blog']
 ARTICLE_URL = 'blog/{category}/{slug}/'
 ARTICLE_SAVE_AS = 'blog/{category}/{slug}/index.html'
 
-PAGE_DIR = 'pages'
+PAGE_PATHS = ['pages']
 PAGE_URL = '{slug}/'
 PAGE_SAVE_AS = '{slug}/index.html'
 
@@ -50,4 +50,4 @@ EXTRA_PATH_METADATA = {
     'extra/README.md': {'path': 'README.md'}
 }
 # Uncomment following line if you want document-relative URLs when developing
-#RELATIVE_URLS = True
+# RELATIVE_URLS = True
