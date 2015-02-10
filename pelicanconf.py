@@ -12,8 +12,8 @@ SITEURL = ''
 OUTPUT_PATH = 'output/blog'
 
 ARTICLE_PATHS = ['blog']
-ARTICLE_URL = 'blog/{category}/{slug}/'
-ARTICLE_SAVE_AS = 'blog/{category}/{slug}/index.html'
+ARTICLE_URL = 'blog/{date:%Y}/{date:%m}/{date:%d}/{slug}/'
+ARTICLE_SAVE_AS = 'blog/{date:%Y}/{date:%m}/{date:%d}/{slug}/index.html'
 
 PAGE_PATHS = ['pages']
 PAGE_URL = '{slug}/'
