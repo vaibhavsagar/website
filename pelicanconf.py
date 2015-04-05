@@ -7,7 +7,7 @@ THEME = 'notmyidea'
 TIMEZONE = 'Australia/Sydney'
 
 AUTHOR = 'Vaibhav Sagar'
-SITENAME = "Vaibhav Sagar's Blog"
+SITENAME = "Vaibhav Sagar's Site"
 SITEURL = ''
 OUTPUT_PATH = 'output/blog'
 DISQUS_SITENAME = 'vaibhavsagar'
