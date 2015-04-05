@@ -10,6 +10,7 @@ AUTHOR = 'Vaibhav Sagar'
 SITENAME = "Vaibhav Sagar's Blog"
 SITEURL = ''
 OUTPUT_PATH = 'output/blog'
+DISQUS_URL = 'vaibhavsagar'
 
 ARTICLE_PATHS = ['blog']
 ARTICLE_URL = 'blog/{date:%Y}/{date:%m}/{date:%d}/{slug}/'
