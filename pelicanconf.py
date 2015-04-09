@@ -27,6 +27,11 @@ ARCHIVES_SAVE_AS = 'blog/archives/index.html'
 
 INDEX_SAVE_AS = 'blog/index.html'
 
+MENUITEMS = [
+    ('résumé', '/resume'),
+    ('all', '/blog/archives/'),
+]
+
 DEFAULT_LANG = 'en'
 
 # Feed generation is usually not desired when developing
