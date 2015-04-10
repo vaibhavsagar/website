@@ -8,7 +8,7 @@ TIMEZONE = 'Australia/Sydney'
 
 AUTHOR = 'Vaibhav Sagar'
 SITENAME = "Vaibhav Sagar's Site"
-SITEURL = ''
+SITEURL = 'http://www.vaibhavsagar.com'
 OUTPUT_PATH = 'output/blog'
 DISQUS_SITENAME = 'vaibhavsagar'
 
