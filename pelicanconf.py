@@ -10,6 +10,7 @@ AUTHOR = 'Vaibhav Sagar'
 SITENAME = "Vaibhav Sagar's Site"
 SITEURL = 'http://www.vaibhavsagar.com'
 OUTPUT_PATH = 'output/blog'
+GITHUB_URL = 'https://github.com/vaibhavsagar'
 DISQUS_SITENAME = 'vaibhavsagar'
 
 ARTICLE_PATHS = ['blog']
