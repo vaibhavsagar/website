@@ -16,6 +16,7 @@ DISQUS_SITENAME = 'vaibhavsagar'
 ARTICLE_PATHS = ['blog']
 ARTICLE_URL = 'blog/{date:%Y}/{date:%m}/{date:%d}/{slug}/'
 ARTICLE_SAVE_AS = 'blog/{date:%Y}/{date:%m}/{date:%d}/{slug}/index.html'
+SLUGIFY_SOURCE = 'basename'
 
 PAGE_PATHS = ['pages']
 PAGE_URL = '{slug}/'
