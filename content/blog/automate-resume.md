@@ -30,7 +30,7 @@ downloaded package without any issues. This is what my pre-install script
 looked like:
 
 <script
-src="http://gist-it.appspot.com/github.com/vaibhavsagar/resume/blob/master/prepare.sh">
+src="http://gist-it.appspot.com/github.com/vaibhavsagar/resume/blob/master/.ci/prepare.sh">
 </script>
 
 I already had a `Makefile`, so converting my source to Github-flavoured
