@@ -30,7 +30,6 @@ ARCHIVES_SAVE_AS = 'blog/archives/index.html'
 INDEX_SAVE_AS = 'blog/index.html'
 
 MENUITEMS = [
-    ('résumé', '/resume'),
     ('all', '/blog/archives/'),
 ]
 
