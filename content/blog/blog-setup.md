@@ -3,8 +3,8 @@ Date: 2015-02-01
 Category: programming
 
 When I started this blog, I was reluctant to put a continuous integration
-system like Travis-CI in charge of deployment and I settled for the approach
-outlined
+system like Travis-CI in charge of deployment because it seemed like a
+frivolous use of resources and I settled for the approach outlined
 [here](http://mathamy.com/migrating-to-github-pages-using-pelican.html) which
 worked reasonably well. However, I recently realised that automating my
 deployment would allow me to theoretically create a post using the GitHub web
