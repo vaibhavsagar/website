@@ -46,5 +46,5 @@ src="http://gist-it.appspot.com/github.com/vaibhavsagar/website/blob/master/depl
 and that was all the setup I had to do. I then pushed a commit and watched as
 Pelican and its dependencies were downloaded, my blog posts were regenerated,
 and my GitHub Pages repo was updated. Seems a bit wasteful, but it was
-surprisingly easy to get working.
+surprisingly easy to get working and it performs admirably.
 
