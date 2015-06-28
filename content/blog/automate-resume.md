@@ -11,7 +11,9 @@ all these packages configured on my home computer, but it was becoming tedious
 to make changes and commit three separate files instead of just one. I was also
 finding it difficult to keep the PDF version of my resume up to date with the
 rest of my changes, and I thought it would be an interesting challenge to get
-everything set up in a repeatable manner.
+everything set up in a repeatable manner. One good reference is [this blog
+post](http://www.steveklabnik.com/automatically_update_github_pages_with_travis_example/)
+by Steve Klabnik.
 
 The versions of `pandoc` and `LaTeX` on Ubuntu 12.04 (which Travis-CI uses for
 its workers) are hopelessly out of date, so my first problem was getting the
