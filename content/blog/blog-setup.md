@@ -4,7 +4,7 @@ Category: programming
 
 When I started this blog, I was reluctant to put a continuous integration
 system like Travis-CI in charge of deployment because it seemed like a
-frivolous use of resources and I settled for the approach outlined
+frivolous use of resources and so I settled for the approach outlined
 [here](http://mathamy.com/migrating-to-github-pages-using-pelican.html) which
 worked reasonably well. However, I recently realised that automating my
 deployment would allow me to theoretically create a post using the GitHub web
@@ -47,4 +47,3 @@ and that was all the setup I had to do. I then pushed a commit and watched as
 Pelican and its dependencies were downloaded, my blog posts were regenerated,
 and my GitHub Pages repo was updated. Seems a bit wasteful, but it was
 surprisingly easy to get working and it performs admirably.
-
