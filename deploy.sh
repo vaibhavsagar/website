@@ -17,6 +17,7 @@ if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
     mv .git ../gitbackup/
     rm -rf *
     mv ../gitbackup/.git .
+    ls -al
     rsync -rv --exclude=.git  ../$PELICAN_OUTPUT_FOLDER/* .
     # add, commit and push files
     git add -A
