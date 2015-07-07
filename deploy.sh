@@ -15,10 +15,8 @@ if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
     cd built_website
     # mkdir ../gitbackup
     # mv .git ../gitbackup/
-    rm -rf *
     ls -al
     # mv ../gitbackup/.git .
-    rsync -rv --exclude=.git  ../$PELICAN_OUTPUT_FOLDER/* .
     # rm -rf *
     rsync -rv --delete --exclude=.git  ../$PELICAN_OUTPUT_FOLDER/* .
     # add, commit and push files
