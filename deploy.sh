@@ -19,6 +19,8 @@ if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
     ls -al
     # mv ../gitbackup/.git .
     rsync -rv --exclude=.git  ../$PELICAN_OUTPUT_FOLDER/* .
+    # rm -rf *
+    rsync -rv --delete --exclude=.git  ../$PELICAN_OUTPUT_FOLDER/* .
     # add, commit and push files
     git add -A
     git commit -m "Travis build $TRAVIS_BUILD_NUMBER pushed to Github Pages"
