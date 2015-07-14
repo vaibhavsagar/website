@@ -6,11 +6,13 @@ When I started this blog, I was reluctant to put a continuous integration
 system like Travis-CI in charge of deployment because it seemed like a
 frivolous use of resources and so I settled for the approach outlined
 [here](http://mathamy.com/migrating-to-github-pages-using-pelican.html) which
-worked reasonably well. However, I recently realised that automating my
-deployment would allow me to theoretically create a post using the GitHub web
-interface which would automatically get turned into a new post on my blog.
-This would allow me to use this blog from any web browser! In other words, I
-wanted a convoluted reimplementation of half of a CMS's functionality.
+worked reasonably well. As my understanding of continuous integration and the
+possibilities of Travis improved, I changed my mind and decided it would be a
+good idea to automate this process. I also realised that automating my
+deployment would allow me to theoretically create or update a post using the
+GitHub web interface which would automatically get turned into a new post on my
+blog.  This would allow me to use this blog from any web browser! In other
+words, I wanted a convoluted reimplementation of half of a CMS's functionality.
 
 I found a very helpful [blog
 post](http://zonca.github.io/2013/09/automatically-build-pelican-and-publish-to-github-pages.html)
