@@ -1,6 +1,6 @@
 Title: Git It Going - an Introduction to Git
 Date: 2015-05-10
-Category: Programming
+Category: programming
 
 I gave a talk on Git to the Canberra Python Users Group on the 7th of May. It
 was my first ever technical talk, and I think it went fairly well.
