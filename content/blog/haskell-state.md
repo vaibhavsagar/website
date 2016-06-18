@@ -6,12 +6,14 @@ I'm attempting [NICTA/course](https://github.com/NICTA/course) a second time. I
 gave up the last time because none of the State exercises were making sense and
 I found myself leaning so heavily on the solutions that I wasn't actually
 learning anything. This time I was much better prepared after watching lots of
-CanFPG talks, reading lots of blog posts and writing a little Haskell, and I
-easily cleared the State hurdle. In fact, I'm now going to demonstrate how you
-(yes, _you_) could have come up with it (with a little help).
+[CanFPG](http://www.meetup.com/CanFPG/) talks, reading lots of blog posts and
+writing a little Haskell, and I easily cleared the State hurdle. In fact, I'm
+now going to demonstrate how you (yes, _you_) could have come up with it (with
+a little help).
 
-The fundamental insight of State is that it is a function that takes a value of
-type `s` and returns a tuple of some value `a` and a new value of type `s`:
+The fundamental insight of state is that it can be represented by a function
+that takes a value of type `s` and returns a tuple of some value `a` and a new
+value of type `s`:
 
 ```haskell
 newtype State s a = State { runState :: s -> (a,s) }
@@ -59,11 +61,13 @@ to `sb` to get `(a, s2)`, and calls `fn` on `a`:
 ```haskell
   (<*>) (State sa) (State sb) =
     State (\s0 -> let (fn, s1) = sa s0
-                      (a , s2) = sb s1
+                      (a,  s2) = sb s1
                   in (fn a, s2))
 ```
 
-The hardest thing is remembering to thread `s0` through `sa` and `sb`.
+The hardest thing is remembering to thread `s0` through `sa` and `sb` so that
+we don't lose any state on the way. We can usually follow the types but they
+don't help in this specific case.
 
 Finally, let's look at the `Monad` instance:
 
@@ -71,7 +75,7 @@ Finally, let's look at the `Monad` instance:
 instance Monad (State s) where
   (>>=) :: State s a -> (a -> State s b) -> State s b
 ```
-As with all our previous implementions, it has the form:
+As with all our previous implementations, it has the form:
 
 ```haskell
   (>>=) (State sa) fn = State (\s0 -> let ??? in ???)
