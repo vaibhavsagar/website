@@ -196,3 +196,6 @@ Finally, we have
 
 This is my favourite thing about Haskell: the fact that it is built on
 abstractions that can be reasoned about in such a rigorous manner.
+
+In fact, with some inspired renaming, [you too could have invented the
+continuation monad](http://www.haskellforall.com/2014/04/how-continuation-monad-works.html).
