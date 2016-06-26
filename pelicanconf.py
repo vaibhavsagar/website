@@ -58,3 +58,4 @@ DELETE_OUTPUT_DIRECTORY = True
 # RELATIVE_URLS = True
 
 MD_EXTENSIONS = ['fenced_code', 'codehilite(css_class=highlight)', 'extra']
+GOOGLE_ANALYTICS = "UA-79891461-1"
