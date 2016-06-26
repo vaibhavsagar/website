@@ -47,9 +47,10 @@ DEFAULT_PAGINATION = 10
 
 STATIC_PATHS = ['images', 'extra']
 EXTRA_PATH_METADATA = {
-    'extra/CNAME':     {'path': 'CNAME'},
-    'extra/LICENSE':   {'path': 'LICENSE'},
-    'extra/README.md': {'path': 'README.md'}
+    'extra/CNAME': {'path': 'CNAME'},
+    'extra/LICENSE': {'path': 'LICENSE'},
+    'extra/README.md': {'path': 'README.md'},
+    'extra/google44295b6adcb10ecd.html': {'path': 'google44295b6adcb10ecd.html'}
 }
 
 DELETE_OUTPUT_DIRECTORY = True
