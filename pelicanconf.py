@@ -36,8 +36,10 @@ MENUITEMS = [
 DEFAULT_LANG = 'en'
 
 # Feed generation is usually not desired when developing
-FEED_ALL_ATOM = None
-CATEGORY_FEED_ATOM = None
+FEED_DOMAIN = SITEURL
+FEED_ATOM = 'atom.xml'
+FEED_ALL_ATOM = 'feeds/all.atom.xml'
+CATEGORY_FEED_ATOM = 'feeds/%s.atom.xml'
 TRANSLATION_FEED_ATOM = None
 
 # Social widget
@@ -50,7 +52,9 @@ EXTRA_PATH_METADATA = {
     'extra/CNAME': {'path': 'CNAME'},
     'extra/LICENSE': {'path': 'LICENSE'},
     'extra/README.md': {'path': 'README.md'},
-    'extra/google44295b6adcb10ecd.html': {'path': 'google44295b6adcb10ecd.html'}
+    'extra/google44295b6adcb10ecd.html': {
+        'path': 'google44295b6adcb10ecd.html'
+    }
 }
 
 DELETE_OUTPUT_DIRECTORY = True
