@@ -65,7 +65,7 @@ import Control.Monad
 import Control.Monad.Trans.Writer
 
 applyInstruction :: DeltaInstruction -> B.ByteString -> Writer B.ByteString B.ByteString
-applyInstruction instruction source = tell (interpretInstruction instruction source) >> return source
+applyInstruction instruction source = writer (source, interpretInstruction instruction source)
 ```
 
 Our action takes two parameters and so we `map` it to our list of instructions. This gives us a list of actions expecting a source buffer to operate on.
