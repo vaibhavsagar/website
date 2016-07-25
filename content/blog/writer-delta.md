@@ -81,7 +81,7 @@ Our action takes two parameters and so we `map` it to our list of instructions. 
 
 We need to reduce this list to a single value while executing each action in sequence, which implies a fold. `foldM` looks like what we need; according to the documentation:
 
-```
+```haskell
 foldM f a1 [x1, x2, ..., xm] ==
 do
     a2 <- f a1 x1
@@ -92,12 +92,12 @@ do
 
 The only wrinkle is that `f` needs to take the argument first and the action second. We can accomplish this by defining
 
-```
+```haskell
 f a b = b a
 ```
 or
 
-```
+```haskell
 f = flip ($)
 ```
 
