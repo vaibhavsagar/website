@@ -26,6 +26,8 @@ An instruction can be interpreted with reference to a source to result in a Byte
 substring :: Int -> Int -> B.ByteString -> B.ByteString
 substring offset length bytestring = B.take length (B.drop offset bytestring)
 
+-- Under this interpretation, `InsertInstruction` corresponds to `const`
+-- and `CopyInstruction` corresponds to `substring`.
 interpretInstruction :: DeltaInstruction -> B.ByteString -> B.ByteString
 interpretInstruction instruction source = case instruction of
     InsertInstruction string        -> string
