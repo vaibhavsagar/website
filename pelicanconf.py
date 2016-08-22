@@ -52,6 +52,7 @@ EXTRA_PATH_METADATA = {
     'extra/CNAME': {'path': 'CNAME'},
     'extra/LICENSE': {'path': 'LICENSE'},
     'extra/README.md': {'path': 'README.md'},
+    'extra/keybase.txt': {'path': 'keybase.txt'},
     'extra/google44295b6adcb10ecd.html': {
         'path': 'google44295b6adcb10ecd.html'
     }

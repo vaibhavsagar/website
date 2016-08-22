@@ -1,0 +1,69 @@
+==================================================================
+https://keybase.io/vaibhavsagar
+--------------------------------------------------------------------
+
+I hereby claim:
+
+  * I am an admin of http://vaibhavsagar.com
+  * I am vaibhavsagar (https://keybase.io/vaibhavsagar) on keybase.
+  * I have a public key with fingerprint C358 4D99 C4E3 B6FF AE66  4BFC 1CE0 EE35 7CFB 9A10
+
+To do so, I am signing this object:
+
+{
+    "body": {
+        "key": {
+            "eldest_kid": "01018eef68965b3b26ba30e8a066e364e4152c4352ea98385f9aae8e4a2e9a3706250a",
+            "fingerprint": "c3584d99c4e3b6ffae664bfc1ce0ee357cfb9a10",
+            "host": "keybase.io",
+            "key_id": "1ce0ee357cfb9a10",
+            "kid": "01018eef68965b3b26ba30e8a066e364e4152c4352ea98385f9aae8e4a2e9a3706250a",
+            "uid": "4e4b2e4726b047827e03b0c6abef8a19",
+            "username": "vaibhavsagar"
+        },
+        "service": {
+            "hostname": "vaibhavsagar.com",
+            "protocol": "http:"
+        },
+        "type": "web_service_binding",
+        "version": 1
+    },
+    "ctime": 1471880449,
+    "expire_in": 157680000,
+    "prev": "00df2e500828be8d6afd39146f8981f67325894115debe8662491134a50d66f2",
+    "seqno": 5,
+    "tag": "signature"
+}
+
+which yields the signature:
+
+-----BEGIN PGP MESSAGE-----
+Version: Keybase OpenPGP v2.0.56
+Comment: https://keybase.io/crypto
+
+yMImAnicrZJbSBRRGMd3u6dECZlPUU3Rlsl65nb2zEIPZnfKqCwljPXMzDe7g+7M
+NrNuxSZSPQTdoKLCsqjQNZKEoJKQKKUeQrpgiWhFgUUWGxUVghR1Ruqtx87L4Zzv
+9/+f//dx7k0b78vxn7xWlhd52/zK39N1vs5X0Tnbn+ZUW9/NhdNcDYxtUKuDm4zU
+mDoX5hCPeAJgYKJgWRVVAatUREAowhhELIHEy4ImibIAVCEikQ2FUiAgUQEUKoYQ
+FmREuSLOMK0oOAnHtJLMVhNlIumKokkgqtgwKGAsqYbGa4AARDmkGapCecSEMdv1
+FCycSl0Imja7Y4fIWLx/8P85d92YHeNVAaQQs0FSiAghQKKKNExVMAjlFQ90wbFo
+HBidoqYaoymXRqnD1RdxrJIyNfCG63XzDyqo2XHmkXDspK3ZtawaSyYTYU+c3J3w
+6J2gRv74RFTT0tk4mSAFjmvaFhfmGaklTc+Yl0I8IUiSlCIOdiVMByKmR8ghTBBb
+3jOQ8maEdEMAGSEiEBWIjqmhiwovYYMohDdwSBRkokg8L+vA6hgLksLzokRlpGNs
+CJzX2Q7L5sIyi0mjzNI1oxZN1jnA1XffrZrg8+f4Jk0c530zX87UGX8/38yRKb5z
+d95XbZ595ea8QI+SLb+WyT5q8627HdhVtfP1xgenuBXxj9/SeYtUK/tp8cuCBW+s
+TJl/5Nf3wr1NV+e+3s+/MecheV/wQkcgfmZPSX1n9fD00aYnhV9q3lUPP7Ibb+6f
+k9/3bGF/QSZv2qSV9QNDHSdWB+Y0XMpNNRRPHsqm2j8sPH4xMYjX2HrTyMTB3q17
+SzNdB164o/GRquUz167PPO7uzW6rXZq++7MkcOxo/+ncy52Rw4dXxbdUlm8abm7p
+zrSL62IPh9Lz1yw7O6Ni+4bWoHt/ZX6srWxW41N9SbC3qTn6tOfIrcqDhwb6ijtK
+n2PreqXz+UdrRenWcy2Nr77eOPEbX2tG8w==
+=PV/9
+-----END PGP MESSAGE-----
+
+And finally, I am proving ownership of this host by posting or
+appending to this document.
+
+View my publicly-auditable identity here: https://keybase.io/vaibhavsagar
+
+==================================================================
+
