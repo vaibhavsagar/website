@@ -18,11 +18,12 @@ car  = lambda cell: cell[0]
 cdr  = lambda cell: cell[1]
 ```
 
-# Lists in Lisp
+# Lists
 
-Lists in Lisp are implemented as a series of cons cells chained together.
-Using our above definitions in Python, the list `[0, 1, 2, 3]` would be
-represented as (0, (1, (2, (3, ())))). In code, this would be:
+It turns out that cons cells are all you need to implement singly linked lists.
+Most famously, lists in Lisp are implemented as a series of cons cells chained
+together. Using our above definitions in Python, the list `[0, 1, 2, 3]` would
+be represented as (0, (1, (2, (3, ())))). In code, this would be:
 
 ```python
 cons(0)(cons(1)(cons(2)cons(3)(())))
