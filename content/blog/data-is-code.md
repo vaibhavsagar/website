@@ -21,18 +21,18 @@ cdr  = lambda cell: cell[1]
 # Lists
 
 It turns out that cons cells are all you need to implement singly linked lists.
-For example, lists in Lisp are implemented as a series of cons cells chained
-together. Using our above definitions in Python, the list `[0, 1, 2, 3]` would
-be represented as (0, (1, (2, (3, ())))). In code, this would be:
+For example, lists in Lisp are implemented as a series of nested cons cells. A
+list is either empty (represented above by `()`) or a cons cell where the first
+element of the pair is the head of the list and the second element of the pair
+is the rest of the list. Using our above definitions in Python, the list `[0,
+1, 2, 3]` would be represented as (0, (1, (2, (3, ())))).  In code, this would
+be:
 
 ```python
 cons(0)(cons(1)(cons(2)(cons(3)(()))))
 ```
 
-A list is either empty (represented above by `()`) or a cons cell where the
-first element of the pair is the head of the list and the second element of the
-pair is the rest of the list. Another way of visualising the above list is as
-follows:
+One way of visualising the above list is as follows:
 
 ```
   cons
@@ -54,13 +54,12 @@ example = cons(0)(cons(1)(cons(2)(cons(3)(()))))
 print(car(cdr(example))) #=> 1
 ```
 
-# Lambda calculus
+# Lambda Calculus
 
 You may have noticed that my definitions above were all functions of one
 argument. This was not entirely coincidental: cons cells as described above are
 very similar to Church pairs, which are a way of representing pairs in the
-lambda calculus. A minor change to the above definitions and we have Church
-pairs:
+lambda calculus. Let's make a minor change to the above definitions:
 
 ```python
 pair = lambda a: lambda b: lambda f: f(a)(b)
@@ -94,3 +93,9 @@ represented as functions i.e. code. You might say that bits and bytes are the
 lowest level representation and therefore somehow more fundamental than code,
 but even our data is just an interesting pattern of 1s and 0s without some code
 to make sense of it. It really is turtles all the way down.
+
+# Further Reading
+
+There are much more comprehensive treatments of this material available online.
+I'm aware of [Matt Might's](http://matt.might.net/articles/js-church/) and
+[James Tauber's](http://jtauber.com/blog/2008/11/26/church_encoding_in_python/).
