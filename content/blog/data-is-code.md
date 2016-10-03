@@ -29,10 +29,10 @@ be represented as (0, (1, (2, (3, ())))). In code, this would be:
 cons(0)(cons(1)(cons(2)(cons(3)(()))))
 ```
 
-A list in Lisp is either empty (represented above by `()`) or a cons cell where
-the first element of the pair is the head of the list and the second element of
-the pair is the rest of the list. Another way of visualising the above list is
-as follows:
+A list is either empty (represented above by `()`) or a cons cell where the
+first element of the pair is the head of the list and the second element of the
+pair is the rest of the list. Another way of visualising the above list is as
+follows:
 
 ```
   cons
