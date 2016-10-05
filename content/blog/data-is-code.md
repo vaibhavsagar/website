@@ -91,8 +91,8 @@ print(fst(snd(example))) #=> 1
 Our code is represented as bits in memory i.e. data, but our data can be
 represented as functions i.e. code. You might say that bits and bytes are the
 lowest level representation and therefore somehow more fundamental than code,
-but even our data is just an interesting pattern of 1s and 0s without some code
-to make sense of it. It really is turtles all the way down.
+but even our data is just an undistinguished pattern of 1s and 0s without some
+code to make sense of it. It really is turtles all the way down.
 
 # Further Reading
 
