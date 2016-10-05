@@ -6,8 +6,6 @@ Status: draft
 This is an attempt to recreate a blog post I read a few years ago that I can't
 seem to find again. If you know the one I'm referring to, please link me!
 
-# Cons Cells
-
 A cons cell is a way of representing a pair, and it has two operations, `car`
 and `cdr`, to access the first and second elements of the pair respectively. In
 Python, we could construct and access cons cells as follows:
@@ -17,8 +15,6 @@ cons = lambda a: lambda b: (a, b)
 car  = lambda cell: cell[0]
 cdr  = lambda cell: cell[1]
 ```
-
-# Lists
 
 It turns out that cons cells are all you need to implement singly linked lists.
 For example, lists in Lisp are implemented as a series of nested cons cells. A
@@ -54,8 +50,6 @@ example = cons(0)(cons(1)(cons(2)(cons(3)(()))))
 print(car(cdr(example))) #=> 1
 ```
 
-# Lambda Calculus
-
 You may have noticed that my definitions above were all functions of one
 argument. This was not entirely coincidental: cons cells as described above are
 very similar to Church pairs, which are a way of representing pairs in the
@@ -86,15 +80,11 @@ example = pair(0)(pair(1)(pair(2)(pair(3)(()))))
 print(fst(snd(example))) #=> 1
 ```
 
-# Data Is Code
-
 Our code is represented as bits in memory i.e. data, but our data can be
 represented as functions i.e. code. You might say that bits and bytes are the
 lowest level representation and therefore somehow more fundamental than code,
 but even our data is just an undistinguished pattern of 1s and 0s without some
 code to make sense of it. It really is turtles all the way down.
-
-# Further Reading
 
 There are much more comprehensive treatments of this material available online.
 I'm aware of [Matt Might's](http://matt.might.net/articles/js-church/) and
