@@ -3,8 +3,8 @@ Date: 2016-09-29
 Category: programming
 Status: draft
 
-This is an attempt to recreate a blog post I read a few years ago that I can't
-seem to find again. If you know the one I'm referring to, please link me!
+> Code is just smart data, and data is just dumb code.
+_Structure and Interpretation of Computer Programs_
 
 A cons cell is a way of representing a pair, and it has two operations, `car`
 and `cdr`, to access the first and second elements of the pair respectively. In
@@ -14,6 +14,14 @@ Python, we could construct and access cons cells as follows:
 cons = lambda a: lambda b: (a, b)
 car  = lambda cell: cell[0]
 cdr  = lambda cell: cell[1]
+```
+
+Let's create a pair and get the second element:
+
+```python
+>>> p = cons(1)(cons(2)(()))
+>>> car(cdr(p))
+2
 ```
 
 It turns out that cons cells are all you need to implement singly linked lists.
@@ -46,8 +54,9 @@ Suppose we wanted to access the second element of this list. We could express
 this as the `car` of the `cdr` of this list. In code:
 
 ```python
-example = cons(0)(cons(1)(cons(2)(cons(3)(()))))
-print(car(cdr(example))) #=> 1
+>>> example = cons(0)(cons(1)(cons(2)(cons(3)(()))))
+>>> car(cdr(example))
+1
 ```
 
 You may have noticed that my definitions above were all functions of one
@@ -60,6 +69,16 @@ pair = lambda a: lambda b: lambda f: f(a)(b)
 fst  = lambda p: p(lambda a: lambda b: a)
 snd  = lambda p: p(lambda a: lambda b: b)
 ```
+
+Let's recreate the pair above:
+
+```python
+>>> p = pair(1)(pair(2)(()))
+>>> fst(snd(p))
+2
+```
+
+Although `p` is a function, it is representing the same data as above.
 
 As an aside, the functions we use in `fst` and `snd` are Church booleans that
 encode true and false in the lambda calculus. We can rewrite our definitions
@@ -76,8 +95,9 @@ Although our representation has changed, we can still perform the same
 operations as before to get the second element of our list:
 
 ```python
-example = pair(0)(pair(1)(pair(2)(pair(3)(()))))
-print(fst(snd(example))) #=> 1
+>>> example = pair(0)(pair(1)(pair(2)(pair(3)(()))))
+>>> fst(snd(example))
+1
 ```
 
 Our code is represented as bits in memory i.e. data, but our data can be
