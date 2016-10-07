@@ -8,8 +8,9 @@ Category: programming
 
 I'm going to try to convince you that data is code. Strap yourselves in!
 
-A cons cell is a way of representing a pair, and it has two operations, [`car`
-and `cdr`](https://en.wikipedia.org/wiki/CAR_and_CDR), to access the first and
+A [cons cell](https://en.wikipedia.org/wiki/Cons) is a way of representing a
+pair, and it has two operations, [`car` and
+`cdr`](https://en.wikipedia.org/wiki/CAR_and_CDR), to access the first and
 second elements of the pair respectively. In Python, we could construct and
 access cons cells as follows:
 
