@@ -1,7 +1,6 @@
 Title: Data Is Code
 Date: 2016-09-29
 Category: programming
-Status: draft
 
 > Code is just smart data, and data is just dumb code.
 > - _Structure and Interpretation of Computer Programs_
