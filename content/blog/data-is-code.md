@@ -4,7 +4,7 @@ Category: programming
 Status: draft
 
 > Code is just smart data, and data is just dumb code.
-_Structure and Interpretation of Computer Programs_
+> - _Structure and Interpretation of Computer Programs_
 
 A cons cell is a way of representing a pair, and it has two operations, `car`
 and `cdr`, to access the first and second elements of the pair respectively. In
