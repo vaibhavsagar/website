@@ -6,9 +6,12 @@ Category: programming
 >
 > - _Structure and Interpretation of Computer Programs_
 
-A cons cell is a way of representing a pair, and it has two operations, `car`
-and `cdr`, to access the first and second elements of the pair respectively. In
-Python, we could construct and access cons cells as follows:
+I'm going to try to convince you that data is code. Strap yourselves in!
+
+A cons cell is a way of representing a pair, and it has two operations, [`car`
+and `cdr`](https://en.wikipedia.org/wiki/CAR_and_CDR), to access the first and
+second elements of the pair respectively. In Python, we could construct and
+access cons cells as follows:
 
 ```python
 cons = lambda a: lambda b: (a, b)
@@ -59,29 +62,36 @@ this as the `car` of the `cdr` of this list. In code:
 1
 ```
 
+So far we've defined functions that wrap Python's tuples, and we're still in
+data land, working with those tuples. But it doesn't have to be this way.
+
 You may have noticed that my definitions above were all functions of one
 argument. This was not entirely coincidental: cons cells as described above are
-very similar to Church pairs, which are a way of representing pairs in the
-lambda calculus. Let's make a minor change to the above definitions:
+very similar to [Church
+pairs](https://en.wikipedia.org/wiki/Church_encoding#Church_pairs), which are a
+way of representing pairs in the lambda calculus. Let's make a minor change to
+the above definitions:
 
 ```python
 pair = lambda a: lambda b: lambda f: f(a)(b)
 fst  = lambda p: p(lambda a: lambda b: a)
 snd  = lambda p: p(lambda a: lambda b: b)
+nil  = lambda a: a
 ```
 
-Let's recreate the pair above:
+We can recreate the pair above:
 
 ```python
->>> p = pair(1)(pair(2)(()))
+>>> p = pair(1)(pair(2)(nil))
 >>> fst(snd(p))
 2
 ```
 
 Although `p` is a function, it is representing the same data as above.
 
-As an aside, the functions we use in `fst` and `snd` are Church booleans that
-encode true and false in the lambda calculus. We can rewrite our definitions
+As an aside, the functions we use in `fst` and `snd` are [Church
+booleans](https://en.wikipedia.org/wiki/Church_encoding#Church_Booleans) that
+encode `true` and `false` in the lambda calculus. We can rewrite our definitions
 with this new knowledge:
 
 ```python
@@ -95,10 +105,16 @@ Although our representation has changed, we can still perform the same
 operations as before to get the second element of our list:
 
 ```python
->>> example = pair(0)(pair(1)(pair(2)(pair(3)(()))))
+>>> example = pair(0)(pair(1)(pair(2)(pair(3)(nil))))
 >>> fst(snd(example))
 1
 ```
+
+Now we've moved to function land, and there are no tuples in sight. All we need
+are functions of one argument, which is convenient because this is all that
+lambda calculus gives us. Fortunately, lambda calculus is [Turing
+complete](https://en.wikipedia.org/wiki/Turing_completeness) and therefore
+enough.
 
 Our code is represented as bits in memory i.e. data, but our data can be
 represented as functions i.e. code. You might say that bits and bytes are the
