@@ -126,3 +126,7 @@ code to make sense of it. It really is turtles all the way down.
 There are much more comprehensive treatments of this material available online.
 I'm aware of [Matt Might's](http://matt.might.net/articles/js-church/) and
 [James Tauber's](http://jtauber.com/blog/2008/11/26/church_encoding_in_python/).
+
+Many thanks to [Andy Lee](http://www.notesfromandy.com/), [Juan
+Soto](http://juansoto.me/), and [Sarah Ransohoff](http://sranso.com/) for
+their excellent feedback on on this post.
