@@ -4,7 +4,7 @@ Category: programming
 
 > Code is just smart data, and data is just dumb code.
 >
-> - _Structure and Interpretation of Computer Programs_
+> - Structure and Interpretation of Computer Programs
 
 I'm going to try to convince you that data is code. Strap yourselves in!
 
@@ -88,7 +88,7 @@ We can recreate the pair above:
 2
 ```
 
-Although `p` is a function, it is representing the same data as above.
+Our pair `p` is now a function, but it is representing the same data as above.
 
 As an aside, the functions we use in `fst` and `snd` are [Church
 booleans](https://en.wikipedia.org/wiki/Church_encoding#Church_Booleans) that
@@ -102,8 +102,8 @@ fst   = lambda p: p(true)
 snd   = lambda p: p(false)
 ```
 
-Although our representation has changed, we can still perform the same
-operations as before to get the second element of our list:
+We can perform the same operations as before to get the second element of our
+list:
 
 ```python
 >>> example = pair(0)(pair(1)(pair(2)(pair(3)(nil))))
