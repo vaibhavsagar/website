@@ -231,5 +231,5 @@ control flow as implemented by the Cont monad.
 I don't think the answer to the question "what is a monad?" is as useful as
 learning the mechanics of working with them, even ones you don't fully
 understand. If you can make your type conform to the typeclass, Haskell will
-give you a pretty general and flexible API to work with it that. As far as I'm
+give you a pretty general and flexible API to work with it. As far as I'm
 concerned, this is the point of monads in Haskell.
