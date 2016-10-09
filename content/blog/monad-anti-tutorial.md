@@ -34,9 +34,9 @@ There are two things I think are confusing about this definition:
 There are some laws that well-behaved implementations are supposed to observe:
 
 ```haskell
-return a >>= f           =  f a             -- (1)
-m >>= return             =  m               -- (2)
-m >>= (\x -> f x >>= g)  =  (m >>= f) >>= g -- (3)
+return a >>= f           =  f a
+m >>= return             =  m
+m >>= (\x -> f x >>= g)  =  (m >>= f) >>= g
 ```
 
 I won't explain these, but I will point them out.
