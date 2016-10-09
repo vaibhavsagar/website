@@ -41,9 +41,7 @@ m >>= (\x -> f x >>= g)  =  (m >>= f) >>= g
 
 I won't explain these, but I will point them out.
 
-And that's all.
-
-Really.
+And that's all. Really.
 
 So what's all the hype about?
 
