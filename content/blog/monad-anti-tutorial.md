@@ -5,8 +5,10 @@ Status: draft
 
 Like so many before me, I feel the primal urge to inflict yet another (Haskell)
 monad tutorial on an innocent and unsuspecting universe. For a host of reasons,
-this is a bad idea, so instead, you get an anti-tutorial. This is where I don't
-even attempt to explain monads! I might try to explain some other stuff though.
+this is a bad idea. One reason is that I'm not going to do a better job of
+explaining monads than everyone else. However, I probably am better at not
+explaining monads, which is why you get an anti-tutorial. I might try to
+explain some other stuff though.
 
 What is a monad (in Haskell)? `Monad` is a typeclass , which is very much like
 an interface in many other languages. Because Haskell is not object-oriented,
@@ -226,6 +228,8 @@ input/output. There are many useful monad instances in Haskell, from container
 types such as Set and Map to abstractions such as Writer and State, through to
 control flow as implemented by the Cont monad.
 
-If you can make your type conform to the typeclass, Haskell will give you a
-pretty general and flexible API to work with it that. As far as I'm concerned,
-this is the point of monads in Haskell.
+I don't think the answer to the question "what is a monad?" is as useful as
+learning the mechanics of working with them, even ones you don't fully
+understand. If you can make your type conform to the typeclass, Haskell will
+give you a pretty general and flexible API to work with it that. As far as I'm
+concerned, this is the point of monads in Haskell.
