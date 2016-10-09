@@ -65,7 +65,7 @@ f a b =
     return (a' + b')
 ```
 
-and if you want to define variables in between you can use
+If you want to define variables in between you can use
 
 ```haskell
 g a b = do
@@ -75,7 +75,7 @@ g a b = do
     return (a'' + b')
 ```
 
-which becomes
+and this becomes
 
 ```haskell
 g a b =
@@ -90,18 +90,18 @@ can omit it like
 
 ```haskell
 h a b = do
-    a' <- a
-    b
-    return a'
+    a
+    b' <- b
+    return b'
 ```
 
-and this desugars to
+which desugars to
 
 ```haskell
 h a b =
-    a >>= \a' ->
-    b >>= \_  ->
-    return a'
+    a >>= \_  ->
+    b >>= \b' ->
+    return b'
 ```
 
 I think it's worth spending time on understanding `do` notation and converting
@@ -110,10 +110,10 @@ between the sugared and desugared representations because:
 1. Familiarity with `do` notation will allow you to effectively use monads,
    whether or not you feel you understand them.
 
-2. The monad laws are embedded in `do` notation and you will have a better
-   understanding of the underlying concepts from using it.
+2. Doing this will teach you (or at least help you learn) the monad laws.
 
-Let's walk through some contrived examples to see how this works in practice!
+But enough about that. Let's walk through some contrived examples to see how
+this works in practice!
 
 I'd like to start with the `Maybe` type, which allows us to work with possibly
 `null` values in a way I think is better than most other approaches. The
@@ -141,7 +141,8 @@ Just 4
 
 This captures the idea that if any of the parameters is `Nothing`, the overall
 result should also be `Nothing`. The cool part is that we don't need to worry
-about this when defining `f`.
+about this when defining `f`, because the underlying implementation takes care
+of it for us.
 
 A second example is the `List` type. A valid instance looks like
 
@@ -159,4 +160,72 @@ and you would use this like
 [3, 4, 5, 4, 5, 6]
 λ> f [] [2, 3, 4]
 []
+λ> g [1, 2] [2, 3, 4]
+[4,5,6,5,6,7]
 ```
+
+Where a `Maybe` can be one of two possible values, a `List` is an arbitrary
+number of values.
+
+So far both examples have been a bit box-like, but monads are more general than
+that. Let's look at the `Reader` type, which allows us to `ask` for some value
+that can be passed in later (very much like a function):
+
+```haskell
+data Reader e a = Reader {runReader :: e -> a}
+
+ask = Reader (\e -> e)
+
+instance Monad (Reader e) where
+   return a           = Reader (\_ -> a)
+   (>>=) (Reader r) f = Reader (\e -> runReader (f (r e)) e)
+```
+
+This one is a bit more interesting to use.
+
+```haskell
+x = do
+   value <- ask
+   return (value + 1)
+
+y = do
+   value <- ask
+   return (value + 2)
+
+λ> runReader (f x y) 1
+5
+λ> runReader (f x y) 2
+7
+λ> runReader (g x y) 1
+6
+```
+
+Finally, let's look at the `IO` type, which I find a bit scary. I don't really
+understand how it's implemented. so I'll be skipping that section. Fortunately,
+we know how to use it, because we know the interface, so let's do that.
+
+```
+getInt = do
+   input <- h (putStr "Enter integer: ") getLine
+   let int = read input :: Int
+   return int
+
+λ> f getInt getInt
+Enter integer: 1
+Enter integer: 2
+3
+λ> g getInt getInt
+Enter integer: 1
+Enter integer: 2
+4
+```
+
+Okay, enough examples. As you can see, we've used the same interface to work
+deal with failure, an arbitrary number of values, an extra parameter, and
+input/output. There are many useful monad instances in Haskell, from container
+types such as Set and Map to abstractions such as Writer and State, through to
+control flow as implemented by the Cont monad.
+
+If you can make your type conform to the typeclass, Haskell will give you a
+pretty general and flexible API to work with it that. As far as I'm concerned,
+this is the point of monads in Haskell.
