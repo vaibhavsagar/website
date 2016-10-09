@@ -52,7 +52,7 @@ reason. This syntax sugar is known as `do`-notation. It allows you to write
 code that looks like
 
 ```haskell
-f a b = do
+foo a b = do
     a' <- a
     b' <- b
     return (a' + b')
@@ -61,7 +61,7 @@ f a b = do
 that then gets rewritten to
 
 ```haskell
-f a b =
+foo a b =
     a >>= \a' ->
     b >>= \b' ->
     return (a' + b')
@@ -70,7 +70,7 @@ f a b =
 If you want to define variables in between you can use
 
 ```haskell
-g a b = do
+bar a b = do
     a' <- a
     let a'' = a' + 1
     b' <- b
@@ -80,7 +80,7 @@ g a b = do
 and this becomes
 
 ```haskell
-g a b =
+bar a b =
     a >>= \a' ->
     let a'' = a' + 1 in
     b >>= \b' ->
@@ -91,7 +91,7 @@ and if you don't care about the variable on the left hand side of the `<-`, you
 can omit it like
 
 ```haskell
-h a b = do
+baz a b = do
     a
     b' <- b
     return b'
@@ -100,7 +100,7 @@ h a b = do
 which desugars to
 
 ```haskell
-h a b =
+baz a b =
     a >>= \_  ->
     b >>= \b' ->
     return b'
@@ -131,13 +131,13 @@ instance Monad Maybe where
 and in use it looks like
 
 ```haskell
-λ> f (Just 1) (Just 2)
+λ> foo (Just 1) (Just 2)
 Just 3
-λ> f Nothing (Just 2)
+λ> foo Nothing (Just 2)
 Nothing
-λ> f (Just 1) Nothing
+λ> foo (Just 1) Nothing
 Nothing
-λ> g (Just 1) (Just 2)
+λ> bar (Just 1) (Just 2)
 Just 4
 ```
 
@@ -158,11 +158,11 @@ and you would use this like
 
 
 ```haskell
-λ> f [1, 2] [2, 3, 4]
+λ> foo [1, 2] [2, 3, 4]
 [3, 4, 5, 4, 5, 6]
-λ> f [] [2, 3, 4]
+λ> foo [] [2, 3, 4]
 []
-λ> g [1, 2] [2, 3, 4]
+λ> bar [1, 2] [2, 3, 4]
 [4,5,6,5,6,7]
 ```
 
@@ -194,11 +194,11 @@ y = do
    value <- ask
    return (value + 2)
 
-λ> runReader (f x y) 1
+λ> runReader (foo x y) 1
 5
-λ> runReader (f x y) 2
+λ> runReader (foo x y) 2
 7
-λ> runReader (g x y) 1
+λ> runReader (bar x y) 1
 6
 ```
 
@@ -208,15 +208,15 @@ we know how to use it, because we know the interface, so let's do that.
 
 ```
 getInt = do
-   input <- h (putStr "Enter integer: ") getLine
+   input <- baz (putStr "Enter integer: ") getLine
    let int = read input :: Int
    return int
 
-λ> f getInt getInt
+λ> foo getInt getInt
 Enter integer: 1
 Enter integer: 2
 3
-λ> g getInt getInt
+λ> bar getInt getInt
 Enter integer: 1
 Enter integer: 2
 4
