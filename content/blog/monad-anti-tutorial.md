@@ -7,8 +7,8 @@ Like so many before me, I feel the primal urge to inflict yet another (Haskell)
 monad tutorial on an innocent and unsuspecting universe. For a host of reasons,
 this is a bad idea. One reason is that I'm not going to do a better job of
 explaining monads than everyone else. However, I probably am better at not
-explaining monads, which is why you get an anti-tutorial. I might try to
-explain some other stuff though.
+explaining monads, which is why you get an anti-tutorial where I don't even
+try. I might try to explain some other stuff, but I make no promises.
 
 What is a monad (in Haskell)? `Monad` is a typeclass , which is very much like
 an interface in many other languages. Because Haskell is not object-oriented,
