@@ -277,3 +277,7 @@ pretty general and flexible API to work with it. Even if you don't completely
 understand what's going on with a certain type, you know enough to use it based
 on your knowledge of the interface. As far as I'm concerned, this is the point
 of monads in Haskell.
+
+Thanks to [James Porter](http://jamesporter.me/), [Nick
+Platt](https://nick-platt.com/), and [Lindsey Kuper](http://composition.al/)
+for their feedback on this post.
