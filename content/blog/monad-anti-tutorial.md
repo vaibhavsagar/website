@@ -1,7 +1,6 @@
 Title: Monad Anti-tutorial
-Date: 2016-10-08
+Date: 2016-10-12
 Category: programming
-Status: draft
 
 I think becoming familiar with the mechanics of working with monads is more
 important than the question of what a monad is. For this reason, I think monad
