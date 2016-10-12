@@ -3,14 +3,14 @@ Date: 2016-10-08
 Category: programming
 Status: draft
 
-I don't think the answer to the question "what is a monad?" is as useful as
-becoming familiar with the mechanics of working with them. For this reason,
-I think monad tutorials solve the wrong problem and I'm giving you a monad
-anti-tutorial instead, where I don't try to explain what a monad is but I do
-try to show you how to use them.
+I think becoming familiar with the mechanics of working with monads is more
+important than the question of what a monad is. For this reason, I think monad
+tutorials solve the wrong problem. I'm giving you a monad anti-tutorial
+instead, where I don't try to explain what a monad is but I do try to show you
+how to use them.
 
-I'm hoping you're familiar with Haskell's syntax, but even if you're not I hope
-you'll still be able to follow this.
+I'm assuming basic familiarity with Haskell's syntax, but even if you're not I
+hope you'll still be able to follow this.
 
 Let's start with a definition. `Monad` in Haskell is a typeclass, which is very
 much like an interface in many other languages.  Because Haskell is not
@@ -222,7 +222,9 @@ instance Monad (Reader e) where
    (>>=) (Reader r) f = Reader (\e -> runReader (f (r e)) e)
 ```
 
-This one is a bit more interesting to use.
+I had to look this one up. I don't expect you to immediately understand this
+implementation, my point is that this is bog-standard Haskell code. It's a bit
+more interesting to use:
 
 ```haskell
 x = do
@@ -241,7 +243,7 @@ y = do
 6
 ```
 
-I have no idea how you'd implement this in Python, but I can guarantee it's not
+I have no idea how you'd do this in Python, but I can guarantee it's not
 general either.
 
 Finally, let's look at the `IO` type, which I find a bit scary. I don't really
