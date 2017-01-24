@@ -1,7 +1,6 @@
 Title: A Simple Key-Value Store with Servant
-Date: 2017-01-17
+Date: 2017-01-24
 Category: programming
-Status: draft
 
 The [meat of the Servant
 tutorial](http://haskell-servant.readthedocs.io/en/stable/tutorial/Server.html#nested-apis)
@@ -75,7 +74,7 @@ type API
 This API has two endpoints: a "/get/:key" endpoint that provides the value
 associated with a key if the key exists in our store, or a "put/:key" endpoint
 that allows us to associate some JSON with a key, returning the key used. How
-this fits together is still a bit of a mystery to me, but [this blog
+this fits together is still a bit magical to me, but [this blog
 post](http://kseo.github.io/posts/2017-01-20-how-servant%27s-type-safe-links-work.html)
 provides the best explanation I've read so far. The section of the Servant
 tutorial [on the API specification
@@ -104,14 +103,14 @@ which is `ExceptT ServantErr IO`, so we `liftIO` as necessary:
 
 ```haskell
 getValue :: Store -> Text -> Handler (Maybe Value)
-getValue store = liftIO $ lookup key <$> readIORef store
+getValue store key = liftIO $ lookup key <$> readIORef store
 
 putValue :: Store -> Text -> Value -> Handler Text
 putValue store key value = liftIO $ atomicModifyIORef' store modify
     where modify kv = (insert key value kv, key)
 ```
 
-Almost there! We declare the API we want to serve:
+Almost there. We declare the API we want to serve:
 
 ```haskell
 kvAPI :: Proxy API
@@ -130,4 +129,12 @@ main = do
     run port . serve kvAPI . server =<< newIORef empty
 ```
 
-And we're done!
+To recap: we define our API as a type, our handlers, and the type we want to
+serve, and then we plug it all together.
+
+And we're done! We can now `chmod +x KVStore.hs` (or whatever you called the
+file) and run it: `./KVStore.hs 8081`.
+
+I hope this provides a better starting point for learning Servant. If desired,
+the full script is available
+[here](https://gist.github.com/vaibhavsagar/694e0a823c5a4a5b52ddb4277b55ba1d).
