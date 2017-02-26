@@ -1,7 +1,6 @@
 Title: Getting to RC
 Date: 2017-02-26
-Category: misc
-Status: draft
+Category: misc, programming
 
 You wouldn't know it from looking at my blog, but I attended a batch at the
 Recurse Center from August to early November last year, and it was the best
@@ -56,9 +55,11 @@ left my job and reapplied to RC. In my mind the worst that could have happened
 had already happened, so I was much more relaxed. My interviewer this time had
 attended RC when they were like me at the end of 2013, and I think we were able
 to relate to each other better. I'd learned some Haskell by working on my Git
-thing, which I called [duffer](https://github.com/vaibhavsagar/duffer/tree/4e4beb35f39d957ff1ccaf187dee3272deb58870)
-and I progressed to the pairing interview. The pairing interview was my first experience pair programming, and I think it
-went well, because I got an acceptance email this time.
+thing, which I called
+[duffer](https://github.com/vaibhavsagar/duffer/tree/4e4beb35f39d957ff1ccaf187dee3272deb58870)
+and I progressed to the pairing interview. The pairing interview was my first
+experience pair programming, and I think it went well, because I got an
+acceptance email this time.
 
 Although I was applying in April, I applied to the batch starting in August
 because my mum's 50th birthday was in July and attending that was
