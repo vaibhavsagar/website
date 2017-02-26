@@ -1,6 +1,6 @@
 Title: Getting to RC
 Date: 2017-02-26
-Category: misc, programming
+Category: misc
 
 You wouldn't know it from looking at my blog, but I attended a batch at the
 Recurse Center from August to early November last year, and it was the best
