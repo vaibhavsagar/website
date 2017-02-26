@@ -5,8 +5,10 @@ Category: misc, programming
 You wouldn't know it from looking at my blog, but I attended a batch at the
 Recurse Center from August to early November last year, and it was the best
 experience of my life. Many Recursers write a return statement afterwards
-reflecting on their time there, and in the process of writing mine I realised
-I have a lot to say about my journey getting there in the first place.
+reflecting on their time there, and in the process of writing mine I realised I
+have a lot to say about my journey getting there in the first place. Another
+post in this vein is [this one](http://blog.jfo.click/how-i-went-to-rc/) by
+Jeff Fowler.
 
 At the end of 2013, the CSIRO in Australia generously bent the rules for me by
 allowing me to do a student internship despite having just completed an
