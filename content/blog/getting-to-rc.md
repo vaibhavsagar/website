@@ -53,12 +53,12 @@ spoke to didn't like that idea, but he had been looking into how Git is
 implemented, and he said he'd love to hear a talk on Git internals in Haskell.
 I had my project.
 
-A few months later, things had gone pear-shaped for me on the work front. I
-left my job and reapplied to RC. In my mind the worst that could have happened
-had already happened, so I was much more relaxed. My interviewer this time had
-attended RC when they were like me at the end of 2013, and I think we were able
-to relate to each other better. I'd learned some Haskell by working on my Git
-thing, which I called
+A few months later, things had gone pear-shaped for me on the work front and we
+were heading into the Canberra winter. I left my job and reapplied to RC. In my
+mind the worst that could have happened had already happened, so I was much
+more relaxed. My interviewer this time had attended RC when they were like me
+at the end of 2013, and I think we were able to relate to each other better.
+I'd learned some Haskell by working on my Git thing, which I called
 [duffer](https://github.com/vaibhavsagar/duffer/tree/4e4beb35f39d957ff1ccaf187dee3272deb58870)
 and I progressed to the pairing interview. The pairing interview was my first
 experience pair programming, and I think it went well, because I got an
