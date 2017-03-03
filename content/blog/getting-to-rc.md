@@ -14,16 +14,15 @@ by Harold Treen.
 
 At the end of 2013, the CSIRO in Australia generously bent the rules for me by
 allowing me to do a student internship despite having just completed an
-undergraduate degree. I was repaying this generosity by slacking off on work
-time and reading blog posts on Reddit (as you do) when I encountered a blog
-post about Hacker School. The details are in a server log somewhere, but I'm
-reasonably certain it was a Julia Evans post, and they're tonally consistent on
-this subject so we'll pretend it was [this particular
-one](https://jvns.ca/blog/2014/02/15/how-was-hacker-school/). I had [an
-immediate and visceral reaction](https://www.youtube.com/watch?v=2p1dS9hoptU)
-to learning about this magical place, but because of my financial and visa
-situation at the time I put it in the back of my mind and mostly forgot about
-it.
+undergraduate degree. I was taking a quick break and reading blog posts on
+Reddit when I encountered a blog post about Hacker School. The details are in a
+server log somewhere, but I'm reasonably certain it was a Julia Evans post, and
+they're tonally consistent on this subject so we'll pretend it was [this
+particular one](https://jvns.ca/blog/2014/02/15/how-was-hacker-school/). I had
+[an immediate and visceral
+reaction](https://www.youtube.com/watch?v=2p1dS9hoptU) to learning about this
+magical place, but because of my financial and visa situation at the time I put
+it in the back of my mind and mostly forgot about it.
 
 Less than two years later, I became an Australian citizen. The citizenship
 process limits how much time you can spend overseas, but as far as I'm aware
