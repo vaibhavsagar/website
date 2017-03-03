@@ -77,8 +77,9 @@ realised, and so I continued working on it.
 Both my parents [work in IT](http://infotech.co.id/) so their hope was that I
 would be able to help them with some projects they were working on until I left
 for my batch. Instead, what I ended up doing was showing up at work and
-ignoring them for the rest of the day in favour of Haskell. This was not the
-best idea, but I definitely got a lot better at Haskell.
+ignoring them for the rest of the day in favour of my project. This was not the
+best idea for my relationship with my parents, but I definitely got a lot
+better at Haskell. Fortunately for me my parents are incredibly supportive :).
 
 My mum celebrated her birthday in Bali, and I insisted on bringing my laptop so
 I could keep my Github commit streak going. This turned out to a good decision
