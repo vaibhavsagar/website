@@ -28,6 +28,7 @@ main = hakyll $ do
         route   $ cleanRoute `composeRoutes` dateRoute
         compile $ pandocCompiler
             >>= loadAndApplyTemplate "templates/post.html"    postCtx
+            >>= saveSnapshot "content"
             >>= loadAndApplyTemplate "templates/default.html" postCtx
             >>= relativizeUrls
 
@@ -68,6 +69,13 @@ main = hakyll $ do
 
     match "templates/*" $ compile templateBodyCompiler
 
+    create ["atom.xml"] $ do
+        route idRoute
+        compile $ do
+            let feedCtx = postCtx `mappend` bodyField "description"
+            posts <- fmap (take 10) . recentFirst =<<
+                loadAllSnapshots "blog/*" "content"
+            renderAtom feedConfig feedCtx posts
 
 --------------------------------------------------------------------------------
 postCtx :: Context String
@@ -99,3 +107,12 @@ cleanIndex url
     | index `isSuffixOf` url = take (length url - length index) url
     | otherwise              = url
     where index = "index.html"
+
+feedConfig :: FeedConfiguration
+feedConfig = FeedConfiguration
+    { feedTitle       = "Vaibhav Sagar's blog"
+    , feedDescription = "A blog with posts in it."
+    , feedAuthorName  = "Vaibhav Sagar"
+    , feedAuthorEmail = "vaibhavsagar@gmail.com"
+    , feedRoot        = "http://vaibhavsagar.com"
+    }
