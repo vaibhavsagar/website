@@ -1,0 +1,25 @@
+language: c
+sudo: false
+
+cache:
+    directories:
+    - $HOME/.stack
+
+addons:
+    apt:
+        packages:
+        - libgmp-dev
+
+before_install:
+- mkdir -p $HOME/.local/bin
+- travis_retry curl -L https://www.stackage.org/stack/linux-x86_64 | tar xz --wildcards --strip-components=1 -C ~/.local/bin '*/stack'
+
+install:
+- stack setup
+
+script:
+- stack --no-terminal --skip-ghc-check build
+- stack --no-terminal --skip-ghc-check exec -- site build
+
+after_success:
+- bash .ci/update_pages.sh
