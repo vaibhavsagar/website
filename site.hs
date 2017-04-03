@@ -24,7 +24,7 @@ main = hakyll $ do
             >>= relativizeUrls
             >>= cleanIndexUrls
 
-    match "blog/*" $ do
+    match ("blog/*" .||. "drafts/*") $ do
         route   $ cleanRoute `composeRoutes` dateRoute
         compile $ pandocCompiler
             >>= loadAndApplyTemplate "templates/post.html"    postCtx
