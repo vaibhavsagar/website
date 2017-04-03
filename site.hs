@@ -32,8 +32,8 @@ main = hakyll $ do
             >>= relativizeUrls
 
     match "extra/*" $ do
-        route     rootRoute
-        compile   copyFileCompiler
+        route   rootRoute
+        compile copyFileCompiler
 
     create ["archive/index.html"] $ do
         route idRoute
