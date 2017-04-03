@@ -8,7 +8,7 @@ if [ "$TRAVIS" == "true" ]; then
     git config --global user.name "Travis"
 fi
 # Using token, clone gh-pages branch
-git clone --quiet --branch=$BRANCH "https://$GH_TOKEN@github.com/$TARGET_REPO build" > /dev/null
+git clone --quiet --branch=$BRANCH "https://$GH_TOKEN@github.com/$TARGET_REPO" build > /dev/null
 # Go into directory and copy data we're interested in to that directory
 cd build || exit
 cp -R ../_site/* .
