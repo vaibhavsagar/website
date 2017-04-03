@@ -38,10 +38,10 @@ main = hakyll $ do
     create ["archive/index.html"] $ do
         route idRoute
         compile $ do
-            posts <- recentFirst =<< loadAll "blog/*"
+            let posts = recentFirst =<< loadAll "blog/*"
             let archiveCtx =
-                    listField "posts" postCtx (return posts) `mappend`
-                    constField "title" "Archives"            `mappend`
+                    listField "posts" postCtx posts `mappend`
+                    constField "title" "Archives"   `mappend`
                     defaultContext
 
             makeItem ""
@@ -54,10 +54,10 @@ main = hakyll $ do
     match "index.html" $ do
         route idRoute
         compile $ do
-            posts <- fmap (take 10) . recentFirst =<< loadAll "blog/*"
+            let posts = fmap (take 10) . recentFirst =<< loadAll "blog/*"
             let indexCtx =
-                    listField "posts" postCtx (return posts) `mappend`
-                    constField "title" "Home"                `mappend`
+                    listField "posts" postCtx posts `mappend`
+                    constField "title" "Home"       `mappend`
                     defaultContext
 
             getResourceBody
