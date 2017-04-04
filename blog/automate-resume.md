@@ -1,6 +1,8 @@
----
+--------------------------------------------------------------------------------
 title: Generate A PDF From Your Resume With Travis-CI
----
+published: 2015-02-26
+Category: programming
+--------------------------------------------------------------------------------
 
 After [automating my blog]({filename}blog-setup.md), I decided to aim a little
 higher and use Travis-CI to automate document generation from my resume. I use
@@ -17,23 +19,8 @@ by Steve Klabnik.
 
 The versions of `pandoc` and `LaTeX` on Ubuntu 12.04 (which Travis-CI uses for
 its workers) are hopelessly out of date, so my first problem was getting the
-newest version of `pandoc` installed. It is available as a `.deb`
-[here](https://github.com/jgm/pandoc/releases), and Github being Github, this
-information is also provided as JSON. There's this really nifty tool called
-`jq` which is like `sed` for JSON so I found and used that. After having a play
-with it [here](https://jqplay.org/) I was able to construct the filter I
-needed:
-
-    jq -r '.assets[] | .browser_download_url | select(endswith("deb"))'
-
-The '-r' is there so that `wget` won't choke on the output which would
-otherwise be surrounded in double quotes. I was then able to install the
-downloaded package without any issues. This is what my pre-install script
-looked like:
-
-<script
-src="http://gist-it.appspot.com/github.com/vaibhavsagar/resume/blob/master/.ci/prepare.sh">
-</script>
+newest version of `pandoc` installed. I used `stack` to download and install
+this.
 
 I already had a `Makefile`, so converting my source to Github-flavoured
 Markdown and HTML was as easy as `make readme` and `make html`:

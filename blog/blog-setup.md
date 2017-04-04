@@ -1,6 +1,8 @@
----
+--------------------------------------------------------------------------------
 title: How This Static Blog Uses Travis-CI
----
+published: 2015-02-01
+Category: programming
+--------------------------------------------------------------------------------
 
 When I started this blog, I was reluctant to put a continuous integration
 system like Travis-CI in charge of deployment because it seemed like a

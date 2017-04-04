@@ -1,6 +1,8 @@
----
+--------------------------------------------------------------------------------
 title: You Could Have Invented The State Monad
----
+published: 2016-06-17
+Category: programming
+--------------------------------------------------------------------------------
 
 I'm attempting [NICTA/course](https://github.com/NICTA/course) a second time. I
 gave up the last time because none of the State exercises were making sense and

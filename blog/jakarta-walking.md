@@ -1,6 +1,8 @@
----
+--------------------------------------------------------------------------------
 title: Walking
----
+published: 2014-06-04
+Category: misc
+--------------------------------------------------------------------------------
 
 So yesterday I took a walk to buy some groceries, and today I took another to
 buy some clothes from Uniqlo (as good as everyone says) and watch a movie (Edge
