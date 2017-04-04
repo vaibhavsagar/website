@@ -4,6 +4,7 @@ import           Data.Monoid (mappend)
 import           Hakyll
 import           System.FilePath
 import           Data.List (isSuffixOf)
+import           Data.Maybe (fromMaybe)
 
 
 --------------------------------------------------------------------------------
@@ -25,7 +26,7 @@ main = hakyll $ do
             >>= cleanIndexUrls
 
     match ("blog/*" .||. "drafts/*") $ do
-        route   $ cleanRoute `composeRoutes` dateRoute
+        route   $ dateRoute `composeRoutes` cleanRoute
         compile $ pandocCompiler
             >>= loadAndApplyTemplate "templates/post.html"    postCtx
             >>= saveSnapshot "content"
@@ -93,8 +94,13 @@ rootRoute :: Routes
 rootRoute = customRoute (takeFileName . toFilePath)
 
 dateRoute :: Routes
-dateRoute = gsubRoute yearPattern (replaceAll "-" (const "/"))
-    where yearPattern = "/[0-9]{4}-[0-9]{2}-[0-9]{2}-"
+dateRoute = metadataRoute createDateRoute
+    where
+        createDateRoute meta = let
+            published = fromMaybe "1970-1-1" $ lookupString "published" meta
+            datePath  = replaceAll "-" (const "/") published
+            in customRoute (addDate datePath . toFilePath)
+        addDate date path = takeDirectory path </> date </> takeBaseName path
 
 cleanIndexUrls :: Item String -> Compiler (Item String)
 cleanIndexUrls = return . fmap (withUrls cleanIndex)
