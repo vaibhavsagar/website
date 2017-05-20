@@ -1079,7 +1079,7 @@ And that's it! The [mother of all monads](http://blog.sigfpe.com/2008/12/mother-
 
 Still a bit wary? That's fair. I like to poke at the definitions, [read the source](https://hackage.haskell.org/package/transformers-0.4.3.0/docs/src/Control-Monad-Trans-Cont.html), look at how Gabriel Gonzalez [explains it](http://www.haskellforall.com/2014/04/how-continuation-monad-works.html), and have a cup of tea and think about life for a while. Whatever works for you!
 
-I love being able to interact with these definitions like this though. This is really how I want to program, and I'd encourage you to try it! The notebook is [here] for you to play with.
+I love being able to interact with these definitions like this though. This is really how I want to program, and I'd encourage you to try it! The notebook is [here](https://github.com/vaibhavsagar/notebooks/blob/master/notebooks/Continuation.ipynb) for you to play with.
 
 Finally, if you looked at the source, you might have noticed something interesting: The definition for the ContT monad transformer is identical! Here it is below.
 
