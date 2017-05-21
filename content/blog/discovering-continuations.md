@@ -1,6 +1,5 @@
 Title: Discovering Continuations with Typed Holes
-Date: 2017-05-20
-Status: draft
+Date: 2017-05-22
 Category: programming
 
 I've been trying to wrap my head around continuations for a while. I was reading [David Luposchainsky's excellent article](https://github.com/quchen/articles/blob/master/cont_monad.md) on them and playing with his definitions in an IHaskell notebook when I found that typed holes are an excellent hammer to attack this particular nail with.
