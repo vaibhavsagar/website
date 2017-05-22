@@ -1080,26 +1080,411 @@ instance Monad (Cont r) where
 
 And that's it! The [mother of all monads](http://blog.sigfpe.com/2008/12/mother-of-all-monads.html) boils down to some tedious and almost mechanical wrapping and unwrapping. I think it's cool how mundane it is.
 
+Let's have a crack at something more involved. A lot of the magic in continuations is accessed via `callCC`, which takes a function and calls it with the current continuation, hence the name. How would we define it?
+
+
+```haskell
+callCC :: ((b -> Cont r a) -> Cont r b) -> Cont r b
+callCC f = Cont $ \k -> _
+```
+
+
+<style>/* Styles used for the Hoogle display in the pager */
+.hoogle-doc {
+display: block;
+padding-bottom: 1.3em;
+padding-left: 0.4em;
+}
+.hoogle-code {
+display: block;
+font-family: monospace;
+white-space: pre;
+}
+.hoogle-text {
+display: block;
+}
+.hoogle-name {
+color: green;
+font-weight: bold;
+}
+.hoogle-head {
+font-weight: bold;
+}
+.hoogle-sub {
+display: block;
+margin-left: 0.4em;
+}
+.hoogle-package {
+font-weight: bold;
+font-style: italic;
+}
+.hoogle-module {
+font-weight: bold;
+}
+.hoogle-class {
+font-weight: bold;
+}
+.get-type {
+color: green;
+font-weight: bold;
+font-family: monospace;
+display: block;
+white-space: pre-wrap;
+}
+.show-type {
+color: green;
+font-weight: bold;
+font-family: monospace;
+margin-left: 1em;
+}
+.mono {
+font-family: monospace;
+display: block;
+}
+.err-msg {
+color: red;
+font-style: italic;
+font-family: monospace;
+white-space: pre;
+display: block;
+}
+#unshowable {
+color: red;
+font-weight: bold;
+}
+.err-msg.in.collapse {
+padding-top: 0.7em;
+}
+.highlight-code {
+white-space: pre;
+font-family: monospace;
+}
+.suggestion-warning { 
+font-weight: bold;
+color: rgb(200, 130, 0);
+}
+.suggestion-error { 
+font-weight: bold;
+color: red;
+}
+.suggestion-name {
+font-weight: bold;
+}
+</style><span class='err-msg'>&lt;interactive&gt;:2:25: error:<br/>    • Found hole: _ :: r<br/>      Where: ‘r’ is a rigid type variable bound by<br/>               the type signature for:<br/>                 callCC :: forall b r a. ((b -&gt; Cont r a) -&gt; Cont r b) -&gt; Cont r b<br/>               at &lt;interactive&gt;:1:11<br/>    • In the expression: _<br/>      In the second argument of ‘(<span>&dollar;</span>)’, namely ‘\ k -&gt; _’<br/>      In the expression: Cont <span>&dollar;</span> \ k -&gt; _<br/>    • Relevant bindings include<br/>        k :: b -&gt; r (bound at &lt;interactive&gt;:2:20)<br/>        f :: (b -&gt; Cont r a) -&gt; Cont r b (bound at &lt;interactive&gt;:2:8)<br/>        callCC :: ((b -&gt; Cont r a) -&gt; Cont r b) -&gt; Cont r b (bound at &lt;interactive&gt;:2:1)</span>
+
+
+Our definition involves `b`, but the only `b` we have available is wrapped up in `f`. We need to provide an argument of a certain type to `f`, and then unwrap the result of that? Time to bring out the big guns: multiple typed holes!
+
+
+```haskell
+callCC :: ((b -> Cont r a) -> Cont r b) -> Cont r b
+callCC f = Cont $ \k -> f _1 >>- _2
+```
+
+
+<style>/* Styles used for the Hoogle display in the pager */
+.hoogle-doc {
+display: block;
+padding-bottom: 1.3em;
+padding-left: 0.4em;
+}
+.hoogle-code {
+display: block;
+font-family: monospace;
+white-space: pre;
+}
+.hoogle-text {
+display: block;
+}
+.hoogle-name {
+color: green;
+font-weight: bold;
+}
+.hoogle-head {
+font-weight: bold;
+}
+.hoogle-sub {
+display: block;
+margin-left: 0.4em;
+}
+.hoogle-package {
+font-weight: bold;
+font-style: italic;
+}
+.hoogle-module {
+font-weight: bold;
+}
+.hoogle-class {
+font-weight: bold;
+}
+.get-type {
+color: green;
+font-weight: bold;
+font-family: monospace;
+display: block;
+white-space: pre-wrap;
+}
+.show-type {
+color: green;
+font-weight: bold;
+font-family: monospace;
+margin-left: 1em;
+}
+.mono {
+font-family: monospace;
+display: block;
+}
+.err-msg {
+color: red;
+font-style: italic;
+font-family: monospace;
+white-space: pre;
+display: block;
+}
+#unshowable {
+color: red;
+font-weight: bold;
+}
+.err-msg.in.collapse {
+padding-top: 0.7em;
+}
+.highlight-code {
+white-space: pre;
+font-family: monospace;
+}
+.suggestion-warning { 
+font-weight: bold;
+color: rgb(200, 130, 0);
+}
+.suggestion-error { 
+font-weight: bold;
+color: red;
+}
+.suggestion-name {
+font-weight: bold;
+}
+</style><span class='err-msg'>&lt;interactive&gt;:2:27: error:<br/>    • Found hole: _1 :: b -&gt; Cont r a<br/>      Where: ‘r’ is a rigid type variable bound by<br/>               the type signature for:<br/>                 callCC :: forall b r a. ((b -&gt; Cont r a) -&gt; Cont r b) -&gt; Cont r b<br/>               at &lt;interactive&gt;:1:11<br/>             ‘a’ is a rigid type variable bound by<br/>               the type signature for:<br/>                 callCC :: forall b r a. ((b -&gt; Cont r a) -&gt; Cont r b) -&gt; Cont r b<br/>               at &lt;interactive&gt;:1:11<br/>             ‘b’ is a rigid type variable bound by<br/>               the type signature for:<br/>                 callCC :: forall b r a. ((b -&gt; Cont r a) -&gt; Cont r b) -&gt; Cont r b<br/>               at &lt;interactive&gt;:1:11<br/>      Or perhaps ‘_1’ is mis-spelled, or not in scope<br/>    • In the first argument of ‘f’, namely ‘_1’<br/>      In the first argument of ‘&gt;&gt;-’, namely ‘f _1’<br/>      In the expression: f _1 &gt;&gt;- _2<br/>    • Relevant bindings include<br/>        k :: b -&gt; r (bound at &lt;interactive&gt;:2:20)<br/>        f :: (b -&gt; Cont r a) -&gt; Cont r b (bound at &lt;interactive&gt;:2:8)<br/>        callCC :: ((b -&gt; Cont r a) -&gt; Cont r b) -&gt; Cont r b (bound at &lt;interactive&gt;:2:1)<br/>&lt;interactive&gt;:2:34: error:<br/>    • Found hole: _2 :: b -&gt; r<br/>      Where: ‘r’ is a rigid type variable bound by<br/>               the type signature for:<br/>                 callCC :: forall b r a. ((b -&gt; Cont r a) -&gt; Cont r b) -&gt; Cont r b<br/>               at &lt;interactive&gt;:1:11<br/>             ‘b’ is a rigid type variable bound by<br/>               the type signature for:<br/>                 callCC :: forall b r a. ((b -&gt; Cont r a) -&gt; Cont r b) -&gt; Cont r b<br/>               at &lt;interactive&gt;:1:11<br/>      Or perhaps ‘_2’ is mis-spelled, or not in scope<br/>    • In the second argument of ‘&gt;&gt;-’, namely ‘_2’<br/>      In the expression: f _1 &gt;&gt;- _2<br/>      In the second argument of ‘(<span>&dollar;</span>)’, namely ‘\ k -&gt; f _1 &gt;&gt;- _2’<br/>    • Relevant bindings include<br/>        k :: b -&gt; r (bound at &lt;interactive&gt;:2:20)<br/>        f :: (b -&gt; Cont r a) -&gt; Cont r b (bound at &lt;interactive&gt;:2:8)<br/>        callCC :: ((b -&gt; Cont r a) -&gt; Cont r b) -&gt; Cont r b (bound at &lt;interactive&gt;:2:1)</span>
+
+
+Great, `k` fits perfectly into the second hole. That was easy.
+
+
+```haskell
+callCC :: ((b -> Cont r a) -> Cont r b) -> Cont r b
+callCC f = Cont $ \k -> f _ >>- k
+```
+
+
+<style>/* Styles used for the Hoogle display in the pager */
+.hoogle-doc {
+display: block;
+padding-bottom: 1.3em;
+padding-left: 0.4em;
+}
+.hoogle-code {
+display: block;
+font-family: monospace;
+white-space: pre;
+}
+.hoogle-text {
+display: block;
+}
+.hoogle-name {
+color: green;
+font-weight: bold;
+}
+.hoogle-head {
+font-weight: bold;
+}
+.hoogle-sub {
+display: block;
+margin-left: 0.4em;
+}
+.hoogle-package {
+font-weight: bold;
+font-style: italic;
+}
+.hoogle-module {
+font-weight: bold;
+}
+.hoogle-class {
+font-weight: bold;
+}
+.get-type {
+color: green;
+font-weight: bold;
+font-family: monospace;
+display: block;
+white-space: pre-wrap;
+}
+.show-type {
+color: green;
+font-weight: bold;
+font-family: monospace;
+margin-left: 1em;
+}
+.mono {
+font-family: monospace;
+display: block;
+}
+.err-msg {
+color: red;
+font-style: italic;
+font-family: monospace;
+white-space: pre;
+display: block;
+}
+#unshowable {
+color: red;
+font-weight: bold;
+}
+.err-msg.in.collapse {
+padding-top: 0.7em;
+}
+.highlight-code {
+white-space: pre;
+font-family: monospace;
+}
+.suggestion-warning { 
+font-weight: bold;
+color: rgb(200, 130, 0);
+}
+.suggestion-error { 
+font-weight: bold;
+color: red;
+}
+.suggestion-name {
+font-weight: bold;
+}
+</style><span class='err-msg'>&lt;interactive&gt;:2:27: error:<br/>    • Found hole: _ :: b -&gt; Cont r a<br/>      Where: ‘r’ is a rigid type variable bound by<br/>               the type signature for:<br/>                 callCC :: forall b r a. ((b -&gt; Cont r a) -&gt; Cont r b) -&gt; Cont r b<br/>               at &lt;interactive&gt;:1:11<br/>             ‘a’ is a rigid type variable bound by<br/>               the type signature for:<br/>                 callCC :: forall b r a. ((b -&gt; Cont r a) -&gt; Cont r b) -&gt; Cont r b<br/>               at &lt;interactive&gt;:1:11<br/>             ‘b’ is a rigid type variable bound by<br/>               the type signature for:<br/>                 callCC :: forall b r a. ((b -&gt; Cont r a) -&gt; Cont r b) -&gt; Cont r b<br/>               at &lt;interactive&gt;:1:11<br/>    • In the first argument of ‘f’, namely ‘_’<br/>      In the first argument of ‘&gt;&gt;-’, namely ‘f _’<br/>      In the expression: f _ &gt;&gt;- k<br/>    • Relevant bindings include<br/>        k :: b -&gt; r (bound at &lt;interactive&gt;:2:20)<br/>        f :: (b -&gt; Cont r a) -&gt; Cont r b (bound at &lt;interactive&gt;:2:8)<br/>        callCC :: ((b -&gt; Cont r a) -&gt; Cont r b) -&gt; Cont r b (bound at &lt;interactive&gt;:2:1)</span>
+
+
+We're being asked to provide a function that takes one argument and returns a continuation. Let's fill in the boilerplate and see where that takes us.
+
+
+```haskell
+callCC :: ((b -> Cont r a) -> Cont r b) -> Cont r b
+callCC f = Cont $ \k -> f (\b -> Cont $ \k' -> _) >>- k
+```
+
+
+<style>/* Styles used for the Hoogle display in the pager */
+.hoogle-doc {
+display: block;
+padding-bottom: 1.3em;
+padding-left: 0.4em;
+}
+.hoogle-code {
+display: block;
+font-family: monospace;
+white-space: pre;
+}
+.hoogle-text {
+display: block;
+}
+.hoogle-name {
+color: green;
+font-weight: bold;
+}
+.hoogle-head {
+font-weight: bold;
+}
+.hoogle-sub {
+display: block;
+margin-left: 0.4em;
+}
+.hoogle-package {
+font-weight: bold;
+font-style: italic;
+}
+.hoogle-module {
+font-weight: bold;
+}
+.hoogle-class {
+font-weight: bold;
+}
+.get-type {
+color: green;
+font-weight: bold;
+font-family: monospace;
+display: block;
+white-space: pre-wrap;
+}
+.show-type {
+color: green;
+font-weight: bold;
+font-family: monospace;
+margin-left: 1em;
+}
+.mono {
+font-family: monospace;
+display: block;
+}
+.err-msg {
+color: red;
+font-style: italic;
+font-family: monospace;
+white-space: pre;
+display: block;
+}
+#unshowable {
+color: red;
+font-weight: bold;
+}
+.err-msg.in.collapse {
+padding-top: 0.7em;
+}
+.highlight-code {
+white-space: pre;
+font-family: monospace;
+}
+.suggestion-warning { 
+font-weight: bold;
+color: rgb(200, 130, 0);
+}
+.suggestion-error { 
+font-weight: bold;
+color: red;
+}
+.suggestion-name {
+font-weight: bold;
+}
+</style><span class='err-msg'>&lt;interactive&gt;:2:48: error:<br/>    • Found hole: _ :: r<br/>      Where: ‘r’ is a rigid type variable bound by<br/>               the type signature for:<br/>                 callCC :: forall b r a. ((b -&gt; Cont r a) -&gt; Cont r b) -&gt; Cont r b<br/>               at &lt;interactive&gt;:1:11<br/>    • In the expression: _<br/>      In the second argument of ‘(<span>&dollar;</span>)’, namely ‘\ k' -&gt; _’<br/>      In the expression: Cont <span>&dollar;</span> \ k' -&gt; _<br/>    • Relevant bindings include<br/>        k' :: a -&gt; r (bound at &lt;interactive&gt;:2:42)<br/>        b :: b (bound at &lt;interactive&gt;:2:29)<br/>        k :: b -&gt; r (bound at &lt;interactive&gt;:2:20)<br/>        f :: (b -&gt; Cont r a) -&gt; Cont r b (bound at &lt;interactive&gt;:2:8)<br/>        callCC :: ((b -&gt; Cont r a) -&gt; Cont r b) -&gt; Cont r b (bound at &lt;interactive&gt;:2:1)</span>
+
+
+And we're done! We can get an `r` by applying `k` to `b`.
+
+
+```haskell
+callCC :: ((b -> Cont r a) -> Cont r b) -> Cont r b
+callCC f = Cont $ \k -> f (\b -> Cont $ \k' -> k b) >>- k
+```
+
+A closer look at the definition reveals that `k'` is unused, and this function provides `f` with the option to exit early if desired, or continue as normal. There's a good explanation of why and how this works at [the aforementioned article](https://github.com/quchen/articles/blob/master/cont_monad.md#special-api-function-callcc).
+
 Still a bit wary? That's fair. I like to poke at the definitions, [read the source](https://hackage.haskell.org/package/transformers-0.4.3.0/docs/src/Control-Monad-Trans-Cont.html), look at how Gabriel Gonzales [explains it](http://www.haskellforall.com/2014/04/how-continuation-monad-works.html), and have a cup of tea and think about life for a while. Whatever works for you!
 
 If you looked at the source, you might have noticed something interesting: The definition for the ContT monad transformer is identical! Here it is below.
 
 
 ```haskell
-newtype ContT r m a = ContT { (>>>-) :: (a -> m r) -> m r }
+newtype ContT r m a = ContT { (>>-) :: (a -> m r) -> m r }
 
 instance Monad m => Functor (ContT r m) where
-    fmap f cont = ContT $ \k -> cont >>>- (k . f)
+    fmap f cont = ContT $ \k -> cont >>- (k . f)
 
 instance Monad m => Applicative (ContT r m) where
     pure a  = ContT $ \k -> k a
-    f <*> a = ContT $ \k -> f >>>- \f' -> a >>>- \a' -> k (f' a')
+    f <*> a = ContT $ \k -> f >>- \f' -> a >>- \a' -> k (f' a')
 
 instance Monad m => Monad (ContT r m) where
-    a >>= f = ContT $ \k -> a >>>- \a' -> f a' >>>- \f' -> k f'
+    a >>= f = ContT $ \k -> a >>- \a' -> f a' >>- \f' -> k f'
+    
+callCC :: ((b -> ContT r m a) -> ContT r m b) -> ContT r m b
+callCC f = ContT $ \k -> f (\b -> ContT $ \k' -> k b) >>- k
 ```
 
-I love being able to interact with these definitions like this. This is really how I want to program, and I'd encourage you to try it! The notebook is [here](https://github.com/vaibhavsagar/notebooks/blob/master/notebooks/Continuation.ipynb) for you to play with if you have IHaskell set up. As of this writing, I'm using [this fork](https://github.com/abarbu/IHaskell) but I'm hopeful that changes will be integrated back into [the original](https://github.com/gibiansky/IHaskell) soon.
+I love being able to interact with these definitions like this. This is really how I want to program, and I'd encourage you to try it! The notebook is [here](https://github.com/vaibhavsagar/notebooks/blob/master/notebooks/Continuation.ipynb) for you to play with if you have IHaskell set up. As of this writing, I'm using [this fork](https://github.com/abarbu/IHaskell) but I'm hopeful that changes will be integrated back into [the original](https://github.com/gibiansky/IHaskell) soon. IHaskell isn't just useful for programming: I even used it to [write this blog post](https://github.com/vaibhavsagar/notebooks/blob/master/notebooks/DiscoveringContinuationsWithTypedHoles.ipynb)!
 
 I feel like I should end with something profound about continuations, but I'll instead link you to [this presentation by Tim Humphries](http://teh.id.au/posts/2017/05/10/lambdajam-slides/index.html) and once again nudge you to try typed holes the next time you're in a Haskell bind (pun very much intended).
 
