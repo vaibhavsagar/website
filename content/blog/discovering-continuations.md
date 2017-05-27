@@ -1488,4 +1488,4 @@ I love being able to interact with these definitions like this. This is really h
 
 I feel like I should end with something profound about continuations, but I'll instead link you to [this presentation by Tim Humphries](http://teh.id.au/posts/2017/05/10/lambdajam-slides/index.html) and once again nudge you to try typed holes the next time you're in a Haskell bind (pun very much intended).
 
-Thanks to Iain McCoy, Julia Evans, and Carl Factora for their feedback and suggestions on this post.
+Thanks to [Iain McCoy](https://twitter.com/imccoy), [Julia Evans](https://jvns.ca/), and [Carl Factora](https://ivanthetricourne.github.io/) for their feedback and suggestions on this post.
