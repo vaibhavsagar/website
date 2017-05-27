@@ -6,10 +6,7 @@ Category: programming
 _This post covers essentially the same material as a 5-minute presentation I
 gave at RC, because giving that talk over and over again doesn't scale and
 there are things I would like to cover that are difficult within that time
-limit. If you'd rather try to make sense of the [set of disconnected
-files](https://github.com/vaibhavsagar/thursday-presentations/tree/master/imperative-haskell)
-that constitutes my slides for that presentation, you can do that instead,
-although I wouldn't recommend it._
+limit._
 
 I was working through Tim Roughgarden's [Algorithms
 1](https://www.coursera.org/learn/algorithm-design-analysis/) (which has now
@@ -318,12 +315,17 @@ Aside from explicitly declaring our variables and passing them around, I think
 this looks pretty close.
 
 How do we square this with Haskell's reputation for purity and referential
-transparency? That's the subject of the paper mentioned above! They figured out
-a way to provide a pure interface to mutable state. We pass the variables into
+transparency? That's the subject of [the paper mentioned
+above](http://research.microsoft.com/en-us/um/people/simonpj/Papers/state-lasc.pdf)
+that you don't have to read (but totally can if you want)! They figured out a
+way to provide a pure interface to mutable state. We pass the variables into
 each function that makes use of them, and we leverage the type system to make
-sure any impurity is well contained. We can replace any of the functions with
-purer and more idiomatic definitions without changing the output, and that
-satisfies the definition of referential transparency!
+sure any impurity is well contained. The correctness of this approach was [very
+recently
+verified](http://iris-project.org/pdfs/2017-icfp-runST-submission.pdf). We can
+replace any of the functions with purer and more idiomatic definitions without
+changing the output, and that satisfies the definition of referential
+transparency!
 
 Why don't we do this all the time, when Haskell is at least a serviceable
 imperative language? Because writing imperative programs is hard! They don't
@@ -340,3 +342,12 @@ Haskell required completely reconceptualising the algorithm. Thanks to `ST`, I
 now know that this not the case, which is a huge relief. If required, I can do
 a literal translation of the algorithm, and clean it up (or not) later. In fact
 Haskell is "imperative programming and more", and that's awesome!
+
+Thanks to [Peter Fraenkel](http://blog.podsnap.com/), [Julia
+Evans](https://jvns.ca/), and [Michelle Steigerwalt](http://msteigerwalt.com/)
+for feedback.
+
+_If you'd rather try to make sense of the [set of disconnected
+files](https://github.com/vaibhavsagar/thursday-presentations/tree/master/imperative-haskell)
+that constitutes my slides for that presentation, you can do that instead,
+although I wouldn't recommend it._
