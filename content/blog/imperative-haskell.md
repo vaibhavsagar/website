@@ -338,5 +338,5 @@ from a practical perspective. I thought that although writing declarative code
 in Python was purely (heh) a matter of discipline, writing imperative code in
 Haskell required completely reconceptualising the algorithm. Thanks to `ST`, I
 now know that this not the case, which is a huge relief. If required, I can do
-a literal translation of the algorithm, and clean it up (or not) later. That's
-awesome!
+a literal translation of the algorithm, and clean it up (or not) later. In fact
+Haskell is "imperative programming and more", and that's awesome!
