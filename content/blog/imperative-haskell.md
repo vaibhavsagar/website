@@ -4,7 +4,9 @@ Status: draft
 Category: programming
 
 _This post covers essentially the same material as a 5-minute presentation I
-gave at RC. If you'd rather try to make sense of the [set of disconnected
+gave at RC, because giving that talk over and over again doesn't scale and
+there are things I would like to cover that are difficult within that time
+limit. If you'd rather try to make sense of the [set of disconnected
 files](https://github.com/vaibhavsagar/thursday-presentations/tree/master/imperative-haskell)
 that constitutes my slides for that presentation, you can do that instead,
 although I wouldn't recommend it._
@@ -187,8 +189,7 @@ quicksort' vector partitionMedian
 ```
 
 This is roughly the same length as the Python implementation, and even improves
-on it in some ways: no recursion limit fiddling and no global variables. I
-think this is pretty awesome!
+on it in some ways: no recursion limit fiddling and no global variables.
 
 Let's take a look at another problem. If we can write Haskell that resembles
 Python, and Python is executable pseudocode, can we cut out the middleman and
@@ -316,13 +317,26 @@ pop  stack   = do
 Aside from explicitly declaring our variables and passing them around, I think
 this looks pretty close.
 
+How do we square this with Haskell's reputation for purity and referential
+transparency? That's the subject of the paper mentioned above! They figured out
+a way to provide a pure interface to mutable state. We pass the variables into
+each function that makes use of them, and we leverage the type system to make
+sure any impurity is well contained. We can replace any of the functions with
+purer and more idiomatic definitions without changing the output, and that
+satisfies the definition of referential transparency!
+
+Why don't we do this all the time, when Haskell is at least a serviceable
+imperative language? Because writing imperative programs is hard! They don't
+compose as well, have less useful type signatures, and are harder to reason
+about. Getting away from those things is why we have Haskell to begin with! The
+real question should be: how can we avoid doing things this way as much as
+possible?
+
 Before I discovered this part of Haskell, I had this perception of Haskell (and
 declarative programming more generally) as "imperative programming but less"
 from a practical perspective. I thought that although writing declarative code
-in Python is purely (heh) a matter of discipline, writing imperative code in
-Haskell requires completely reconceptualising the algorithm. Thanks to `ST`, I
-now know that this is in fact not the case, which is a huge relief. If
-required, I can do a literal translation of the algorithm, and clean it up (or
-not) later.
-
-Why don't we do this all the time?
+in Python was purely (heh) a matter of discipline, writing imperative code in
+Haskell required completely reconceptualising the algorithm. Thanks to `ST`, I
+now know that this not the case, which is a huge relief. If required, I can do
+a literal translation of the algorithm, and clean it up (or not) later. That's
+awesome!
