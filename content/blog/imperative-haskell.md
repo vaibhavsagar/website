@@ -101,7 +101,7 @@ even if we could, the equivalent implementation would be so different as to be
 unrecognisable. At least this is what I thought until I took a closer look at
 [Control.Monad.ST](https://hackage.haskell.org/package/base-4.9.1.0/docs/Control-Monad-ST.html) and [Data.STRef](https://hackage.haskell.org/package/base-4.9.1.0/docs/Data-STRef.html).
 
-One of my biggest gripes with Haskell is the quality of the documentation. `Control.Monad.ST` is introduced by the riveting
+One of my biggest gripes with Haskell is the quality of the documentation. `Control.Monad.ST` is introduced as
 
 > This library provides support for strict state threads, as described in the PLDI '94 paper by John Launchbury and Simon Peyton Jones _Lazy Functional State Threads_.
 
@@ -111,13 +111,13 @@ and `Data.STRef` is introduced as
 
 I don't want to read a paper to figure out how to use these libraries, and in
 fact I don't have to! In recognition of this, I humbly present alternative
-descriptions:
+descriptions for `Control.Monad.ST`:
 
 > You asked for mutable state, here it is!
 
-and
+and `Data.STRef`:
 
-> Variables that you can actually vary!!!1!1!one!1eleven
+> Variables that you can actually vary!!!1!1!one!1eleventyone
 
 Code utilising these libraries can look very familiar to people used to
 imperative languages, e.g. past me. Here's the above quicksort rewritten in
