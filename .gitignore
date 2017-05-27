@@ -220,3 +220,4 @@ cache/
 fabfile.py
 publishconf.py
 develop_server.sh
+.env
