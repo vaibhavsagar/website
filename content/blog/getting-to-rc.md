@@ -12,9 +12,9 @@ Jeff Fowler and [this
 one](http://haroldtreen.github.io/tech/recurse/2017/02/26/applying-twice-to-the-recurse-center/)
 by Harold Treen.
 
-At the end of 2013, the CSIRO in Australia generously bent the rules for me by
-allowing me to do a student internship despite having just completed an
-undergraduate degree. I was taking a quick break and browsing Reddit when I
+At the end of 2013, I'd just completed by undergraduate degree and the CSIRO in
+Australia generously bent the rules for me by allowing me to do a student
+internship anyway. I was taking a quick break and browsing Reddit when I
 encountered a blog post about Hacker School. The details are in a server log
 somewhere, but I'm reasonably certain it was a Julia Evans post, and they're
 tonally consistent on this subject so we'll pretend it was [this particular
