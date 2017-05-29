@@ -20,10 +20,11 @@ qsort (x:xs) = lt ++ [x] ++ gt
           gt = qsort [e | e <- xs, e >= x]
 ```
 
-isn't a true quicksort! Specifically, it doesn't sort the elements in place.
-The assignment I was working on involved counting the number of comparisons, so
-I couldn't get away with my false quicksort. With my tail between my legs, I
-gave up on my pure Haskell approach and implemented a solution in Python:
+isn't a true quicksort! Specifically, it doesn't sort the elements in place,
+and the assignment I was working on involved counting the number of
+comparisons, so I couldn't get away with my fake quicksort. With my tail
+between my legs, I gave up on my pure Haskell approach and implemented a
+solution in Python:
 
 ```python
 import sys
@@ -98,9 +99,12 @@ even if we could, the equivalent implementation would be so different as to be
 unrecognisable. At least this is what I thought until I took a closer look at
 [Control.Monad.ST](https://hackage.haskell.org/package/base-4.9.1.0/docs/Control-Monad-ST.html) and [Data.STRef](https://hackage.haskell.org/package/base-4.9.1.0/docs/Data-STRef.html).
 
-One of my biggest gripes with Haskell is the quality of the documentation. `Control.Monad.ST` is introduced as
+One of my biggest gripes with Haskell is the quality of the documentation.
+`Control.Monad.ST` is introduced as
 
-> This library provides support for strict state threads, as described in the PLDI '94 paper by John Launchbury and Simon Peyton Jones _Lazy Functional State Threads_.
+> This library provides support for strict state threads, as described in the
+> PLDI '94 paper by John Launchbury and Simon Peyton Jones _Lazy Functional
+> State Threads_.
 
 and `Data.STRef` is introduced as
 
@@ -188,9 +192,9 @@ quicksort' vector partitionMedian
 This is roughly the same length as the Python implementation, and even improves
 on it in some ways: no recursion limit fiddling and no global variables.
 
-Let's take a look at another problem. If we can write Haskell that resembles
-Python, and Python is executable pseudocode, can we cut out the middleman and
-translate pseudocode directly to Haskell?
+If we can write Haskell that resembles Python, and Python is executable
+pseudocode, can we cut out the middleman and translate pseudocode directly to
+Haskell? Let's take a look at another problem.
 
 I needed to calculate the size of the strongly connected components of a graph
 for another assignment, and I decided to use Tarjan's Strongly Connected
@@ -318,10 +322,10 @@ How do we square this with Haskell's reputation for purity and referential
 transparency? That's the subject of [the paper mentioned
 above](http://research.microsoft.com/en-us/um/people/simonpj/Papers/state-lasc.pdf)
 that you don't have to read (but totally can if you want)! They figured out a
-way to provide a pure interface to mutable state. We pass the variables into
-each function that makes use of them, and we leverage the type system to make
-sure any impurity is well contained. The correctness of this approach was [very
-recently
+way to provide a principled pure interface to mutable state. We pass the
+variables into each function that makes use of them, and we leverage the type
+system to make sure any impurity is well contained. The correctness of this
+approach was [very recently
 verified](http://iris-project.org/pdfs/2017-icfp-runST-submission.pdf). We can
 replace any of the functions with purer and more idiomatic definitions without
 changing the output, and that satisfies the definition of referential
