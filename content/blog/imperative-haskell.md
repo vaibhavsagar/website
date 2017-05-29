@@ -322,14 +322,14 @@ How do we square this with Haskell's reputation for purity and referential
 transparency? That's the subject of [the paper mentioned
 above](http://research.microsoft.com/en-us/um/people/simonpj/Papers/state-lasc.pdf)
 that you don't have to read (but totally can if you want)! They figured out a
-way to provide a principled pure interface to mutable state. We pass the
-variables into each function that makes use of them, and we leverage the type
-system to make sure any impurity is well contained. The correctness of this
-approach was [very recently
-verified](http://iris-project.org/pdfs/2017-icfp-runST-submission.pdf). We can
-replace any of the functions with purer and more idiomatic definitions without
-changing the output, and that satisfies the definition of referential
-transparency!
+way to provide a principled pure interface to mutable state by passing the
+references as arguments into each function that makes use of them and
+leveraging the type system to make sure any impurity is well contained. The
+correctness of this approach was [very recently
+verified](http://iris-project.org/pdfs/2017-icfp-runST-submission.pdf). If
+desired, we can replace any of the functions with purer and more idiomatic
+definitions without changing the output, and that satisfies the definition of
+referential transparency!
 
 Why don't we do this all the time, when Haskell is at least a serviceable
 imperative language? Because writing imperative programs is hard! They don't
