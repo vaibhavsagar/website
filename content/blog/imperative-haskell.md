@@ -1,6 +1,5 @@
 Title: Imperative Haskell
-Date: 2017-05-22
-Status: draft
+Date: 2017-05-29
 Category: programming
 
 _This post covers essentially the same material as a 5-minute presentation I
