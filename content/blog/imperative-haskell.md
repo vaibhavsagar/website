@@ -43,7 +43,6 @@ def partition_last(array, l, r):
     array[r-1], array[l] = array[l], array[r-1]
     return partition_first(array, l, r)
 
-
 def partition_median(array, l, r):
     p_idx = choose_median(array, l, r)
     array[p_idx], array[l] = array[l], array[p_idx]
