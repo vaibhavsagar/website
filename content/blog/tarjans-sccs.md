@@ -4,8 +4,7 @@ Category: programming
 Status: draft
 
 I'd like to tell you about an algorithm that I'm frankly annoyed I didn't
-discover earlier, despite what I assumed was an adequate overview of
-algorithms (both formal and otherwise).
+discover earlier.
 
 The algorithm is [Tarjan's Strongly Connected
 Components](https://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algorithm)
