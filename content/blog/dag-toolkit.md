@@ -1,4 +1,4 @@
-Title: Tarjan's Strongly Connected Components Algorithm Is Cool and Useful
+Title: An All-in-one DAG Toolkit
 Date: 2017-06-04
 Category: programming
 Status: draft
@@ -119,7 +119,7 @@ where inputs and outputs are nodes and their relationships are directed edges.
 The presence of an SCC with more than one vertex indicates a cyclic dependency,
 and dependencies need to be built before the nodes that they depend on, which
 implies a reverse topological sort. This generalises to dataflow programming,
-where loops need to be identified (and possibly eliminated). I like to think of
+where loops need to be identified (and usually eliminated). I like to think of
 this algorithm as an all-in-one DAG toolkit.
 
 We can also use it to solve
