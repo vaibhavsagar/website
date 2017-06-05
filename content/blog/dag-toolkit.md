@@ -1,4 +1,4 @@
-Title: An All-in-one DAG Toolkit
+Title: An All-in-One DAG Toolkit
 Date: 2017-06-04
 Category: programming
 Status: draft
