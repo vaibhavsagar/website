@@ -16,6 +16,15 @@ component](https://en.wikipedia.org/wiki/Strongly_connected_component) of a
 graph is a subgraph where each node can be reached from every other node, i.e.
 there's a directed cycle somewhere in this subgraph.
 
+<style>
+img[src*='#center'] { 
+    display: block;
+    margin: auto;
+}
+</style>
+
+![Strongly Connected Components](https://upload.wikimedia.org/wikipedia/commons/5/5c/Scc.png#center)
+
 So why does this matter? I don't recall ever having the desire to deeply know
 the SCCs of a particular graph.
 
@@ -27,8 +36,10 @@ graph](https://en.wikipedia.org/wiki/Directed_acyclic_graph) (DAG), which is a
 directed graph without cycles, and I wanted to validate a user-drawn graph as
 well as process it.
 
+![Directed Acyclic Graph](https://upload.wikimedia.org/wikipedia/commons/f/fe/Tred-G.svg#center)
+
 Consulting [the
-oracle](https://stackoverflow.com/questions/583876/how-do-i-check-if-a-directed-graph-is-acyclic)
+oracle](https://stackoverflow.com/questions/583876/how-do-i-check-if-a-directed-graph-is-acyclic#center)
 yielded the concept of a [topological
 sort](https://en.wikipedia.org/wiki/Topological_sorting), which is where
 vertices are ordered such that for all vertices _u_ and _v_, if there is an
@@ -39,11 +50,15 @@ want is a reverse topological sort. It would also be nice if I could somehow
 highlight the subgraphs of an invalid graph that are responsible for it being
 invalid.
 
+![Topological Sort](https://upload.wikimedia.org/wikipedia/commons/c/c6/Topological_Ordering.svg#center)
+
 This is where we come back to the SCCs of a graph. If there are any SCCs of
 more than one vertex, the graph is not a DAG and those SCCs are the cause of
 this.  Collapsing the SCCs of a directed graph to a single vertex always leads
 to a DAG and this is known as the condensation of a directed graph, which I
 think is a nice way to visualise the relationship between SCCs and DAGs.
+
+![Condensation](https://upload.wikimedia.org/wikipedia/commons/2/20/Graph_Condensation.svg#center)
 
 Alright, so we do actually want to know the SCCs of this graph, but first we
 want to try to sort it topologically and reverse that order if that is
@@ -141,3 +156,6 @@ theoretical computer science and reminded me that algorithms can be fun,
 interesting, and an opportunity to marvel at the music of the spheres. I'm
 curious to know what other equally awesome algorithms are out there. Which
 one's your favourite?
+
+Thanks to [Annie Cherkaev](http://anniecherkaev.com/) for the title and
+excellent feedback.
