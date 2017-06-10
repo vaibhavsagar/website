@@ -39,7 +39,7 @@ well as process it.
 ![Directed Acyclic Graph](https://upload.wikimedia.org/wikipedia/commons/f/fe/Tred-G.svg#center)
 
 Consulting [the
-oracle](https://stackoverflow.com/questions/583876/how-do-i-check-if-a-directed-graph-is-acyclic#center)
+oracle](https://stackoverflow.com/questions/583876/how-do-i-check-if-a-directed-graph-is-acyclic)
 yielded the concept of a [topological
 sort](https://en.wikipedia.org/wiki/Topological_sorting), which is where
 vertices are ordered such that for all vertices _u_ and _v_, if there is an
@@ -122,6 +122,12 @@ computes SCCs. Here it is as pseudocode:
   end function
 ```
 
+The algorithm does a depth-first search, keeping track of two properties for
+each vertex: when it was encountered (the _index_) and the lowest index of any
+vertex reachable from this vertex (the _lowlink_). It pushes vertices on to a
+stack as it goes and outputs a strongly connected component when it cannot find
+any vertices it has not seen before.
+
 As presented it is very imperative and I like Haskell, but fortunately
 [imperative
 Haskell](http://vaibhavsagar.com/blog/2017/05/29/imperative-haskell/) is pretty
@@ -157,5 +163,7 @@ interesting, and an opportunity to marvel at the music of the spheres. I'm
 curious to know what other equally awesome algorithms are out there. Which
 one's your favourite?
 
-Thanks to [Annie Cherkaev](http://anniecherkaev.com/) for the title and
-excellent feedback.
+Thanks to [Annie Cherkaev](https://anniecherkaev.com/) for the title and
+feedback, and [Iain McCoy](https://twitter.com/imccoy) for suggesting [a more
+functional
+approach](http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.45.3876).
