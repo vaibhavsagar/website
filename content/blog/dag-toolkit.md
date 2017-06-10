@@ -1,7 +1,6 @@
 Title: An All-in-One DAG Toolkit
-Date: 2017-06-04
+Date: 2017-06-10
 Category: programming
-Status: draft
 
 I'd like to tell you about an algorithm that I'm frankly annoyed I didn't
 discover earlier.
@@ -17,7 +16,7 @@ graph is a subgraph where each node can be reached from every other node, i.e.
 there's a directed cycle somewhere in this subgraph.
 
 <style>
-img[src*='#center'] { 
+img[src*='#center'] {
     display: block;
     margin: auto;
 }
