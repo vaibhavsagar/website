@@ -153,15 +153,10 @@ sorted order. An advantage to doing it this way is that the process can stop at
 the first SCC that indicates unsatisfiability. I have an implementation of this
 [here](https://github.com/vaibhavsagar/courses/blob/master/algorithms2/week6/Week6.ipynb).
 
-Most of the algorithms material I've encountered tends to focus on rote
-memorisation for whiteboarding during interviews, and for me this means that I
-only have the opportunity to demonstrate this knowledge in a hostile
-environment where I am experiencing severe existential dread and a whole host
-of other negative emotions. Discovering this algorithm got me excited about
-theoretical computer science and reminded me that algorithms can be fun,
-interesting, and an opportunity to marvel at the music of the spheres. I'm
-curious to know what other equally awesome algorithms are out there. Which
-one's your favourite?
+Discovering this algorithm got me excited about theoretical computer science
+and reminded me that algorithms can be fun, interesting, and an opportunity to
+marvel at the music of the spheres. I'm curious to know what other equally
+awesome algorithms are out there. Which one's your favourite?
 
 Thanks to [Annie Cherkaev](https://anniecherkaev.com/) for the title and
 feedback, and [Iain McCoy](https://twitter.com/imccoy) for suggesting [a more
