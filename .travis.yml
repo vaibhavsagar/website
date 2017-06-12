@@ -18,7 +18,7 @@ install:
 - stack setup
 
 script:
-- stack --no-terminal --skip-ghc-check build
+- stack --no-terminal --skip-ghc-check build --flag hakyll:-previewServer
 - stack --no-terminal --skip-ghc-check exec -- site build
 
 after_success:
