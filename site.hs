@@ -25,12 +25,28 @@ main = hakyll $ do
             >>= relativizeUrls
             >>= cleanIndexUrls
 
+    tags <- buildTags "posts/*" (fromCapture "tags/*.html")
+    tagsRules tags $ \tag pat -> do
+        let title = "Posts tagged \"" ++ tag ++ "\""
+        route idRoute
+        compile $ do
+            let posts = recentFirst =<< loadAll pat
+            let tagsCtx =
+                    constField "title" title               `mappend`
+                    listField "posts" (postCtx tags) posts `mappend`
+                    defaultContext
+            makeItem ""
+                >>= loadAndApplyTemplate "templates/tag.html"     tagsCtx
+                >>= loadAndApplyTemplate "templates/default.html" tagsCtx
+                >>= relativizeUrls
+                >>= cleanIndexUrls
+
     match ("blog/*" .||. "drafts/*") $ do
         route   $ dateRoute `composeRoutes` cleanRoute
         compile $ pandocCompiler
-            >>= loadAndApplyTemplate "templates/post.html"    postCtx
+            >>= loadAndApplyTemplate "templates/post.html"    (postCtx tags)
             >>= saveSnapshot "content"
-            >>= loadAndApplyTemplate "templates/default.html" postCtx
+            >>= loadAndApplyTemplate "templates/default.html" (postCtx tags)
             >>= relativizeUrls
 
     match "extra/*" $ do
@@ -42,8 +58,8 @@ main = hakyll $ do
         compile $ do
             let posts = recentFirst =<< loadAll "blog/*"
             let archiveCtx =
-                    listField "posts" postCtx posts `mappend`
-                    constField "title" "Archives"   `mappend`
+                    listField "posts" (postCtx tags) posts `mappend`
+                    constField "title" "Archives"          `mappend`
                     defaultContext
 
             makeItem ""
@@ -58,8 +74,8 @@ main = hakyll $ do
         compile $ do
             let posts = fmap (take 10) . recentFirst =<< loadAll "blog/*"
             let indexCtx =
-                    listField "posts" postCtx posts `mappend`
-                    constField "title" "Home"       `mappend`
+                    listField "posts" (postCtx tags) posts `mappend`
+                    constField "title" "Home"              `mappend`
                     defaultContext
 
             getResourceBody
@@ -73,14 +89,15 @@ main = hakyll $ do
     create ["atom.xml"] $ do
         route idRoute
         compile $ do
-            let feedCtx = postCtx `mappend` bodyField "description"
+            let feedCtx = postCtx tags `mappend` bodyField "description"
             posts <- fmap (take 10) . recentFirst =<<
                 loadAllSnapshots "blog/*" "content"
             renderAtom feedConfig feedCtx posts
 
 --------------------------------------------------------------------------------
-postCtx :: Context String
-postCtx =
+postCtx :: Tags -> Context String
+postCtx tags =
+    tagsField "tags" tags       `mappend`
     dateField "date" "%e %B %Y" `mappend`
     defaultContext
 
@@ -104,9 +121,6 @@ dateRoute = metadataRoute createDateRoute
 
 cleanIndexUrls :: Item String -> Compiler (Item String)
 cleanIndexUrls = return . fmap (withUrls cleanIndex)
-
-cleanIndexHtmls :: Item String -> Compiler (Item String)
-cleanIndexHtmls = return . fmap (replaceAll "/index.html" (const "/"))
 
 cleanIndex :: String -> String
 cleanIndex url
