@@ -14,7 +14,7 @@ git clone --depth 1 --quiet --branch=$BRANCH "https://$GH_TOKEN@github.com/$TARG
 cd build || exit
 rsync -av --delete --exclude=.git  ../$OUTPUT_FOLDER/ ./
 # Add, commit and push files
-git add -f .
-git commit -m "Travis build $TRAVIS_BUILD_NUMBER pushed to Github Pages"
+git add --all .
+git commit --allow-empty -m "Travis build $TRAVIS_BUILD_NUMBER pushed to Github Pages"
 git push -fq origin $BRANCH > /dev/null
 echo -e "Deploy completed\n"
