@@ -1,6 +1,7 @@
 body {
     color: black;
     font-size: 14px;
+    line-height: 1.5em;
     margin: 0px auto 0px auto;
     width: 768px;
 }
