@@ -252,7 +252,7 @@ understand how it's implemented. so I'll be skipping that section. Fortunately,
 we know how to use it, because we are familiar with the interface, so let's go
 straight to that.
 
-```
+```haskell
 getInt = do
    input <- baz (putStr "Enter integer: ") getLine
    let int = read input :: Int
