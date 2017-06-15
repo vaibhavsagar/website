@@ -1,7 +1,7 @@
 --------------------------------------------------------------------------------
 title: A Simple Key-Value Store with Servant
 published: 2017-01-24
-Category: programming
+tags: programming, haskell
 --------------------------------------------------------------------------------
 
 The [meat of the Servant

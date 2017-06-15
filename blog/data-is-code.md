@@ -1,7 +1,7 @@
 --------------------------------------------------------------------------------
 title: Data Is Code
 published: 2016-09-29
-Category: programming
+tags: programming
 --------------------------------------------------------------------------------
 
 > Code is just smart data, and data is just dumb code.

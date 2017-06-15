@@ -1,7 +1,7 @@
 --------------------------------------------------------------------------------
 title: Using The Writer Monad Outside Logging
 published: 2016-07-24
-Category: programming
+tags: programming, haskell, monads
 --------------------------------------------------------------------------------
 
 I hadn't given much thought to the Writer monad before today, unlike the Reader and State monads, and part of the reason is that all the tutorials I encountered online focused on using it for logging. Although this is an obvious use case, I haven't had to do much logging in Haskell so far and so I incorrectly assumed that I didn't need to know about the Writer monad at all. However, I found a use for it outside logging and thought this might be worth sharing. This usage depends on two facts about Haskell:

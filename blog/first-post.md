@@ -1,7 +1,7 @@
 --------------------------------------------------------------------------------
 title: First Post
 published: 2014-05-20
-Category: misc
+tags: misc
 --------------------------------------------------------------------------------
 
 This is my latest attempt to get a blog going. The advantages this has over my

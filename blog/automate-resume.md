@@ -1,10 +1,10 @@
 --------------------------------------------------------------------------------
 title: Generate A PDF From Your Resume With Travis-CI
 published: 2015-02-26
-Category: programming
+tags: programming, automation
 --------------------------------------------------------------------------------
 
-After [automating my blog]({filename}blog-setup.md), I decided to aim a little
+After [automating my blog](/blog/2015/02/01/blog-setup), I decided to aim a little
 higher and use Travis-CI to automate document generation from my resume. I use
 [Pandoc](http://johnmacfarlane.net/pandoc/) to convert my source resume written
 in Markdown to Github-flavoured Markdown, an HTML file for my website, and a

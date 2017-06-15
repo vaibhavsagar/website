@@ -1,7 +1,7 @@
 --------------------------------------------------------------------------------
 title: Getting to RC
 published: 2017-02-26
-category: misc
+tags: misc, RC
 --------------------------------------------------------------------------------
 
 You wouldn't know it from looking at my blog, but I attended a batch at the

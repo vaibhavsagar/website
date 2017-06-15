@@ -1,7 +1,7 @@
 --------------------------------------------------------------------------------
 title: Monad Anti-tutorial
 published: 2016-10-12
-Category: programming
+tags: programming, haskell, monads
 --------------------------------------------------------------------------------
 
 I think becoming familiar with the mechanics of working with monads is more

@@ -1,7 +1,7 @@
 --------------------------------------------------------------------------------
 title: Git It Going - an Introduction to Git
 published: 2015-05-10
-Category: programming
+tags: programming, git
 --------------------------------------------------------------------------------
 
 I gave a talk on Git to the Canberra Python Users Group on the 7th of May. It

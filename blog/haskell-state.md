@@ -1,7 +1,7 @@
 --------------------------------------------------------------------------------
 title: You Could Have Invented The State Monad
 published: 2016-06-17
-Category: programming
+tags: programming, haskell, monads
 --------------------------------------------------------------------------------
 
 I'm attempting [NICTA/course](https://github.com/NICTA/course) a second time. I

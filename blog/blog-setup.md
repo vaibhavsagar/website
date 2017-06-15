@@ -1,7 +1,7 @@
 --------------------------------------------------------------------------------
 title: How This Static Blog Uses Travis-CI
 published: 2015-02-01
-Category: programming
+tags: programming, automation
 --------------------------------------------------------------------------------
 
 When I started this blog, I was reluctant to put a continuous integration
