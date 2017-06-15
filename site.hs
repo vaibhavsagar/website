@@ -28,7 +28,7 @@ main = hakyll $ do
             >>= relativizeUrls
             >>= cleanIndexUrls
 
-    tags <- buildTags "posts/*" (fromCapture "tags/*.html")
+    tags <- buildTags "blog/*" (fromCapture "tags/*.html")
     tagsRules tags $ \tag pat -> do
         let title = "Posts tagged \"" ++ tag ++ "\""
         route idRoute
