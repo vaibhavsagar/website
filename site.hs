@@ -71,6 +71,9 @@ main = hakyll $ do
                 >>= relativizeUrls
                 >>= cleanIndexUrls
 
+    match "blog/index.html" $ do
+        route idRoute
+        compile $ makeItem $ Redirect "../"
 
     match "index.html" $ do
         route idRoute
