@@ -8,8 +8,10 @@ td.sourceCode { padding-left: 5px; }
 .sourceCode span.dt { color: #268BD2; }
 .sourceCode span.dv, .sourceCode span.bn, .sourceCode span.fl { color: #D33682; }
 .sourceCode span.ch { color: #DC322F; }
+.sourceCode span.im { color: #D70000; }
 .sourceCode span.st { color: #2AA198; }
 .sourceCode span.co { color: #93A1A1; }
+.sourceCode span.cf { color: #5F8700; }
 .sourceCode span.ot { color: #A57800; }
 .sourceCode span.al { color: #CB4B16; font-weight: bold; }
 .sourceCode span.fu { color: #268BD2; }
