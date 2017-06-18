@@ -1,1 +1,4 @@
 .stack-work/
+_site/
+_cache/
+.personal-access-token
