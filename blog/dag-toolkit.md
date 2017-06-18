@@ -135,7 +135,7 @@ any vertices it has not seen before.
 
 As presented it is very imperative and I like Haskell, but fortunately
 [imperative
-Haskell](http://vaibhavsagar.com/blog/2017/05/29/imperative-haskell/) is pretty
+Haskell](/blog/2017/05/29/imperative-haskell/) is pretty
 straightforward and I have an implementation
 [here](https://github.com/vaibhavsagar/courses/blob/master/algorithms1/week4/SCC.ipynb).
 
