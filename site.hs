@@ -21,7 +21,7 @@ main = hakyll $ do
         route   idRoute
         compile compressCssCompiler
 
-    match (fromList ["about.md", "contact.md"]) $ do
+    match "about.md" $ do
         route     cleanRoute
         compile $ pandocCompiler
             >>= loadAndApplyTemplate "templates/default.html" defaultContext
