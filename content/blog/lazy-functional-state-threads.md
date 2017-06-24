@@ -128,7 +128,7 @@ x >> y
 ```
 where `>>` is like `>>=` that ignores the output of the left hand side:
 
-```
+```haskell
 (>>) :: Monad m => m a -> m b -> m b
 (>>) ma mb = ma >>= (\_ -> mb)
 ```
