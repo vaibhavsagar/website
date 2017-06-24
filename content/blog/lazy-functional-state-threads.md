@@ -149,3 +149,48 @@ samples in this post will use do-notation.
 
 The authors also mention the existence of `fixST`, but this isn't discussed
 elsewhere in the paper so I'll skip that.
+
+We now move to the other main contribution of the paper, which is the matter of
+how to prevent state from leaking out of our state transformers. The naive
+approach would be to define a `runST` that would provide an initial state as
+follows:
+
+```haskell
+runST :: ST s a -> a
+```
+
+But this would allow leakage as in the following example:
+
+```haskell
+let v = runST (newVar True)
+in
+runST (readVar v)
+```
+
+and because Haskell is a lazy language, we cannot enforce an ordering on
+updates to the state. What we really want is for our `runST` to work _regardless
+of which initial state it was given_, and we can encode that in the type
+signature with rank-2 polymorphism as follows:
+
+```haskell
+runST :: ∀a. (∀s. ST s a) -> a
+```
+
+We can read ∀ as 'forall' and this is rank-2 because `s` is scoped within the
+parentheses and we can't move it outside without changing the meaning of the
+type signature. We can read this as 'for any `a`, given a state transformer
+that would work with any `s`, provide it with some state and extract the `a`'.
+Our previous example no longer typechecks, because `v` does not have the type
+`∀s.ST s a`, and we can see that the typechecker enforces our requirement that
+the state cannot leak out of the state transformer, hence ensuring referential
+transparency. This definition still allows useful code such as:
+
+```haskell
+f :: MutVar s a -> MutVar s a
+f v = runST $ do
+    w <- newVar v
+    readVar w
+```
+
+which works because `v` is never dereferenced.
+
