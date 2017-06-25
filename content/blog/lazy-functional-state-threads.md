@@ -194,3 +194,78 @@ f v = runST $ do
 
 which works because `v` is never dereferenced.
 
+We can generalise our references to consider an array of mutable references. An
+API for this could look like:
+
+```haskell
+newArr    :: Ix i => (i, i) -> elt -> ST s (MutArr s i elt)
+readArr   :: Ix i => MutArr s i elt -> i -> ST s elt
+writeArr  :: Ix i => MutArr s i elt -> i -> elt -> ST s ()
+freezeArr :: Ix i => MutArr s i elt -> ST s (Array i elt)
+```
+
+This is very similar to our API for references, but parametrised over the index
+type `i` and including a function `freezeArr` that looks up the current value
+of a mutable array in the state and returns an immutable copy of it.
+
+With this API, we can define `accumArray`:
+
+```haskell
+accumArray :: Ix i => (a -> b -> a) -> a -> (i, i) -> [(i, b)] -> Array i a
+```
+
+This takes a function, an initial value, array bounds, and a list of indexed
+values, and does a left fold over each indexed value, putting the result at the
+associated index. This can be used to compute a histogram:
+
+```haskell
+hist :: Ix i => (i, i) -> [i] -> Array i Int
+hist bnds is = accumArray (+) 0 bnds [(i, 1) | i <- is, inRange bnds i]
+```
+
+that counts occurrences of elements in `is` within the bounds provided or
+`binSort`:
+
+```haskell
+binSort :: Ix i => (i,i) -> (a -> i) -> [a] -> Array i a
+binSort bnds key vs = accumArray (flip (:)) [] bnds [(key v, v) | v <- vs]
+```
+
+that puts each element of `vs` into a bin based on its `key`. `accumArray` can
+be defined as follows:
+
+```haskell
+accumArray f z bnds ivs = runST $ do
+    a <- newArr bnds z
+    fill a f ivs
+    freezeArr a
+
+fill a f []          = return ()
+fill a f ((i,v):ivs) = do
+    x <- readArr a i
+    writeArr a i (f x v)
+    fill a f ivs
+```
+
+This is a good example of a function that is internally imperative but
+externally pure.
+
+If we define a function to sequence state transformers:
+
+```haskell
+seqST :: [ST s ()] -> ST s ()
+seqST = sequence_ -- originally defined as `foldr (>>) (return ())`
+```
+
+then we can rewrite `accumArray`:
+
+```haskell
+accumArray f z bnds ivs = runST $ do
+    a <- newArr bnds z
+    seqST (map (update a f) ivs)
+    freezeArr s
+
+update a f (i, v) = do
+    x <- readArr a i
+    writeArr a i (f x v)
+```
