@@ -269,3 +269,47 @@ update a f (i, v) = do
     x <- readArr a i
     writeArr a i (f x v)
 ```
+
+Let's reformulate IO in terms of state transformers. It can be thought of as
+a state transformer of type `ST RealWorld a`, where `RealWorld` is an abstract
+type representing the real world. We can make this explicit as a type synonym:
+
+```haskell
+type IO a = ST RealWorld a
+```
+
+We also have a few functions that are specific to IO but not other ST
+computations, e.g.
+
+```haskell
+putChar :: Char -> IO ()
+getChar :: IO Char
+```
+
+And this is enough to build e.g. `putString`:
+
+```haskell
+putString cs = seqST (map putChar cs)
+```
+
+However, we can take it further and define both `putChar` and `getChar` in
+terms of `ccall`, which is a language construct that allows the programmer to
+call any C procedure (with certain restrictions placed on its use):
+
+```haskell
+putChar c = do
+    ccall putChar c
+    return ()
+getChar = ccall getChar
+```
+
+Because `IO` is not polymorphic in its state, it can't be used with `runST`.
+This is the behaviour we want, and we need to define a special function to
+execute `IO` actions. We can call this `mainIO`:
+
+```haskell
+mainIO :: IO ()
+```
+
+and have it play a role similar to `main()` in C. In fact, IO in GHC is
+implemented in Haskell in precisely this manner.
