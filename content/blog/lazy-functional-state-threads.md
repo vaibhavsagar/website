@@ -313,3 +313,6 @@ mainIO :: IO ()
 
 and have it play a role similar to `main()` in C. In fact, IO in GHC is
 implemented in Haskell in precisely this manner.
+
+There follows a section with formal semantics which formalises what we've seen
+already and outlines a proof of safety. I won't go into more detail than that.
