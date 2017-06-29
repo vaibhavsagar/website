@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-BRANCH=gh-pages
-TARGET_REPO=vaibhavsagar/hakyll-website.git
+BRANCH=master
+TARGET_REPO=vaibhavsagar/vaibhavsagar.github.io.git
 OUTPUT_FOLDER=_site
 
 echo -e "Starting to deploy to Github Pages\n"
