@@ -6,9 +6,10 @@ tags: haskell, programming, monads
 
 A funny thing happened when I was writing my Imperative Haskell post: after
 railing against Haskell's tendency to tell you to go off and read a paper when
-introducing a library, I went off and read 'Lazy Functional State Threads' and
-was gobsmacked by how accessible I found it. I'd like to try and demystify it
-for a wider audience.
+introducing a library, I did exactly that and read 'Lazy Functional State
+Threads' and found it relatively accessible. I signed myself up to present it
+at Papers We Love SG, and as a way of clarifying what I want to talk about, I'm
+going to try to summarise it here.
 
 The paper begins by admitting that we sometimes want to express strict stateful
 computations in a purely-functional language efficiently. We want to do this
