@@ -4,6 +4,9 @@ published: 2015-02-01
 tags: programming, automation
 --------------------------------------------------------------------------------
 
+_Update: I've switched to Hakyll, but the instructions below should continue to
+work._
+
 When I started this blog, I was reluctant to put a continuous integration
 system like Travis-CI in charge of deployment because it seemed like a
 frivolous use of resources and so I settled for the approach outlined
