@@ -27,7 +27,7 @@ made.
 First off, I use Python 3 wherever possible so I simplified my
 `requirements.txt`:
 
-```text
+```markdown
 pelican
 Markdown
 ```
