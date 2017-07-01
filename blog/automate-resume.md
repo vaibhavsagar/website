@@ -120,8 +120,5 @@ env:
     secure: Bzof/7yN7HgV2eJk7FNliNx/cagIU4I113SwNJhChFyYOSy816oPrwQaCMyZuwvbcEIfLMY0K0qxtQK1MoPq7zTYiCTW3UPB2+mzTfTHPMTm5nWjZv0BmdqVoG8IJwxfo5cIV8hfKiu2ezNKcDuqgwb80mYwpTwlQPsY9gOm1Tc=
 ```
 
-And if you'd like to see the process I went through to arrive at this solution,
-have a look at [the test repo](https://github.com/vaibhavsagar/resumate) I
-used. The commit log is a fairly accurate representation of my thought process.
 If you're trying something similar and you're getting stuck, feel free to reach
 out and I'll be more than happy to help.
