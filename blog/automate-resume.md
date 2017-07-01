@@ -25,7 +25,7 @@ this.
 I already had a `Makefile`, so converting my source to Github-flavoured
 Markdown and HTML was as easy as `make readme` and `make html`:
 
-```make
+```makefile
 all:: pdf html readme
 
 travis:: html readme
@@ -42,7 +42,7 @@ readme:: resume.md
 clean::
 	rm Vaibhav_Sagar_resume.pdf
 	rm readme.md
-rm index.html
+	rm index.html
 ```
 
 I decided it would be best if the build process updated my `gh-pages` branch
@@ -117,7 +117,7 @@ deploy:
     secure: gtBPUeDXL9S6h4aWyXCEhWxbtkATx2lIBmkVTcWDHMvgwQHmfo42OPq7rQWjO6g/iOlv71Q1VQMQc84ERcZjtBRSE0pb1s1Baqs2Hk7ec/JeWsEXDZmBIs/Z3V6pHb14zCs5GNYyerXDpQ97P4RG9Vjdy+rc3I1+kkuCMF7zB3k=
 env:
   global:
-secure: Bzof/7yN7HgV2eJk7FNliNx/cagIU4I113SwNJhChFyYOSy816oPrwQaCMyZuwvbcEIfLMY0K0qxtQK1MoPq7zTYiCTW3UPB2+mzTfTHPMTm5nWjZv0BmdqVoG8IJwxfo5cIV8hfKiu2ezNKcDuqgwb80mYwpTwlQPsY9gOm1Tc=
+    secure: Bzof/7yN7HgV2eJk7FNliNx/cagIU4I113SwNJhChFyYOSy816oPrwQaCMyZuwvbcEIfLMY0K0qxtQK1MoPq7zTYiCTW3UPB2+mzTfTHPMTm5nWjZv0BmdqVoG8IJwxfo5cIV8hfKiu2ezNKcDuqgwb80mYwpTwlQPsY9gOm1Tc=
 ```
 
 And if you'd like to see the process I went through to arrive at this solution,
