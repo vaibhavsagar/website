@@ -318,3 +318,84 @@ implemented in Haskell in precisely this manner.
 
 There follows a section with formal semantics which formalises what we've seen
 already and outlines a proof of safety. I won't go into more detail than that.
+
+Now we come to the implementation. It is crucial that updates happen in-place,
+and we justify this by arguing that each combinator uses the state in a single
+threaded way and is strict in it, so there should be no unevaluated reads
+depending on some state. We achieve data hiding through the monadic interface.
+
+A useful first approximation is the definition of the well-known `State` type:
+
+```haskell
+type ST s a = State s -> (a, State s)
+
+instance Monad (ST s) where
+
+return  x s = (x, s)
+m (>>=) k s = k x s' where (x, s') = m s
+
+fixST k s = (r, s') where (r, s') = k r s
+runST m = r where (r, s) = m currentState
+```
+
+The interesting thing to note here is the definition of `fixST`, which works
+regardless of the state passed to it and so is passed a placeholder value.
+Strictness is enforced by the use of unboxed values.
+
+This implementation lends itself to inlining and optimisation, e.g.
+
+```haskell
+do
+    v1 <- m1
+    v2 <- m2
+    return e
+```
+
+can be inlined to
+
+```haskell
+\s -> let (v1, s1) = m1 s
+          (v2, s2) = m2 s1
+      in (e, s3)
+```
+
+and further optimised to
+
+```haskell
+\s -> case m1 s of
+        (v1, s1) -> case m2 s1 of
+                      (v2, s2) -> (e, s2)
+```
+
+What is the role of the explicit state? It preserves the ordering of operations
+because each step relies on the state output by the previous step, and allows
+us to communicate strictness when defined like
+
+```haskell
+data State s = MkState (State# s)
+```
+
+where `State# s` is the primitive type of states. `newVar` can be defined as
+
+```haskell
+newVar init (MkState s#)
+  = case newVar# init s# of
+        (v, t#) -> (v, MkState t#)
+```
+
+where `State# s` is a 'token' that is very important although its precise value
+does not matter.
+
+Arrays can be similarly implemented, except for `freezeArray` which can be
+optimised for the scenario where no further mutations are performed.
+
+`IO` is special because the final state of the thread will be demanded: the
+whole purpose of using `IO` is to perform some effect on the outside world.
+Noting this, `(>>=)` can be implemented by
+
+```haskell
+m (>>=) k s = case m s of
+                (r, s') -> k r s'
+```
+
+replacing the earlier `let` with a `case` which is more strict.
