@@ -24,14 +24,31 @@ made.
 First off, I use Python 3 wherever possible so I simplified my
 `requirements.txt`:
 
-<script
-src="http://gist-it.appspot.com/github.com/vaibhavsagar/website/blob/master/requirements.txt"></script>
+```text
+pelican
+Markdown
+```
 
 My `.travis.yml` is different too (I removed unnecessary nesting to make it
 shorter):
 
-<script
-src="http://gist-it.appspot.com/github.com/vaibhavsagar/website/blob/master/.travis.yml"></script>
+```yaml
+branches:
+  only: master
+language: python
+python: 3.6
+cache: pip
+script: make html
+notifications:
+  email:
+    on_success: always
+    on_failure: always
+before_install: git submodule update --init --recursive
+after_success: bash deploy.sh
+env:
+  global:
+secure: Ew3edSrbYr/rofui49TpBTbmHivreifr0FLjqP+1CBPXERKEsCjs9thWBnjKIZYirfetMb5ShF9EZ1g8D459BS7Sn+ziXUP4X3I4jvdx1Yj55o2CuWOD6Gx6ShPkWEhZRZhFFIKpGfLO4XAKP3suSPJvB1Lp67GC0BFyPucSSU8=
+```
 
 I installed the `travis` gem, got a GitHub token, and tried to set the token
 with
@@ -44,8 +61,30 @@ to check my repository.
 
 The `deploy.sh` script was almost the same (change your username):
 
-<script
-src="http://gist-it.appspot.com/github.com/vaibhavsagar/website/blob/master/deploy.sh"></script>
+```bash
+#!/usr/bin/env bash
+BRANCH=master
+TARGET_REPO=vaibhavsagar/vaibhavsagar.github.io.git
+PELICAN_OUTPUT_FOLDER=output
+
+if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
+    echo -e "Starting to deploy to Github Pages\n"
+    if [ "$TRAVIS" == "true" ]; then
+        git config --global user.email "travis@travis-ci.org"
+        git config --global user.name "Travis"
+    fi
+    # using token, clone gh-pages branch
+    git clone --depth 1 --quiet --branch=$BRANCH https://${GH_TOKEN}@github.com/$TARGET_REPO built_website > /dev/null
+    # go into directory and copy data we're interested in to that directory
+    cd built_website
+    rsync -av --delete --exclude=.git  ../$PELICAN_OUTPUT_FOLDER/ ./
+    # add, commit and push files
+    git add -A
+    git commit -m "Travis build $TRAVIS_BUILD_NUMBER pushed to Github Pages"
+    git push -fq origin $BRANCH > /dev/null
+    echo -e "Deploy completed\n"
+fi
+```
 
 and that was all the setup I had to do. I then pushed a commit and watched as
 Pelican and its dependencies were downloaded, my blog posts were regenerated,
