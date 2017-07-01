@@ -25,16 +25,52 @@ this.
 I already had a `Makefile`, so converting my source to Github-flavoured
 Markdown and HTML was as easy as `make readme` and `make html`:
 
-<script
-src="http://gist-it.appspot.com/github.com/vaibhavsagar/resume/blob/master/Makefile">
-</script>
+```make
+all:: pdf html readme
+
+travis:: html readme
+
+pdf:: resume.md templates/header.tex
+	pandoc resume.md -H templates/header.tex -o Vaibhav_Sagar_resume.pdf
+
+html:: resume.md templates/header.css
+	pandoc resume.md -s -H templates/header.css -o index.html
+
+readme:: resume.md
+	pandoc resume.md -t markdown_github -o readme.md
+
+clean::
+	rm Vaibhav_Sagar_resume.pdf
+	rm readme.md
+rm index.html
+```
 
 I decided it would be best if the build process updated my `gh-pages` branch
 instead of uploading to a different repository:
 
-<script
-src="http://gist-it.appspot.com/github.com/vaibhavsagar/resume/blob/master/.ci/update_pages.sh">
-</script>
+```bash
+#!/usr/bin/env bash
+BRANCH=gh-pages
+TARGET_REPO=vaibhavsagar/resume.git
+
+if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
+    echo -e "Starting to deploy to Github Pages\n"
+    if [ "$TRAVIS" == "true" ]; then
+        git config --global user.email "travis@travis-ci.org"
+        git config --global user.name "Travis"
+    fi
+    # using token clone gh-pages branch
+    git clone --quiet --branch=$BRANCH https://${GH_TOKEN}@github.com/$TARGET_REPO build > /dev/null
+    # go into directory and copy data we're interested in to that directory
+    cd build
+    cp ../readme.md ../index.html .
+    # add, commit and push files
+    git add -f .
+    git commit -m "Travis build $TRAVIS_BUILD_NUMBER pushed to Github Pages"
+    git push -fq origin $BRANCH > /dev/null
+    echo -e "Deploy completed\n"
+fi
+```
 
 The next challenge was actually generating my PDF and uploading it to Github
 Releases. Travis CI has excellent support for deploying binaries to Releases
@@ -43,9 +79,46 @@ token which I thought was a bit redundant. The documentation for `travis
 encrypt` is pretty comprehensive and I just encrypted my old token and used
 that instead. My completed `.travis.yml` is as follows:
 
-<script
-src="http://gist-it.appspot.com/github.com/vaibhavsagar/resume/blob/master/.travis.yml">
-</script>
+```yaml
+language: c
+sudo: true
+
+cache:
+  directories:
+  - $HOME/.stack
+  - /usr/local/texlive/2016/bin/x86_64-linux
+addons:
+  apt:
+    packages:
+    - libgmp-dev
+    - xzdec
+before_install:
+- mkdir -p $HOME/.local/bin
+- travis_retry curl -L https://www.stackage.org/stack/linux-x86_64 | tar xz --wildcards --strip-components=1 -C ~/.local/bin '*/stack'
+
+install:
+- stack setup
+- stack install pandoc
+script: make travis
+notifications:
+  email:
+    on_success: always
+    on_failure: always
+after_success: bash .ci/update_pages.sh
+before_deploy: bash .ci/build_pdf.sh
+deploy:
+  provider: releases
+  file: Vaibhav_Sagar_resume.pdf
+  on:
+    repo: vaibhavsagar/resume
+    all_branches: true
+    tags: true
+  api_key:
+    secure: gtBPUeDXL9S6h4aWyXCEhWxbtkATx2lIBmkVTcWDHMvgwQHmfo42OPq7rQWjO6g/iOlv71Q1VQMQc84ERcZjtBRSE0pb1s1Baqs2Hk7ec/JeWsEXDZmBIs/Z3V6pHb14zCs5GNYyerXDpQ97P4RG9Vjdy+rc3I1+kkuCMF7zB3k=
+env:
+  global:
+secure: Bzof/7yN7HgV2eJk7FNliNx/cagIU4I113SwNJhChFyYOSy816oPrwQaCMyZuwvbcEIfLMY0K0qxtQK1MoPq7zTYiCTW3UPB2+mzTfTHPMTm5nWjZv0BmdqVoG8IJwxfo5cIV8hfKiu2ezNKcDuqgwb80mYwpTwlQPsY9gOm1Tc=
+```
 
 And if you'd like to see the process I went through to arrive at this solution,
 have a look at [the test repo](https://github.com/vaibhavsagar/resumate) I
