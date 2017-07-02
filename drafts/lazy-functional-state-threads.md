@@ -402,7 +402,7 @@ replacing the earlier `let` with a `case` which is more strict.
 
 We can introduce some more combinators, such as a reference equality check:
 
-```
+```haskell
 eqMutVar :: MutVar s a -> MutVar s a -> Bool
 eqMutArr :: Ix i => MutArr s i a -> MutArr s i a -> Bool
 ```
