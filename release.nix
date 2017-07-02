@@ -1,5 +1,8 @@
-let pkgs = import <nixpkgs> { };
+let
+  pkgs        = import <nixpkgs> {};
+  website-drv = pkgs.haskellPackages.haskellSrc2nix {
+    name = "website";
+    src  = pkgs.lib.cleanSource ./.;
+  };
 
-in {
-  website = pkgs.haskellPackages.callCabal2nix "website" ./. {};
-}
+in { website = pkgs.haskellPackages.callPackage website-drv {}; }
