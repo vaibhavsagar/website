@@ -399,3 +399,38 @@ m (>>=) k s = case m s of
 ```
 
 replacing the earlier `let` with a `case` which is more strict.
+
+We can introduce some more combinators, such as a reference equality check:
+
+```
+eqMutVar :: MutVar s a -> MutVar s a -> Bool
+eqMutArr :: Ix i => MutArr s i a -> MutArr s i a -> Bool
+```
+
+and we can even reintroduce laziness:
+
+```haskell
+interleaveST :: ST s a -> ST s a
+```
+
+by duplicating the state. This allows us to write programs like
+
+```haskell
+readFile :: String -> IO [Char]
+readFile filename = do
+    f <- openFile filename
+    readCts f
+
+readCts :: FileDescriptor -> IO [Char]
+readCts f = interleaveST $ do
+    c <- readCh f
+    if c == eofChar
+        then return []
+        else do
+            cs <- readCts f
+            return (c:cs)
+```
+
+but also opens the door to incorrect programs because it is the programmer's
+obligation to ensure that side effects in both branches of the fork are
+independent.
