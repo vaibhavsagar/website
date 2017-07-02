@@ -1,5 +1,5 @@
 let pkgs = import <nixpkgs> { };
 
-in rec {
-  website = pkgs.haskellPackages.callPackage ./default.nix {};
+in {
+  website = pkgs.haskellPackages.callCabal2nix "website" ./. {};
 }
