@@ -320,7 +320,7 @@ this looks pretty close.
 
 How do we square this with Haskell's reputation for purity and referential
 transparency? That's the subject of [the paper mentioned
-above](http://research.microsoft.com/en-us/um/people/simonpj/Papers/state-lasc.pdf)
+above](https://www.microsoft.com/en-us/research/publication/lazy-functional-state-threads/)
 that you don't have to read (but totally can if you want)! They figured out a
 way to provide a principled pure interface to mutable state by passing the
 references as arguments into each function that makes use of them and
@@ -352,6 +352,6 @@ Evans](https://jvns.ca/), and [Michelle Steigerwalt](http://msteigerwalt.com/)
 for feedback.
 
 _If you'd rather try to make sense of the [set of disconnected
-files](https://github.com/vaibhavsagar/thursday-presentations/tree/master/imperative-haskell)
+files](https://github.com/vaibhavsagar/presentations/tree/master/imperative-haskell)
 that constitutes my slides for that presentation, you can do that instead,
 although I wouldn't recommend it._
