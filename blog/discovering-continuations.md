@@ -94,11 +94,11 @@ padding-top: 0.7em;
 white-space: pre;
 font-family: monospace;
 }
-.suggestion-warning { 
+.suggestion-warning {
 font-weight: bold;
 color: rgb(200, 130, 0);
 }
-.suggestion-error { 
+.suggestion-error {
 font-weight: bold;
 color: red;
 }
@@ -187,11 +187,11 @@ padding-top: 0.7em;
 white-space: pre;
 font-family: monospace;
 }
-.suggestion-warning { 
+.suggestion-warning {
 font-weight: bold;
 color: rgb(200, 130, 0);
 }
-.suggestion-error { 
+.suggestion-error {
 font-weight: bold;
 color: red;
 }
@@ -280,11 +280,11 @@ padding-top: 0.7em;
 white-space: pre;
 font-family: monospace;
 }
-.suggestion-warning { 
+.suggestion-warning {
 font-weight: bold;
 color: rgb(200, 130, 0);
 }
-.suggestion-error { 
+.suggestion-error {
 font-weight: bold;
 color: red;
 }
@@ -373,11 +373,11 @@ padding-top: 0.7em;
 white-space: pre;
 font-family: monospace;
 }
-.suggestion-warning { 
+.suggestion-warning {
 font-weight: bold;
 color: rgb(200, 130, 0);
 }
-.suggestion-error { 
+.suggestion-error {
 font-weight: bold;
 color: red;
 }
@@ -387,7 +387,7 @@ font-weight: bold;
 </style><pre class='err-msg'>&lt;interactive&gt;:2:41: error:<br/>    • Found hole: _ :: a -&gt; r<br/>      Where: ‘r’ is a rigid type variable bound by the instance declaration at &lt;interactive&gt;:1:10<br/>             ‘a’ is a rigid type variable bound by<br/>               the type signature for:<br/>                 fmap :: forall a b. (a -&gt; b) -&gt; Cont r a -&gt; Cont r b<br/>               at &lt;interactive&gt;:2:5<br/>    • In the second argument of ‘&gt;&gt;-’, namely ‘_’<br/>      In the expression: cont &gt;&gt;- _<br/>      In the second argument of ‘(<span>&dollar;</span>)’, namely ‘\ k -&gt; cont &gt;&gt;- _’<br/>    • Relevant bindings include<br/>        k :: b -&gt; r (bound at &lt;interactive&gt;:2:27)<br/>        cont :: Cont r a (bound at &lt;interactive&gt;:2:12)<br/>        f :: a -&gt; b (bound at &lt;interactive&gt;:2:10)<br/>        fmap :: (a -&gt; b) -&gt; Cont r a -&gt; Cont r b (bound at &lt;interactive&gt;:2:5)</pre>
 
 
-It looks like we might have everything we need to complete this definition! We can create a function of type `a -> r` by composing `k` and `f`. 
+It looks like we might have everything we need to complete this definition! We can create a function of type `a -> r` by composing `k` and `f`.
 
 
 ```haskell
@@ -474,11 +474,11 @@ padding-top: 0.7em;
 white-space: pre;
 font-family: monospace;
 }
-.suggestion-warning { 
+.suggestion-warning {
 font-weight: bold;
 color: rgb(200, 130, 0);
 }
-.suggestion-error { 
+.suggestion-error {
 font-weight: bold;
 color: red;
 }
@@ -576,11 +576,11 @@ padding-top: 0.7em;
 white-space: pre;
 font-family: monospace;
 }
-.suggestion-warning { 
+.suggestion-warning {
 font-weight: bold;
 color: rgb(200, 130, 0);
 }
-.suggestion-error { 
+.suggestion-error {
 font-weight: bold;
 color: red;
 }
@@ -670,11 +670,11 @@ padding-top: 0.7em;
 white-space: pre;
 font-family: monospace;
 }
-.suggestion-warning { 
+.suggestion-warning {
 font-weight: bold;
 color: rgb(200, 130, 0);
 }
-.suggestion-error { 
+.suggestion-error {
 font-weight: bold;
 color: red;
 }
@@ -764,11 +764,11 @@ padding-top: 0.7em;
 white-space: pre;
 font-family: monospace;
 }
-.suggestion-warning { 
+.suggestion-warning {
 font-weight: bold;
 color: rgb(200, 130, 0);
 }
-.suggestion-error { 
+.suggestion-error {
 font-weight: bold;
 color: red;
 }
@@ -872,11 +872,11 @@ padding-top: 0.7em;
 white-space: pre;
 font-family: monospace;
 }
-.suggestion-warning { 
+.suggestion-warning {
 font-weight: bold;
 color: rgb(200, 130, 0);
 }
-.suggestion-error { 
+.suggestion-error {
 font-weight: bold;
 color: red;
 }
@@ -965,11 +965,11 @@ padding-top: 0.7em;
 white-space: pre;
 font-family: monospace;
 }
-.suggestion-warning { 
+.suggestion-warning {
 font-weight: bold;
 color: rgb(200, 130, 0);
 }
-.suggestion-error { 
+.suggestion-error {
 font-weight: bold;
 color: red;
 }
@@ -1058,11 +1058,11 @@ padding-top: 0.7em;
 white-space: pre;
 font-family: monospace;
 }
-.suggestion-warning { 
+.suggestion-warning {
 font-weight: bold;
 color: rgb(200, 130, 0);
 }
-.suggestion-error { 
+.suggestion-error {
 font-weight: bold;
 color: red;
 }
@@ -1161,11 +1161,11 @@ padding-top: 0.7em;
 white-space: pre;
 font-family: monospace;
 }
-.suggestion-warning { 
+.suggestion-warning {
 font-weight: bold;
 color: rgb(200, 130, 0);
 }
-.suggestion-error { 
+.suggestion-error {
 font-weight: bold;
 color: red;
 }
@@ -1254,11 +1254,11 @@ padding-top: 0.7em;
 white-space: pre;
 font-family: monospace;
 }
-.suggestion-warning { 
+.suggestion-warning {
 font-weight: bold;
 color: rgb(200, 130, 0);
 }
-.suggestion-error { 
+.suggestion-error {
 font-weight: bold;
 color: red;
 }
@@ -1347,11 +1347,11 @@ padding-top: 0.7em;
 white-space: pre;
 font-family: monospace;
 }
-.suggestion-warning { 
+.suggestion-warning {
 font-weight: bold;
 color: rgb(200, 130, 0);
 }
-.suggestion-error { 
+.suggestion-error {
 font-weight: bold;
 color: red;
 }
@@ -1440,11 +1440,11 @@ padding-top: 0.7em;
 white-space: pre;
 font-family: monospace;
 }
-.suggestion-warning { 
+.suggestion-warning {
 font-weight: bold;
 color: rgb(200, 130, 0);
 }
-.suggestion-error { 
+.suggestion-error {
 font-weight: bold;
 color: red;
 }
@@ -1481,7 +1481,7 @@ instance Monad m => Applicative (ContT r m) where
 
 instance Monad m => Monad (ContT r m) where
     a >>= f = ContT $ \k -> a >>- \a' -> f a' >>- \f' -> k f'
-    
+
 callCC :: ((b -> ContT r m a) -> ContT r m b) -> ContT r m b
 callCC f = ContT $ \k -> f (\b -> ContT $ \k' -> k b) >>- k
 ```
@@ -1490,4 +1490,4 @@ I love being able to interact with these definitions like this. This is really h
 
 I feel like I should end with something profound about continuations, but I'll instead link you to [this presentation by Tim Humphries](http://teh.id.au/posts/2017/05/10/lambdajam-slides/index.html) and once again nudge you to try typed holes the next time you're in a Haskell bind (pun very much intended).
 
-Thanks to Iain McCoy, [Julia Evans](https://jvns.ca/), and [Carl Factora](https://ivanthetricourne.github.io/) for their feedback and suggestions on this post.
+Thanks to [Iain McCoy](https://twitter.com/imccoy), [Julia Evans](https://jvns.ca/), and [Carl Factora](https://ivanthetricourne.github.io/) for their feedback and suggestions on this post.
