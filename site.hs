@@ -28,10 +28,10 @@ main = hakyll $ do
             >>= relativizeUrls
             >>= cleanIndexUrls
 
-    tags <- buildTags "blog/*" (fromCapture "tags/*.html")
+    tags <- buildTags "blog/*" (fromCapture "tags/*")
     tagsRules tags $ \tag pat -> do
         let title = "Posts tagged \"" ++ tag ++ "\""
-        route idRoute
+        route   $ prependBlogRoute `composeRoutes` cleanRoute
         compile $ do
             let posts = recentFirst =<< loadAll pat
             let tagsCtx =
@@ -130,6 +130,11 @@ dateRoute = metadataRoute createDateRoute
             datePath  = replaceAll "-" (const "/") published
             in customRoute (addDate datePath . toFilePath)
         addDate date path = takeDirectory path </> date </> takeBaseName path
+
+prependBlogRoute :: Routes
+prependBlogRoute = customRoute prependBlog
+    where prependBlog ident =
+            "blog" </> toFilePath ident
 
 cleanIndexUrls :: Item String -> Compiler (Item String)
 cleanIndexUrls = return . fmap (withUrls cleanIndex)
