@@ -52,6 +52,7 @@ main = hakyll $ do
             >>= loadAndApplyTemplate "templates/disqus.html"  (postCtx tags)
             >>= loadAndApplyTemplate "templates/default.html" (postCtx tags)
             >>= relativizeUrls
+            >>= cleanIndexUrls
 
     match "drafts/*" $ do
         route     cleanRoute
@@ -59,6 +60,7 @@ main = hakyll $ do
             >>= loadAndApplyTemplate "templates/post.html"    (postCtx tags)
             >>= loadAndApplyTemplate "templates/default.html" (postCtx tags)
             >>= relativizeUrls
+            >>= cleanIndexUrls
 
     match "extra/*" $ do
         route   rootRoute
