@@ -3,6 +3,7 @@
 
 module Main where
 
+import           Control.Monad ((>=>))
 import           Data.Monoid (mappend)
 import           Hakyll
 import           System.FilePath
@@ -135,6 +136,12 @@ prependBlogRoute :: Routes
 prependBlogRoute = customRoute prependBlog
     where prependBlog ident =
             "blog" </> toFilePath ident
+
+fixupUrls :: Item String -> Compiler (Item String)
+fixupUrls = relativizeUrls >=> cleanIndexUrls
+
+finalise :: Context String -> Item String -> Compiler (Item String)
+finalise ctx = loadAndApplyTemplate "templates/default.html" ctx >=> fixupUrls
 
 cleanIndexUrls :: Item String -> Compiler (Item String)
 cleanIndexUrls = return . fmap (withUrls cleanIndex)
