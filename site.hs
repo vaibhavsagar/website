@@ -25,9 +25,7 @@ main = hakyll $ do
     match "about.md" $ do
         route     cleanRoute
         compile $ pandocCompiler
-            >>= loadAndApplyTemplate "templates/default.html" defaultContext
-            >>= relativizeUrls
-            >>= cleanIndexUrls
+            >>= finalise defaultContext
 
     tags <- buildTags "blog/*" (fromCapture "tags/*")
     tagsRules tags $ \tag pat -> do
@@ -40,28 +38,22 @@ main = hakyll $ do
                     listField "posts" (postCtx tags) posts `mappend`
                     defaultContext
             makeItem ""
-                >>= loadAndApplyTemplate "templates/tag.html"     tagsCtx
-                >>= loadAndApplyTemplate "templates/default.html" tagsCtx
-                >>= relativizeUrls
-                >>= cleanIndexUrls
+                >>= loadAndApplyTemplate "templates/tag.html" tagsCtx
+                >>= finalise                                  tagsCtx
 
     match "blog/*" $ do
         route   $ dateRoute `composeRoutes` cleanRoute
         compile $ pandocCompiler
-            >>= loadAndApplyTemplate "templates/post.html"    (postCtx tags)
+            >>= loadAndApplyTemplate "templates/post.html"   (postCtx tags)
             >>= saveSnapshot "content"
-            >>= loadAndApplyTemplate "templates/disqus.html"  (postCtx tags)
-            >>= loadAndApplyTemplate "templates/default.html" (postCtx tags)
-            >>= relativizeUrls
-            >>= cleanIndexUrls
+            >>= loadAndApplyTemplate "templates/disqus.html" (postCtx tags)
+            >>= finalise                                     (postCtx tags)
 
     match "drafts/*" $ do
         route     cleanRoute
         compile $ pandocCompiler
-            >>= loadAndApplyTemplate "templates/post.html"    (postCtx tags)
-            >>= loadAndApplyTemplate "templates/default.html" (postCtx tags)
-            >>= relativizeUrls
-            >>= cleanIndexUrls
+            >>= loadAndApplyTemplate "templates/post.html" (postCtx tags)
+            >>= finalise                                   (postCtx tags)
 
     match "extra/*" $ do
         route   rootRoute
@@ -78,9 +70,7 @@ main = hakyll $ do
 
             makeItem ""
                 >>= loadAndApplyTemplate "templates/archive.html" archiveCtx
-                >>= loadAndApplyTemplate "templates/default.html" archiveCtx
-                >>= relativizeUrls
-                >>= cleanIndexUrls
+                >>= finalise                                      archiveCtx
 
     match "index.html" $ do
         route idRoute
@@ -93,9 +83,7 @@ main = hakyll $ do
 
             getResourceBody
                 >>= applyAsTemplate indexCtx
-                >>= loadAndApplyTemplate "templates/default.html" indexCtx
-                >>= relativizeUrls
-                >>= cleanIndexUrls
+                >>= finalise        indexCtx
 
     match "templates/*" $ compile templateBodyCompiler
 
