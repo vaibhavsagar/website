@@ -22,11 +22,6 @@ main = hakyll $ do
         route   idRoute
         compile compressCssCompiler
 
-    match "about.md" $ do
-        route     cleanRoute
-        compile $ pandocCompiler
-            >>= finalise defaultContext
-
     tags <- buildTags "blog/*" (fromCapture "tags/*")
     tagsRules tags $ \tag pat -> do
         let title = "Posts tagged \"" ++ tag ++ "\""
@@ -54,6 +49,11 @@ main = hakyll $ do
         compile $ pandocCompiler
             >>= loadAndApplyTemplate "templates/post.html" (postCtx tags)
             >>= finalise                                   (postCtx tags)
+
+    match "pages/*" $ do
+        route   $ rootRoute `composeRoutes` cleanRoute
+        compile $ pandocCompiler
+            >>= finalise defaultContext
 
     match "extra/*" $ do
         route   rootRoute
