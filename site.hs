@@ -23,14 +23,20 @@ main = hakyll $ do
         compile compressCssCompiler
 
     tags <- buildTags "blog/*" (fromCapture "tags/*")
+
+    let postCtx =
+            tagsField "tags" tags       `mappend`
+            dateField "date" "%e %B %Y" `mappend`
+            defaultContext
+
     tagsRules tags $ \tag pat -> do
         let title = "Posts tagged \"" ++ tag ++ "\""
         route   $ prependBlogRoute `composeRoutes` cleanRoute
         compile $ do
             let posts = recentFirst =<< loadAll pat
             let tagsCtx =
-                    constField "title" title               `mappend`
-                    listField "posts" (postCtx tags) posts `mappend`
+                    constField "title" title        `mappend`
+                    listField "posts" postCtx posts `mappend`
                     defaultContext
             makeItem ""
                 >>= loadAndApplyTemplate "templates/tag.html" tagsCtx
@@ -39,16 +45,16 @@ main = hakyll $ do
     match "blog/*" $ do
         route   $ dateRoute `composeRoutes` cleanRoute
         compile $ pandocCompiler
-            >>= loadAndApplyTemplate "templates/post.html"   (postCtx tags)
+            >>= loadAndApplyTemplate "templates/post.html"   postCtx
             >>= saveSnapshot "content"
-            >>= loadAndApplyTemplate "templates/disqus.html" (postCtx tags)
-            >>= finalise                                     (postCtx tags)
+            >>= loadAndApplyTemplate "templates/disqus.html" postCtx
+            >>= finalise                                     postCtx
 
     match "drafts/*" $ do
         route     cleanRoute
         compile $ pandocCompiler
-            >>= loadAndApplyTemplate "templates/post.html" (postCtx tags)
-            >>= finalise                                   (postCtx tags)
+            >>= loadAndApplyTemplate "templates/post.html" postCtx
+            >>= finalise                                   postCtx
 
     match "pages/*" $ do
         route   $ rootRoute `composeRoutes` cleanRoute
@@ -64,8 +70,8 @@ main = hakyll $ do
         compile $ do
             let posts = recentFirst =<< loadAll "blog/*"
             let archiveCtx =
-                    listField "posts" (postCtx tags) posts `mappend`
-                    constField "title" "Archives"          `mappend`
+                    listField "posts" postCtx posts `mappend`
+                    constField "title" "Archives"   `mappend`
                     defaultContext
 
             makeItem ""
@@ -77,8 +83,8 @@ main = hakyll $ do
         compile $ do
             let posts = fmap (take 10) . recentFirst =<< loadAll "blog/*"
             let indexCtx =
-                    listField "posts" (postCtx tags) posts `mappend`
-                    constField "title" "Home"              `mappend`
+                    listField "posts" postCtx posts `mappend`
+                    constField "title" "Home"       `mappend`
                     defaultContext
 
             getResourceBody
@@ -90,18 +96,12 @@ main = hakyll $ do
     create ["atom.xml"] $ do
         route idRoute
         compile $ do
-            let feedCtx = postCtx tags `mappend` bodyField "description"
+            let feedCtx = postCtx `mappend` bodyField "description"
             posts <- fmap (take 10) . recentFirst =<<
                 loadAllSnapshots "blog/*" "content"
             renderAtom feedConfig feedCtx posts
 
 --------------------------------------------------------------------------------
-postCtx :: Tags -> Context String
-postCtx tags =
-    tagsField "tags" tags       `mappend`
-    dateField "date" "%e %B %Y" `mappend`
-    defaultContext
-
 cleanRoute :: Routes
 cleanRoute = customRoute createIndexRoute
     where createIndexRoute ident =
