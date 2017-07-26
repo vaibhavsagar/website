@@ -1,3 +1,2 @@
 let pkgs = import <nixpkgs> {};
-
-in { website = pkgs.haskellPackages.callCabal2nix "website" (pkgs.lib.cleanSource ./.) {}; }
+in pkgs.haskellPackages.callCabal2nix "website" (pkgs.lib.cleanSource ./.) {}
