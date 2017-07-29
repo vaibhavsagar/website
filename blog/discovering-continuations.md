@@ -1486,7 +1486,7 @@ callCC :: ((b -> ContT r m a) -> ContT r m b) -> ContT r m b
 callCC f = ContT $ \k -> f (\b -> ContT $ \k' -> k b) >>- k
 ```
 
-I love being able to interact with these definitions like this. This is really how I want to program, and I'd encourage you to try it! The notebook is [here](https://github.com/vaibhavsagar/notebooks/blob/master/notebooks/Continuation.ipynb) for you to play with if you have IHaskell set up. IHaskell isn't just useful for programming: I even used it to [write this blog post](https://github.com/vaibhavsagar/notebooks/blob/master/notebooks/DiscoveringContinuationsWithTypedHoles.ipynb)!
+I love being able to interact with these definitions like this. This is really how I want to program, and I'd encourage you to try it! The notebook is [here](https://github.com/vaibhavsagar/notebooks/blob/master/continuations/Continuation.ipynb) for you to play with if you have IHaskell set up. IHaskell isn't just useful for programming: I even used it to [write this blog post](https://github.com/vaibhavsagar/notebooks/blob/master/continuations/DiscoveringContinuationsWithTypedHoles.ipynb)!
 
 I feel like I should end with something profound about continuations, but I'll instead link you to [this presentation by Tim Humphries](http://teh.id.au/posts/2017/05/10/lambdajam-slides/index.html) and once again nudge you to try typed holes the next time you're in a Haskell bind (pun very much intended).
 
