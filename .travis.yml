@@ -4,7 +4,6 @@ sudo: false
 cache:
     directories:
     - $HOME/.stack
-    - .stack-work
 
 addons:
     apt:
