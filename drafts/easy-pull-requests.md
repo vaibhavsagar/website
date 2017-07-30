@@ -74,11 +74,13 @@ this without investing much effort.
 
 Of course, these aren't the only types of easy contributions you can make:
 other ideas are documenting the undocumented, adding or refactoring tests, and
-using the issue tracker to call attention to bugs. Play to your strengths! The
-objective is to test the waters (or get your name in a commit log).
+using the issue tracker to call attention to bugs. Neil Mitchell has a great
+presentation on ['Drive-by Haskell
+Contributions'](http://ndmitchell.com/downloads/slides-drive-by_haskell_contributions-09_jun_2017.pdf),
+although the general idea is applicable to your programming language of choice.
 
 I hope I've given you a few ideas about contributing to open source and how you
-can make effective use of your time.
+can make effective use of your time!
 
 Thanks to [Julia Evans](https://jvns.ca/) and [Harold
 Treen](https://haroldtreen.com/) for comments and feedback.
