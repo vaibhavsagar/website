@@ -10,23 +10,23 @@ There are many reasons to start contributing to open source:
 * to fix a bug in software you depend on
 * warm fuzzies
 
-But if you write software for a living, you don't always have the time or
-energy to understand a new codebase well enough to make a meaningful change to
-it. And even if you don't write software for a living, this still might not
-sound like the best of your leisure time.
+But you don't always have the time or energy to understand a new codebase well
+enough to make a meaningful change to it. And even if you do, it's not clear
+that this is the best use of your time.
 
-Even if you soldier on, your pull request might linger untouched for months,
-like the source control equivalent of shouting into the void. Alternatively,
-the maintainer might be having a bad day and dismiss your pull request or
-expect you to do some Git voodoo to bring it up to their exacting standards.
-All this can turn the gift of patches into a boring and unpleasant chore.
+Your pull request might linger untouched for months, like the source control
+equivalent of shouting into the void. Alternatively, the maintainer might be
+having a bad day and dismiss your pull request or expect you to do some arcane
+Git voodoo to bring it up to their exacting standards.  All this can turn the
+gift of patches into a boring and unpleasant chore.
 
-For a long time I thought the only **real** contributions were those that
-included code to fix bugs or add new features. This held me back from making
-non-code contributions that can be just as meaningful.
+For a long time I mistakenly believed the the only **real** contributions were
+those that included code to fix bugs or add new features. Eventually I realised
+there were simpler ways of getting my name in commit logs and my open source
+contributions vastly increased.
 
-To address this, I decided to focus on easy pull requests as a precursor to, or
-instead of, engaging more fully with a project. What does this mean?
+I decided to focus on easy pull requests as a precursor to, or instead of,
+engaging more fully with a project. What do I mean by this?
 
 ## Documentation and typo fixes
 
@@ -51,12 +51,12 @@ results](https://github.com/pulls?q=is%3Apr+author%3Avaibhavsagar+HLint+is%3Aclo
 
 This technique isn't Haskell specific, and I think it is especially well-suited
 to Python and Go projects where there is a 'blessed' style to work off and
-tools like `flake8` and `gofmt`.
+tools like `flake8` and `gofmt` are available.
 
 If your change gets accepted, then you'll be improving code quality and paving
 the way for future contributors. If it doesn't, then you might have a
 discussion about good style that might lead to a documentation PR! If the
-maintainers are hostile, then I think you're better off elsewhere.
+maintainers are hostile, then you're probably better off elsewhere.
 
 ## Automated testing
 
@@ -69,18 +69,20 @@ to test a specific project isn't readily available, this is also a great
 opportunity for a README update (see above).
 
 Again: if you don't get a quick response, or at least a positive one, I think
-it's a good sign that this project is not a good fit and you'll have learned
-this without investing much effort.
+it's a good sign that this project is not worth your time and at least you
+won't have put a ton of effort into finding that out.
 
 Of course, these aren't the only types of easy contributions you can make:
 other ideas are documenting the undocumented, adding or refactoring tests, and
 using the issue tracker to call attention to bugs. Neil Mitchell has a great
 presentation on ['Drive-by Haskell
 Contributions'](http://ndmitchell.com/downloads/slides-drive-by_haskell_contributions-09_jun_2017.pdf),
-although the general idea is applicable to your programming language of choice.
+although the general approach is applicable to your programming language of choice.
 
 I hope I've given you a few ideas about contributing to open source and how you
-can make effective use of your time!
+can make effective use of your time, and I'd love to see more easy pull
+requests by you!
 
-Thanks to [Julia Evans](https://jvns.ca/) and [Harold
-Treen](https://haroldtreen.com/) for comments and feedback.
+Thanks to [Julia Evans](https://jvns.ca/), [Harold
+Treen](https://haroldtreen.com/), and [Rudi Chen](http://digitalfreepen.com)
+for comments and feedback.
