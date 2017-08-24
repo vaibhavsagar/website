@@ -125,8 +125,7 @@ dateRoute = metadataRoute createDateRoute
 
 prependBlogRoute :: Routes
 prependBlogRoute = customRoute prependBlog
-    where prependBlog ident =
-            "blog" </> toFilePath ident
+    where prependBlog ident = "blog" </> toFilePath ident
 
 fixupUrls :: Item String -> Compiler (Item String)
 fixupUrls = relativizeUrls >=> cleanIndexUrls
