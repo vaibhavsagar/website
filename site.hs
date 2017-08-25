@@ -105,16 +105,14 @@ main = hakyll $ do
             renderAtom feedConfig feedCtx posts
 
 --------------------------------------------------------------------------------
-cleanRoute :: Routes
+cleanRoute, rootRoute, dateRoute, prependBlogRoute :: Routes
 cleanRoute = customRoute createIndexRoute
     where createIndexRoute ident =
             takeDirectory p </> takeBaseName p </> "index.html"
             where p = toFilePath ident
 
-rootRoute :: Routes
 rootRoute = customRoute (takeFileName . toFilePath)
 
-dateRoute :: Routes
 dateRoute = metadataRoute createDateRoute
     where
         createDateRoute meta = let
@@ -123,7 +121,6 @@ dateRoute = metadataRoute createDateRoute
             in customRoute (addDate datePath . toFilePath)
         addDate date path = takeDirectory path </> date </> takeBaseName path
 
-prependBlogRoute :: Routes
 prependBlogRoute = customRoute prependBlog
     where prependBlog = combine "blog" . toFilePath
 
