@@ -3,6 +3,7 @@
 
 --------------------------------------------------------------------------------
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE ViewPatterns      #-}
 
 module Main where
 
@@ -103,9 +104,8 @@ matcher path router compiler = match path $ route router >> compile compiler
 
 cleanRoute, rootRoute, dateRoute, prependBlogRoute :: Routes
 cleanRoute = customRoute createIndexRoute
-    where createIndexRoute ident =
+    where createIndexRoute (toFilePath -> p) =
             takeDirectory p </> takeBaseName p </> "index.html"
-            where p = toFilePath ident
 
 rootRoute = customRoute (takeFileName . toFilePath)
 
