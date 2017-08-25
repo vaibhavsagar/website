@@ -7,23 +7,22 @@
 module Main where
 
 import           Control.Monad ((>=>))
+import           Data.Binary
 import           Data.Monoid (mappend)
 import           Hakyll
 import           System.FilePath
 import           Data.List (isSuffixOf)
 import           Data.Maybe (fromMaybe)
+import           Data.Typeable
 
 
 --------------------------------------------------------------------------------
 main :: IO ()
 main = hakyll $ do
-    match "images/*" $ do
-        route   idRoute
-        compile copyFileCompiler
+    matcher "images/*" idRoute copyFileCompiler
 
-    match "css/*" $ do
-        route   idRoute
-        compile compressCssCompiler
+    matcher "css/*" idRoute compressCssCompiler
+
 
     tags <- buildTags "blog/*" (fromCapture "tags/*")
 
@@ -45,28 +44,22 @@ main = hakyll $ do
                 >>= loadAndApplyTemplate "templates/tag.html" tagsCtx
                 >>= finalise                                  tagsCtx
 
-    match "blog/*" $ do
-        route   $ dateRoute `composeRoutes` cleanRoute
-        compile $ pandocCompiler
-            >>= loadAndApplyTemplate "templates/post.html"   postCtx
-            >>= saveSnapshot "content"
-            >>= loadAndApplyTemplate "templates/disqus.html" postCtx
-            >>= finalise                                     postCtx
+    matcher "blog/*" (dateRoute `composeRoutes` cleanRoute) $
+        pandocCompiler
+        >>= loadAndApplyTemplate "templates/post.html"   postCtx
+        >>= saveSnapshot "content"
+        >>= loadAndApplyTemplate "templates/disqus.html" postCtx
+        >>= finalise                                     postCtx
 
-    match "drafts/*" $ do
-        route     cleanRoute
-        compile $ pandocCompiler
-            >>= loadAndApplyTemplate "templates/post.html" postCtx
-            >>= finalise                                   postCtx
+    matcher "drafts/*" cleanRoute $
+        pandocCompiler
+        >>= loadAndApplyTemplate "templates/post.html" postCtx
+        >>= finalise                                   postCtx
 
-    match "pages/*" $ do
-        route   $ rootRoute `composeRoutes` cleanRoute
-        compile $ pandocCompiler
-            >>= finalise defaultContext
+    matcher "pages/*" (rootRoute `composeRoutes` cleanRoute) $
+        pandocCompiler >>= finalise defaultContext
 
-    match "extra/*" $ do
-        route   rootRoute
-        compile copyFileCompiler
+    matcher "extra/*" rootRoute copyFileCompiler
 
     create ["archive/index.html"] $ do
         route idRoute
@@ -81,18 +74,16 @@ main = hakyll $ do
                 >>= loadAndApplyTemplate "templates/archive.html" archiveCtx
                 >>= finalise                                      archiveCtx
 
-    match "index.html" $ do
-        route idRoute
-        compile $ do
-            let posts = fmap (take 10) . recentFirst =<< loadAll "blog/*"
-            let indexCtx =
-                    listField "posts" postCtx posts `mappend`
-                    constField "title" "Home"       `mappend`
-                    defaultContext
+    matcher "index.html" idRoute $ do
+        let posts = fmap (take 10) . recentFirst =<< loadAll "blog/*"
+        let indexCtx =
+                listField "posts" postCtx posts `mappend`
+                constField "title" "Home"       `mappend`
+                defaultContext
 
-            getResourceBody
-                >>= applyAsTemplate indexCtx
-                >>= finalise        indexCtx
+        getResourceBody
+            >>= applyAsTemplate indexCtx
+            >>= finalise        indexCtx
 
     match "templates/*" $ compile templateBodyCompiler
 
@@ -105,6 +96,11 @@ main = hakyll $ do
             renderAtom feedConfig feedCtx posts
 
 --------------------------------------------------------------------------------
+matcher
+    :: (Writable a, Binary a, Typeable a)
+    => Pattern -> Routes -> Compiler (Item a) -> Rules ()
+matcher path router compiler = match path $ route router >> compile compiler
+
 cleanRoute, rootRoute, dateRoute, prependBlogRoute :: Routes
 cleanRoute = customRoute createIndexRoute
     where createIndexRoute ident =
