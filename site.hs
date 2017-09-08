@@ -22,7 +22,6 @@ main = hakyll $ do
 
     matcher "css/*" idRoute compressCssCompiler
 
-
     tags <- buildTags "blog/*" (fromCapture "tags/*")
 
     let postCtx =
@@ -93,6 +92,7 @@ main = hakyll $ do
             posts <- fmap (take 10) . recentFirst =<<
                 loadAllSnapshots "blog/*" "content"
             renderAtom feedConfig feedCtx posts
+
     where matcher path router compiler =
             match path $ route router >> compile compiler
 
