@@ -8,13 +8,11 @@
 module Main where
 
 import           Control.Monad ((>=>))
-import           Data.Binary
 import           Data.Monoid (mappend)
 import           Hakyll
 import           System.FilePath
 import           Data.List (isSuffixOf)
 import           Data.Maybe (fromMaybe)
-import           Data.Typeable
 
 
 --------------------------------------------------------------------------------
@@ -95,13 +93,10 @@ main = hakyll $ do
             posts <- fmap (take 10) . recentFirst =<<
                 loadAllSnapshots "blog/*" "content"
             renderAtom feedConfig feedCtx posts
+    where matcher path router compiler =
+            match path $ route router >> compile compiler
 
 --------------------------------------------------------------------------------
-matcher
-    :: (Writable a, Binary a, Typeable a)
-    => Pattern -> Routes -> Compiler (Item a) -> Rules ()
-matcher path router compiler = match path $ route router >> compile compiler
-
 cleanRoute, rootRoute, dateRoute, prependBlogRoute :: Routes
 cleanRoute = customRoute createIndexRoute
     where createIndexRoute (toFilePath -> p) =
