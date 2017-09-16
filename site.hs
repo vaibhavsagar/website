@@ -1,6 +1,7 @@
 #! /usr/bin/env nix-shell
 #! nix-shell -i runhaskell
 #! nix-shell -p 'haskellPackages.ghcWithPackages (p: [ p.hakyll p.filepath ])'
+#! nix-shell -Q
 
 --------------------------------------------------------------------------------
 {-# LANGUAGE OverloadedStrings #-}
