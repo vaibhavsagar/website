@@ -175,7 +175,7 @@ Git compresses these files with zlib before storing them, and we'll need to hand
 ```
 
 
-    commit 248 tree ecd0e58d6832566540a30dfd4878db518d5451d0
+    commit 248tree ecd0e58d6832566540a30dfd4878db518d5451d0
     parent ab3c5646b41de1b6d95782371289db585ba8aa85
     author Trevor Bramble <inbox@trevorbramble.com> 1372482098 -0700
     committer Trevor Bramble <inbox@trevorbramble.com> 1372482214 -0700
@@ -325,7 +325,7 @@ withHeader "commit" (toBytes parsedCommit)
 ```
 
 
-    commit 248 tree ecd0e58d6832566540a30dfd4878db518d5451d0
+    commit 248tree ecd0e58d6832566540a30dfd4878db518d5451d0
     parent ab3c5646b41de1b6d95782371289db585ba8aa85
     author Trevor Bramble <inbox@trevorbramble.com> 1372482098 -0700
     committer Trevor Bramble <inbox@trevorbramble.com> 1372482214 -0700
