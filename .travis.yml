@@ -1,3 +1,3 @@
 language: nix
-script: NIX_PATH=nixpkgs=https://github.com/NixOS/nixpkgs-channels/archive/b7e4857dd906022e4f996ae13ccb2988f2782de0.tar.gz ./site.hs build
+script: NIX_PATH=nixpkgs=https://github.com/NixOS/nixpkgs-channels/archive/2231575a7ddd768fbce7d8f0c75926e5f1ee5c95.tar.gz ./site.hs build
 after_success: bash .ci/update_pages.sh
