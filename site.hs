@@ -10,7 +10,7 @@
 module Main where
 
 import           Control.Monad ((>=>))
-import           Data.Monoid (mappend)
+import           Data.Monoid ((<>))
 import           Hakyll
 import           System.FilePath
 import           Data.List (isSuffixOf)
@@ -27,8 +27,8 @@ main = hakyll $ do
     tags <- buildTags "blog/*" (fromCapture "tags/*")
 
     let postCtx =
-            tagsField "tags" tags       `mappend`
-            dateField "date" "%e %B %Y" `mappend`
+            tagsField "tags" tags       <>
+            dateField "date" "%e %B %Y" <>
             defaultContext
 
     tagsRules tags $ \tag pat -> do
@@ -37,8 +37,8 @@ main = hakyll $ do
         compile $ do
             let posts = recentFirst =<< loadAll pat
             let tagsCtx =
-                    constField "title" title        `mappend`
-                    listField "posts" postCtx posts `mappend`
+                    constField "title" title        <>
+                    listField "posts" postCtx posts <>
                     defaultContext
             makeItem ""
                 >>= loadAndApplyTemplate "templates/tag.html" tagsCtx
@@ -66,8 +66,8 @@ main = hakyll $ do
         compile $ do
             let posts = recentFirst =<< loadAll "blog/*"
             let archiveCtx =
-                    listField "posts" postCtx posts `mappend`
-                    constField "title" "Archives"   `mappend`
+                    listField "posts" postCtx posts <>
+                    constField "title" "Archives"   <>
                     defaultContext
 
             makeItem ""
@@ -77,8 +77,8 @@ main = hakyll $ do
     matcher "index.html" idRoute $ do
         let posts = fmap (take 10) . recentFirst =<< loadAll "blog/*"
         let indexCtx =
-                listField "posts" postCtx posts `mappend`
-                constField "title" "Home"       `mappend`
+                listField "posts" postCtx posts <>
+                constField "title" "Home"       <>
                 defaultContext
 
         getResourceBody
@@ -90,7 +90,7 @@ main = hakyll $ do
     create ["atom.xml"] $ do
         route idRoute
         compile $ do
-            let feedCtx = postCtx `mappend` bodyField "description"
+            let feedCtx = postCtx <> bodyField "description"
             posts <- fmap (take 10) . recentFirst =<<
                 loadAllSnapshots "blog/*" "content"
             renderAtom feedConfig feedCtx posts
