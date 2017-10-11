@@ -1,7 +1,6 @@
 #! /usr/bin/env nix-shell
 #! nix-shell -i runhaskell
 #! nix-shell -p 'haskellPackages.ghcWithPackages (p: [ p.hakyll p.filepath ])'
-#! nix-shell -Q
 
 --------------------------------------------------------------------------------
 {-# LANGUAGE OverloadedStrings #-}
@@ -26,20 +25,20 @@ main = hakyll $ do
 
     tags <- buildTags "blog/*" (fromCapture "tags/*")
 
-    let postCtx =
-            tagsField "tags" tags       <>
-            dateField "date" "%e %B %Y" <>
-            defaultContext
+    let postCtx
+            =  tagsField "tags" tags
+            <> dateField "date" "%e %B %Y"
+            <> defaultContext
 
     tagsRules tags $ \tag pat -> do
         let title = "Posts tagged \"" ++ tag ++ "\""
         route   $ prependBlogRoute `composeRoutes` cleanRoute
         compile $ do
             let posts = recentFirst =<< loadAll pat
-            let tagsCtx =
-                    constField "title" title        <>
-                    listField "posts" postCtx posts <>
-                    defaultContext
+            let tagsCtx
+                    =  constField "title" title
+                    <> listField "posts" postCtx posts
+                    <> defaultContext
             makeItem ""
                 >>= loadAndApplyTemplate "templates/tag.html" tagsCtx
                 >>= finalise                                  tagsCtx
@@ -65,10 +64,10 @@ main = hakyll $ do
         route idRoute
         compile $ do
             let posts = recentFirst =<< loadAll "blog/*"
-            let archiveCtx =
-                    listField "posts" postCtx posts <>
-                    constField "title" "Archives"   <>
-                    defaultContext
+            let archiveCtx
+                    =  listField "posts" postCtx posts
+                    <> constField "title" "Archives"
+                    <> defaultContext
 
             makeItem ""
                 >>= loadAndApplyTemplate "templates/archive.html" archiveCtx
@@ -76,10 +75,10 @@ main = hakyll $ do
 
     matcher "index.html" idRoute $ do
         let posts = fmap (take 10) . recentFirst =<< loadAll "blog/*"
-        let indexCtx =
-                listField "posts" postCtx posts <>
-                constField "title" "Home"       <>
-                defaultContext
+        let indexCtx
+                =  listField "posts" postCtx posts
+                <> constField "title" "Home"
+                <> defaultContext
 
         getResourceBody
             >>= applyAsTemplate indexCtx
