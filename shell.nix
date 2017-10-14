@@ -1,6 +1,6 @@
 { nixpkgs ? import <nixpkgs> {} }:
-nixpkgs.runCommand "dummy" {
-  buildInputs = [
-    (nixpkgs.haskellPackages.ghcWithPackages (p: [ p.hakyll p.filepath ]))
-  ];
-} ""
+(nixpkgs.haskellPackages.callCabal2nix
+  "website"
+  (nixpkgs.lib.cleanSource ./.)
+  {}
+).env
