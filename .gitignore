@@ -3,3 +3,4 @@ _site/
 _cache/
 .personal-access-token
 result
+.*@neomake*
