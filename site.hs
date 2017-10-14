@@ -1,5 +1,3 @@
-#!/usr/bin/env runhaskell
-
 --------------------------------------------------------------------------------
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE ViewPatterns      #-}
