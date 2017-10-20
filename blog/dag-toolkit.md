@@ -4,6 +4,8 @@ published: 2017-06-10
 tags: programming
 --------------------------------------------------------------------------------
 
+_[HTR](http://howtorecover.me) has kindly [translated this post](http://howtorecover.me/instrumentarii-dag-all-one) to Russian._
+
 I'd like to tell you about an algorithm that I'm frankly annoyed I didn't
 discover earlier.
 
