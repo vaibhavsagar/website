@@ -152,10 +152,12 @@ We can also use it to solve
 [2SAT](https://en.wikipedia.org/wiki/2-satisfiability), which is the problem of
 determining whether boolean variables in series of constraints of the form `a
 || b` can be assigned T and F values such that all constraints hold. This is
-discussed [here]() but boils down to encoding the constraints as nodes and
-edges, calculating the SCCs, and processing the output in reverse topologically
-sorted order. An advantage to doing it this way is that the process can stop at
-the first SCC that indicates unsatisfiability. I have an implementation of this
+discussed
+[here](https://kartikkukreja.wordpress.com/2013/05/16/solving-2-sat-in-linear-time/)
+but boils down to encoding the constraints as nodes and edges, calculating the
+SCCs, and processing the output in reverse topologically sorted order. An
+advantage to doing it this way is that the process can stop at the first SCC
+that indicates unsatisfiability. I have an implementation of this
 [here](https://github.com/vaibhavsagar/courses/blob/master/algorithms2/week6/Week6.ipynb).
 
 Discovering this algorithm got me excited about theoretical computer science
