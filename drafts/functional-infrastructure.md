@@ -15,6 +15,8 @@ distro should do, as long as you've (installed
 Nix)[https://nixos.org/nix/download.html]. macOS users will be able to follow
 along until I get to the NixOps section.
 
+## Packaging
+
 Suppose we are in ops, and have been given a small Haskell app to get up and
 running:
 
@@ -136,18 +138,20 @@ tries to think of build outputs as a pure function of its inputs, and since our
 inputs are unchanged, it is able to give us back the same path that it did
 before. This is what we mean when we say Nix is declarative.
 
+## Service Configuration
+
 Okay, now that we're able to successfully build the app, let's configure a
 service file so that `systemd` can manage our app. I don't know of any tools
 that automatically generate this so I always find myself copying and pasting
 from an existing service file. Here's one I prepared earlier.
 
-*service.nix*
+*nix/service.nix*
 ```nix
 { config, lib, pkgs, ... }:                                               #1
 
 let                                                                       #2
   cfg = config.services.blank-me-up;
-  blank-me-up = pkgs.callPackage ./default.nix { nixpkgs = pkgs; };       #3
+  blank-me-up = pkgs.callPackage ./default.nix {};                        #3
 in {
   options.services.blank-me-up.enable = lib.mkEnableOption "Blank Me Up"; #4
 
@@ -180,4 +184,126 @@ of the language, see
 1. We define a single option that enables our service.
 1. The `config` attribute contains service configuration.
 1. We expose port 3000.
-1. If you squint this looks a lot like a regular unit file. More on this later.
+1. If you squint this looks a lot like a regular unit file. More on this below.
+
+It would be useful to look at the systemd service file that gets generated
+from this configuraation. To do this, we'll need one more file:
+
+*ops/webserver.nix*
+```nix
+{ ... }: {
+  imports = [ ../nix/service.nix ];
+  services.blank-me-up.enable = true;
+}
+```
+
+This is a function that imports the above configuration and enables the
+`blank-me-up` service. With this in place, we can do
+
+```bash
+$ nix-instantiate --eval -E '(import <nixpkgs/nixos/lib/eval-config.nix> { modules = [./ops/webserver.nix]; }).config.systemd.units."blank-me-up.service".text'
+```
+
+We're using `nix-instantiate` to evaluate (`--eval`) an expression (`-E`) that
+uses `eval-config.nix` from the library to import the file we created and
+output the text of the final unit file. The output of this is pretty messy, but
+we can use `jq` to clean it up:
+
+```bash
+$ nix-instantiate --eval -E '(import <nixpkgs/nixos/lib/eval-config.nix> { modules = [./ops/webserver.nix]; }).config.systemd.units."blank-me-up.service".text' | jq -r
+```
+
+Hopefully at this point you're convinced that Nix can take some quasi-JSON and
+turn it into a binary and a systemd service file. Let's deploy this!
+
+## Deploying
+
+First, we install NixOps:
+
+```bash
+$ nix-env -i nixops
+```
+
+We also have to set up VirtualBox, which I'll be using as my deploy target. If
+you're using NixOS this is as simple as adding the following lines to
+`configuration.nix`:
+
+```nix
+virtualisation.virtualbox.host.enable = true;
+virtualisation.virtualbox.guest.enable = true;
+```
+
+and running `sudo nixos-rebuild switch`. If you're using another Linux distro,
+install VirtualBox and set up a host-only network called `vboxnet0`.
+
+We'll be using the [instructions from the
+manual](https://nixos.org/nixops/manual/#idm140737318606176) as our starting
+point. Create the two files indicated there:
+
+*ops/trivial.nix*
+```nix
+{
+  network.description = "Web server";
+
+  webserver =
+    { config, pkgs, ... }:
+    { services.httpd.enable = true;
+      services.httpd.adminAddr = "alice@example.org";
+      services.httpd.documentRoot = "${pkgs.valgrind.doc}/share/doc/valgrind/html";
+      networking.firewall.allowedTCPPorts = [ 80 ];
+    };
+}
+```
+
+*ops/trivial-vbox.nix*
+```nix
+{
+  webserver =
+    { config, pkgs, ... }:
+    { deployment.targetEnv = "virtualbox";
+      deployment.virtualbox.memorySize = 1024; # megabytes
+      deployment.virtualbox.vcpu = 2; # number of cpus
+    };
+}
+```
+
+We need to make a small change to `ops/trivial.nix`: we already have the
+service configuration we want in `ops/webserver.nix` so we can import and use
+that:
+
+*ops/trivial.nix*
+```nix
+{
+  network.description = "Web server";
+
+  webserver = import ./webserver.nix;
+}
+```
+
+We should now be able to create a new deployment:
+
+```bash
+$ nixops create ops/trivial.nix ops/trivial-vbox.nix -d trivial
+```
+
+and deploy it:
+
+```bash
+$ nixops deploy -d trivial
+```
+
+and assuming that everything goes well, we should see a lot of terminal output
+and at least one mention of `ssh://root@<ip>`, which is the IP of our target.
+
+We should then be able to go to `http://<ip>:3000` and see our web app in
+action!
+
+NixOps also allows us to SSH in for troubleshooting purposes or to view logs:
+
+```bash
+$ nixops ssh -d trivial webserver
+<...>
+[root@webserver:~]# systemctl status blank-me-up
+```
+
+## Responding to change
