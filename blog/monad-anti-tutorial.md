@@ -271,7 +271,7 @@ Enter integer: 2
 Okay, enough examples. As you can see, we've used the same interface to deal
 with failure, an arbitrary number of values, an extra parameter, and
 input/output. There are many useful monad instances in Haskell, from container
-types such as Set and Map to abstractions such as Writer and State, through to
+types such as Seq and Tree to abstractions such as Writer and State, through to
 control flow as implemented by the Cont monad.
 
 If you can make your type conform to the typeclass, Haskell will give you a
