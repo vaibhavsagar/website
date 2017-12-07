@@ -1,7 +1,11 @@
-{ nixpkgs ? import <nixpkgs> {} }:
 let
+  inherit (import <nixpkgs> {}) fetchFromGitHub lib;
+  # ./updater versions.json nixpkgs nixos-17.09
+  versions = lib.mapAttrs
+    (_: fetchFromGitHub)
+    (builtins.fromJSON (builtins.readFile ./versions.json));
   inherit (builtins) any filterSource;
-  lib = nixpkgs.lib;
+  nixpkgs = import versions.nixpkgs {};
   sourceFilter = src: name: type: let
     relPath = lib.removePrefix (toString src + "/") (toString name);
   in lib.cleanSourceFilter name type && (any (lib.flip lib.hasPrefix relPath) [
