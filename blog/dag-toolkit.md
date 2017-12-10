@@ -145,7 +145,7 @@ This seems like an incredibly niche use case, but validating and processing
 DAGs in this way happens surprisingly frequently. Consider a build process
 where inputs and outputs are nodes and their relationships are directed edges.
 The presence of an SCC with more than one vertex indicates a cyclic dependency,
-and dependencies need to be built before the nodes that they depend on, which
+and dependencies need to be built before the nodes that depend on them, which
 implies a reverse topological sort. This generalises to dataflow programming,
 where loops need to be identified (and usually eliminated). I like to think of
 this algorithm as an all-in-one DAG toolkit.
