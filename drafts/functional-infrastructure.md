@@ -11,9 +11,11 @@ demonstrate what that means and make a case for using it in your
 infrastructure.
 
 To make things easier, I'm not assuming that you already run NixOS. Any Linux
-distro should do, as long as you've (installed
-Nix)[https://nixos.org/nix/download.html]. macOS users will be able to follow
+distro should do, as long as you've [installed
+Nix](https://nixos.org/nix/download.html). macOS users will be able to follow
 along until I get to the NixOps section.
+
+# Shippping it
 
 ## Packaging
 
@@ -307,3 +309,5 @@ $ nixops ssh -d trivial webserver
 ```
 
 ## Responding to change
+
+This is fantastic, but deployments are rarely fire-and-forget. How does
