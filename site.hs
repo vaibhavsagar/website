@@ -43,7 +43,6 @@ main = hakyll $ do
         pandocCompiler
         >>= loadAndApplyTemplate "templates/post.html"   postCtx
         >>= saveSnapshot "content"
-        >>= loadAndApplyTemplate "templates/disqus.html" postCtx
         >>= finalise                                     postCtx
 
     matcher "drafts/*" cleanRoute $
