@@ -104,8 +104,6 @@ $ ldd dist/build/blank-me-up/blank-me-up
         not a dynamic executable
 ```
 
-and my (admittedly cursory) testing hasn't revealed any issues.
-
 I've made this project available
 [here](https://github.com/vaibhavsagar/experiments/tree/master/static-haskell-nix)
 if you'd like to tweak it. Since this was relatively straightforward, I think
