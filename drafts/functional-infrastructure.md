@@ -152,12 +152,11 @@ from an existing service file. Here's one I prepared earlier.
 { config, lib, pkgs, ... }:                                               #1
 
 let                                                                       #2
-  cfg = config.services.blank-me-up;
   blank-me-up = pkgs.callPackage ./default.nix {};                        #3
 in {
   options.services.blank-me-up.enable = lib.mkEnableOption "Blank Me Up"; #4
 
-  config = lib.mkIf cfg.enable {                                          #5
+  config = lib.mkIf config.services.blank-me-up.enable {                  #5
     networking.firewall.allowedTCPPorts = [ 3000 ];                       #6
 
     systemd.services.blank-me-up = {                                      #7
