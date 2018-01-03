@@ -20,7 +20,7 @@ $ cabal configure --disable-executable-dynamic --ghc-option=-optl=-static --ghc-
 $ cabal build
 ```
 
-with the magic happening in the first step. On Nix, we do in fact have the
+with the magic happening in the second step. On Nix, we do in fact have the
 necessary static libraries and we can provide them as build inputs but keeping
 track of the library paths gets hairy quickly. Fortunately Nix has an escape
 hatch called `buildFHSUserEnv` that we can use to simulate an environment that
