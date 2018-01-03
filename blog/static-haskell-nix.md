@@ -57,9 +57,9 @@ main = scotty 3000 $ do
         html $ mconcat ["<h1>Scotty, ", beam, " me up!</h1>"]
 ```
 
-We create `default.nix`:
+We create `static.nix`:
 
-*default.nix*
+*static.nix*
 ```nix
 let
   pkgs = import <nixpkgs> {};
@@ -79,7 +79,7 @@ This defines a chroot where statically linked versions of `gmp`, `glibc`, and
 `zlib` are available, as well as `zlib.h`. We enter this environment by running
 
 ```bash
-$ $(nix-build)/bin/fhs
+$ $(nix-build static.nix)/bin/fhs
 ```
 
 and then we can run the commands above with only slight modifications:
@@ -111,3 +111,25 @@ it might be possible to do this without `buildFHSUserEnv`. Maybe I will try
 that next.
 
 Happy static linking!
+
+**Edit:** This turned out to be fairly easy. I took the output of
+
+```bash
+$ cabal2nix --shell . > default.nix
+```
+
+and changed `enableSharedExecutables` and `configureFlags` as follows:
+
+```nix
+enableSharedExecutables = false;
+configureFlags = [
+  "--ghc-option=-optl=-static"
+  "--ghc-option=-optl=-pthread"
+  "--ghc-option=-optl=-L${pkgs.gmp5.static}/lib"
+  "--ghc-option=-optl=-L${pkgs.zlib.static}/lib"
+  "--ghc-option=-optl=-L${pkgs.glibc.static}/lib"
+];
+```
+
+This is also available in the linked repository.
+
