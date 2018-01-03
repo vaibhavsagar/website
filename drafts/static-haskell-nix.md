@@ -28,7 +28,7 @@ hatch called `buildFHSUserEnv` that we can use to simulate an environment that
 
 Let's put it through its paces by building a simple Scotty web app:
 
-```cabal
+```haskell
 name:                blank-me-up
 version:             0.1.0.0
 license:             BSD3
