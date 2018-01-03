@@ -6,9 +6,9 @@ tags: haskell, nix, programming
 
 The section of the Nixpkgs manual that talks about [creating statically linked
 binaries](https://nixos.org/nixpkgs/manual/#creating-statically-linked-binaries)
-with Haskell ends with the caveat: "It’s important to realize, however, that
-most system libraries in Nix are built as shared libraries only, i.e. there is
-just no static library available that Cabal could link!"
+with Haskell ends with the caveat:
+
+> It’s important to realize, however, that most system libraries in Nix are built as shared libraries only, i.e. there is just no static library available that Cabal could link!
 
 That sounds like a challenge.
 
