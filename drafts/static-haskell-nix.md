@@ -28,6 +28,7 @@ hatch called `buildFHSUserEnv` that we can use to simulate an environment that
 
 Let's put it through its paces by building a simple Scotty web app:
 
+*blank-me-up.cabal*
 ```haskell
 name:                blank-me-up
 version:             0.1.0.0
@@ -41,8 +42,8 @@ executable blank-me-up
                      , scotty
   default-language:    Haskell2010
 ```
-*blank-me-up.cabal*
 
+*Main.hs*
 ```haskell
  {-# LANGUAGE OverloadedStrings #-}
 
@@ -55,10 +56,10 @@ main = scotty 3000 $ do
         beam <- param "word"
         html $ mconcat ["<h1>Scotty, ", beam, " me up!</h1>"]
 ```
-*Main.hs*
 
 We create `default.nix`:
 
+*default.nix*
 ```nix
 let
   pkgs = import <nixpkgs> {};
@@ -73,7 +74,6 @@ in pkgs.buildFHSUserEnv {
   ];
 }
 ```
-*default.nix*
 
 This defines a chroot where statically linked versions of `gmp`, `glibc`, and
 `zlib` are available, as well as `zlib.h`. We enter this environment by running
