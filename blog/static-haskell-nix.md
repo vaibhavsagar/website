@@ -10,7 +10,8 @@ with Haskell ends with the caveat:
 
 > It’s important to realize, however, that most system libraries in Nix are built as shared libraries only, i.e. there is just no static library available that Cabal could link!
 
-That sounds like a challenge.
+That sounds like a challenge. Especially when doing it on other platforms is
+[so easy](http://www.kuznero.com/posts/haskell/building-statically-linked-binaries.html).
 
 On other platforms, building a static binary is meant to be as simple as
 
