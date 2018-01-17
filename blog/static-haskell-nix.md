@@ -17,7 +17,7 @@ On other platforms, building a static binary is meant to be as simple as
 
 ```bash
 $ cabal install --only-dependencies
-$ cabal configure --disable-executable-dynamic --ghc-option=-optl=-static --ghc-option=-optl=-pthread
+$ cabal configure --disable-executable-dynamic --disable-shared --ghc-option=-optl=-static
 $ cabal build
 ```
 
@@ -87,7 +87,7 @@ and then we can run the commands above with only slight modifications:
 
 ```bash
 $ cabal install --only-dependencies --extra-include-dirs=/usr/include --extra-lib-dirs=/usr/lib
-$ cabal configure --disable-executable-dynamic --ghc-option=-optl=-static --ghc-option=-optl=-pthread --ghc-option=-optl=-L/usr/lib
+$ cabal configure --disable-executable-dynamic --disable-shared --ghc-option=-optl=-static --ghc-option=-optl=-L/usr/lib
 $ cabal build
 ```
 
@@ -123,9 +123,9 @@ and changed `enableSharedExecutables` and `configureFlags` as follows:
 
 ```nix
 enableSharedExecutables = false;
+enableSharedLibraries = false;
 configureFlags = [
   "--ghc-option=-optl=-static"
-  "--ghc-option=-optl=-pthread"
   "--ghc-option=-optl=-L${pkgs.gmp5.static}/lib"
   "--ghc-option=-optl=-L${pkgs.zlib.static}/lib"
   "--ghc-option=-optl=-L${pkgs.glibc.static}/lib"
@@ -134,3 +134,5 @@ configureFlags = [
 
 This is also available in the linked repository.
 
+Edit: [Moritz Angermann](https://github.com/angerman) improved these
+instructions to be more robust. Thanks Moritz!
