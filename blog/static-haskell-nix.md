@@ -4,6 +4,8 @@ published: 2018-01-03
 tags: haskell, nix, programming
 --------------------------------------------------------------------------------
 
+_Skip to the end for a faster and easier way of getting this working._
+
 The section of the Nixpkgs manual that talks about [creating statically linked
 binaries](https://nixos.org/nixpkgs/manual/#creating-statically-linked-binaries)
 with Haskell ends with the caveat:
