@@ -121,7 +121,8 @@ Happy static linking!
 $ cabal2nix --shell . > default.nix
 ```
 
-and changed `enableSharedExecutables` and `configureFlags` as follows:
+and changed `enableSharedExecutables`, `enableSharedLibraries`, and
+`configureFlags` as follows:
 
 ```nix
 enableSharedExecutables = false;
