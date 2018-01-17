@@ -134,5 +134,5 @@ configureFlags = [
 
 This is also available in the linked repository.
 
-Edit: [Moritz Angermann](https://github.com/angerman) improved these
+**Edit**: [Moritz Angermann](https://github.com/angerman) improved these
 instructions to be more robust. Thanks Moritz!
