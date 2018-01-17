@@ -113,7 +113,7 @@ that next.
 
 Happy static linking!
 
-**Edit:** This turned out to be fairly easy. I took the output of
+**Edit 1:** This turned out to be fairly easy. I took the output of
 
 ```bash
 $ cabal2nix --shell . > default.nix
@@ -134,5 +134,5 @@ configureFlags = [
 
 This is also available in the linked repository.
 
-**Edit**: [Moritz Angermann](https://github.com/angerman) improved these
+**Edit 2**: [Moritz Angermann](https://github.com/angerman) improved these
 instructions to be more robust. Thanks Moritz!
