@@ -11,7 +11,7 @@ here's an expression that makes a recent version of Pandoc available in a
 ```nix
 let
   pkgs = import <nixpkgs> {};
-  haskellPackages' = pkgs.haskellPackages.override {
+  haskellPkgs = pkgs.haskellPackages.override {
     overrides = self: super: {
       doctemplates = self.callHackage "doctemplates" "0.2.1" {};
       hslua = self.callHackage "hslua" "0.9.1" {};
@@ -21,7 +21,7 @@ let
     };
   };
 in pkgs.runCommand "dummy" {
-  buildInputs = [ haskellPackages'.pandoc ];
+  buildInputs = [ haskellPkgs.pandoc ];
 } ""
 ```
 
@@ -84,7 +84,7 @@ let
     sha256 = "14m6krpv7iga96bjpb4xmdq1fpysryyfvkghn68k6g8gr9y61fqs";
   };
   pkgs = import nixpkgs {};
-  haskellPackages' = pkgs.haskellPackages.override {
+  haskellPkgs = pkgs.haskellPackages.override {
     overrides = self: super: {
       doctemplates = self.callHackage "doctemplates" "0.2.1" {};
       hslua = self.callHackage "hslua" "0.9.1" {};
@@ -94,7 +94,7 @@ let
     };
   };
 in pkgs.runCommand "dummy" {
-  buildInputs = [ haskellPackages'.pandoc ];
+  buildInputs = [ haskellPkgs.pandoc ];
 } ""
 ```
 
@@ -184,7 +184,7 @@ let
     (builtins.fromJSON (builtins.readFile ./versions.json));
   # ./updater versions.json nixpkgs nixos-17.09
   pkgs = import versions.nixpkgs {};
-  haskellPackages' = pkgs.haskellPackages.override {
+  haskellPkgs = pkgs.haskellPackages.override {
     overrides = self: super: {
       doctemplates = self.callHackage "doctemplates" "0.2.1" {};
       hslua = self.callHackage "hslua" "0.9.1" {};
@@ -194,7 +194,7 @@ let
     };
   };
 in pkgs.runCommand "dummy" {
-  buildInputs = [ haskellPackages'.pandoc ];
+  buildInputs = [ haskellPkgs.pandoc ];
 } ""
 ```
 
