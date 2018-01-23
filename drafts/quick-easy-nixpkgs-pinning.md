@@ -5,8 +5,8 @@ tags: programming, nix
 --------------------------------------------------------------------------------
 
 I love Nix because it makes packaging and using software so easy. For example,
-here's an expression that makes a recent version of Pandoc available in a
-`nix-shell` at the time of writing:
+here's a first stab at an expression that makes a recent version of Pandoc
+available in a `nix-shell` at the time of writing:
 
 ```nix
 let
