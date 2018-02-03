@@ -72,9 +72,11 @@ More unwrapping for `Applicative` and `Alternative`.
 The [`Alternative`](https://hackage.haskell.org/package/base/docs/Control-Applicative.html#t:Alternative) typeclass allows us to express the idea of running one parser or another parser, resulting in the first successful parse. `empty` handles the case where both parsers fail, and `(<|>)` (which can be pronounced 'alt') performs the alternation. This is convenient enough on its own, but `Alternative` also provides `many` and `some` which correspond exactly to `many` and `many1` from the paper:
 
 ```haskell
-many v = some v <|> pure []
-some v = (:) <$> v <*> many v
+-- many v = some v <|> pure []
+-- some v = (:) <$> v <*> many v
 ```
+
+but only after replacing `[]` with `Maybe` like I've done here so that `(<|>)` corresponds to `(+++)`. 
 
 
 ```haskell
