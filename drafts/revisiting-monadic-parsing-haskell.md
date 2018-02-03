@@ -33,7 +33,7 @@ This is [`StateT`](https://hackage.haskell.org/package/transformers/docs/Control
 newtype Parser a = Parser (StateT String Maybe a) deriving (Functor, Applicative, Alternative, Monad)
 ```
 
-The second change is also for completeness: the authors jump straight into the `Monad` instance without defining `Functor` and `Applicative` first. To be fair, the `Applicative` abstraction hadn't been [discovered](http://www.staff.city.ac.uk/~ross/papers/Applicative.html) yet, and this is also the reason why the authors define `mzero` and `mplus` (which they call `(++)`) instead the `Alternative` methods `empty` and `(<|>)`. Because of our `Maybe` change, I'll be able to get away with defining just `Alternative` and won't need to bother with their `(++)`
+The second change is also for completeness: the authors jump straight into the `Monad` instance without defining `Functor` and `Applicative` first. To be fair, the `Applicative` abstraction hadn't been [discovered](http://www.staff.city.ac.uk/~ross/papers/Applicative.html) yet, and this is also the reason why the authors define `mzero` and `mplus` (which they call `(++)`) instead the `Alternative` methods `empty` and `(<|>)`. Because of our `Maybe` change, I'll be able to get away with defining just `Alternative` and won't need to bother with their `(++)`.
 
 Finally, I'll try to avoid do-notation where possible in favour of a more Applicative style using e.g. `<*>` (which can be pronounced 'splat' if you don't already have a name for it) because most of these parsers don't require it.
 
