@@ -110,8 +110,8 @@ Notice that `anyChar` is the only function below that manually constructs a `Par
 ```haskell
 anyChar :: Parser Char
 anyChar = Parser . StateT $ \s -> case s of
-    []     -> Nothing
-    (c:cs) -> Just (c, cs)
+    []     -> empty
+    (c:cs) -> pure (c, cs)
 
 satisfy :: (Char -> Bool) -> Parser Char
 satisfy pred = do
@@ -209,22 +209,17 @@ runParser expr "(1 + 2 * 4) / 3 + 5"
     Just (8,"")
 
 
-What have we gained in 20 years? With only minor changes, the code is more composable and uses finer-grained abstractions. For example, if we change our minds about replacing `[]` with `Maybe`, we can switch it back and would only have to update `anyChar` and `apply`:
+What have we gained in 20 years? With only minor changes, the code is more composable and uses finer-grained abstractions. For example, if we change our minds about replacing `[]` with `Maybe`, we can switch it back and would only have to update the type signature of `apply`:
 
 ```haskell
-anyChar :: Parser Char
-anyChar = Parser . StateT $ \s -> case s of
-    []     -> []
-    (c:cs) -> [(c, cs)]
-
 apply :: Parser a -> String -> [(a, String)]
-apply p = runParser (space *> p)
+apply p = runParser (space *> p) -- the implementation stays the same!
 ```
 
 If we want better error messages, we could use a type such as `Either String` to keep track of locations and error messages. The [`yoctoparsec`](http://hackage.haskell.org/package/yoctoparsec) library takes this even further, allowing to you to choose your own stream type.
 
 Another big difference is the `Applicative` family of functions, which we can leverage whenever we don't have to branch on a previously parsed value (which turns out to be surprisingly often). I'm a huge fan of the `x <$> y <*> z` and the `ignored *> value <* ignored` idioms and I think it's useful to be able to parse this way.
 
-Otherwise, the code is largely the same and I think it's pretty incredible that so little has changed in 20 years! This code is available as an [IHaskell notebook](https://github.com/vaibhavsagar/notebooks/blob/master/typeclasses/notebooks/Parser.ipynb) if you would like to experiment with it yourself.
+Otherwise, the code is largely the same and I think it's pretty incredible that so little has changed in 20 years! This code is available as an [IHaskell notebook](https://github.com/vaibhavsagar/notebooks/blob/master/revisiting-monadic-parsing-haskell/Parser.ipynb) if you would like to experiment with it yourself.
 
 Thanks to [Alan O'Donnell](https://github.com/cqfd), [Andrey Mokhov](https://blogs.ncl.ac.uk/andreymokhov/), [Annie Cherkaev](https://anniecherkaev.com/), and [Julia Evans](https://jvns.ca/) for comments and feedback!
