@@ -1,4 +1,3 @@
-
 --------------------------------------------------------------------------------
 title: Revisiting 'Monadic Parsing in Haskell'
 published: 2018-02-04
