@@ -1,3 +1,4 @@
+
 --------------------------------------------------------------------------------
 title: Revisiting 'Monadic Parsing in Haskell'
 published: 2018-02-04
@@ -45,7 +46,6 @@ Let's begin!
 
 import Control.Applicative (Alternative(..))
 import Control.Monad.Trans.State.Strict
-import Control.Monad.Trans (lift)
 import Control.Monad (guard)
 import Data.Char (isSpace, isDigit, ord)
 ```
@@ -88,7 +88,7 @@ instance Applicative Parser where
 
 instance Alternative Parser where
     empty :: Parser a
-    empty   = Parser $ lift empty
+    empty   = Parser empty
     (<|>) :: Parser a -> Parser a -> Parser a
     a <|> b = Parser $ unParser a <|> unParser b
 ```
@@ -222,4 +222,4 @@ Another big difference is the `Applicative` family of functions, which we can le
 
 Otherwise, the code is largely the same and I think it's pretty incredible that so little has changed in 20 years! This code is available as an [IHaskell notebook](https://github.com/vaibhavsagar/notebooks/blob/master/revisiting-monadic-parsing-haskell/Parser.ipynb) if you would like to experiment with it yourself.
 
-Thanks to [Alan O'Donnell](https://github.com/cqfd), [Andrey Mokhov](https://blogs.ncl.ac.uk/andreymokhov/), [Annie Cherkaev](https://anniecherkaev.com/), and [Julia Evans](https://jvns.ca/) for comments and feedback!
+Thanks to [Alan O'Donnell](https://github.com/cqfd), [Andrey Mokhov](https://blogs.ncl.ac.uk/andreymokhov/), [Annie Cherkaev](https://anniecherkaev.com/), [Julia Evans](https://jvns.ca/), and [Noah Luck Easterly](https://github.com/rampion/) for comments and feedback!
