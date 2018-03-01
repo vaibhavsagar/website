@@ -34,6 +34,7 @@ import qualified Data.Graph      as G
 import qualified Data.Map.Strict as M
 import qualified Data.Set        as S
 import qualified Data.Array      as A
+import qualified Prelude         as P
 
 import Prelude hiding (lookup)
 
@@ -44,7 +45,7 @@ import Data.Maybe (isJust, isNothing, fromJust)
 
 tarjan :: Int -> G.Graph -> Maybe [S.Set Int]
 tarjan n graph = runST $ do
-    index    <- newSTRef (0 :: Int)
+    index    <- newSTRef 0
     stack    <- newSTRef []
     stackSet <- newSTRef S.empty
     indices  <- newSTRef M.empty
@@ -57,7 +58,6 @@ tarjan n graph = runST $ do
             strongConnect n v graph index stack stackSet indices lowlinks output
 
     readSTRef output
-
 
 strongConnect
     :: Int
@@ -74,7 +74,7 @@ strongConnect n v graph index stack stackSet indices lowlinks output = do
     i <- readSTRef index
     insert v i indices
     insert v i lowlinks
-    increment index
+    modifySTRef' index (+1)
     push stack stackSet v
 
     forM_ (graph A.! v) $ \w -> lookup w indices >>= \case
@@ -97,7 +97,6 @@ strongConnect n v graph index stack stackSet indices lowlinks output = do
     where
         lookup value hashMap     = M.lookup value <$> readSTRef hashMap
         insert key value hashMap = modifySTRef' hashMap (M.insert key value)
-        increment counter        = modifySTRef' counter (+1)
 
 addSCC :: Int -> Int -> S.Set Int -> STRef s [Int] -> STRef s (S.Set Int) -> ST s (Maybe (S.Set Int))
 addSCC n v scc stack stackSet = pop stack stackSet >>= \w -> if ((other n w) `S.member` scc) then return Nothing else
@@ -123,7 +122,7 @@ clauses n [u,v] = [(other n u, v), (other n v, u)]
 
 checkSat :: String -> IO Bool
 checkSat name = do
-    p <- map (map read . words) . lines <$> readFile name
+    p <- map (map P.read . words) . lines <$> readFile name
     let pNo    = head $ head p
         pn     = map (map (normalise pNo)) $ tail p
         pGraph = G.buildG (0,2*pNo) $ concatMap (clauses pNo) pn
