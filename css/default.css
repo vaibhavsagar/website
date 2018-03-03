@@ -41,6 +41,10 @@ div#footer {
     text-align: right;
 }
 
+div.sourceCode {
+    line-height: 1em;
+}
+
 h1 {
     font-size: 24px;
 }
@@ -57,4 +61,5 @@ div.info {
 
 pre {
     overflow: auto;
+    line-height: 1em;
 }
