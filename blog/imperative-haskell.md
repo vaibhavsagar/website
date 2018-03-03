@@ -251,68 +251,67 @@ Components algorithm. The pseudocode for that (as taken from Wikipedia) is:
 and here's what that looks like in Haskell:
 
 ```haskell
+{-# LANGUAGE LambdaCase #-}
+
+import qualified Data.Array as A
 import qualified Data.Graph as G
+
+import Control.Monad       (forM_, when)
 import Control.Monad.ST
 import Data.STRef
-
-import qualified Data.Map.Strict    as M
-import qualified Data.Set           as S
-import qualified Data.IntMap.Strict as I
-import qualified Data.Array         as A
-
-import Control.Monad (forM_, when)
-import Data.Maybe (isNothing, fromJust)
+import Data.Vector.Mutable (STVector, read, replicate, write)
+import Prelude hiding      (read, replicate)
 
 tarjan graph = runST $ do
     index    <- newSTRef 0
     stack    <- newSTRef []
-    indices  <- newSTRef I.empty
-    lowlinks <- newSTRef I.empty
+    stackSet <- replicate size False
+    indices  <- replicate size Nothing
+    lowlinks <- replicate size Nothing
     output   <- newSTRef []
 
     forM_ (G.vertices graph) $ \v -> do
-        vIndex <- I.lookup v <$> readSTRef indices
-        when (isNothing vIndex) $ strongConnect v graph index stack indices lowlinks output
+        vIndex <- read indices v
+        when (vIndex == Nothing) $
+            strongConnect v graph index stack stackSet indices lowlinks output
 
     reverse <$> readSTRef output
+    where size = snd (A.bounds graph) + 1
 
-strongConnect v graph index stack indices lowlinks output = do
+strongConnect v graph index stack stackSet indices lowlinks output = do
     i <- readSTRef index
-    modifySTRef' indices  (I.insert v i)
-    modifySTRef' lowlinks (I.insert v i)
+    write indices  v (Just i)
+    write lowlinks v (Just i)
     modifySTRef' index (+1)
-    push stack v
+    push v
 
-    forM_ (graph A.! v) $ \w -> do
-        wIndex <- I.lookup w <$> readSTRef indices
-        if isNothing wIndex
-            then do
-                strongConnect w graph index stack indices lowlinks output
-                vLowLink <- fromJust . I.lookup v <$> readSTRef lowlinks
-                wLowLink <- fromJust . I.lookup w <$> readSTRef lowlinks
-                modifySTRef' lowlinks (I.insert v $ min vLowLink wLowLink)
-            else do
-                wOnStack <- elem w <$> readSTRef stack
-                when wOnStack $ do
-                    vLowLink <- fromJust . I.lookup v <$> readSTRef lowlinks
-                    modifySTRef' lowlinks (I.insert v $ min vLowLink (fromJust wIndex))
+    forM_ (graph A.! v) $ \w -> read indices w >>= \case
+        Nothing -> do
+            strongConnect w graph index stack stackSet indices lowlinks output
+            write lowlinks v =<< (min <$> read lowlinks v <*> read lowlinks w)
+        Just{}  -> read stackSet w >>= \wOnStack -> when wOnStack $
+            write lowlinks v =<< (min <$> read lowlinks v <*> read indices  w)
 
-    vLowLink <- fromJust . I.lookup v <$> readSTRef lowlinks
-    vIndex   <- fromJust . I.lookup v <$> readSTRef indices
+    vLowLink <- read lowlinks v
+    vIndex   <- read indices  v
     when (vLowLink == vIndex) $ do
-        scc <- addSCC v [] stack
+        scc <- addSCC v []
         modifySTRef' output (scc:)
+    where
+        addSCC v scc = do
+            w <- pop
+            let scc' = w:scc
+            if w == v then return scc' else addSCC v scc'
 
-addSCC v scc stack = do
-    w <- pop stack
-    let scc' = w:scc
-    if w == v then return scc' else addSCC v scc' stack
+        push e = do
+            modifySTRef' stack (e:)
+            write stackSet e True
 
-push stack e = modifySTRef' stack (e:)
-pop  stack   = do
-    e <- head <$> readSTRef stack
-    modifySTRef' stack tail
-    return e
+        pop = do
+            e <- head <$> readSTRef stack
+            modifySTRef' stack tail
+            write stackSet e False
+            return e
 ```
 
 Aside from explicitly declaring our variables and passing them around, I think
