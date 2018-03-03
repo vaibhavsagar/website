@@ -251,8 +251,6 @@ Components algorithm. The pseudocode for that (as taken from Wikipedia) is:
 and here's what that looks like in Haskell:
 
 ```haskell
-{-# LANGUAGE LambdaCase #-}
-
 import qualified Data.Array as A
 import qualified Data.Graph as G
 
@@ -285,7 +283,7 @@ strongConnect v graph index stack stackSet indices lowlinks output = do
     modifySTRef' index (+1)
     push v
 
-    forM_ (graph A.! v) $ \w -> read indices w >>= \case
+    forM_ (graph A.! v) $ \w -> read indices w >>= \found -> case found of
         Nothing -> do
             strongConnect w graph index stack stackSet indices lowlinks output
             write lowlinks v =<< (min <$> read lowlinks v <*> read lowlinks w)
@@ -294,9 +292,7 @@ strongConnect v graph index stack stackSet indices lowlinks output = do
 
     vLowLink <- read lowlinks v
     vIndex   <- read indices  v
-    when (vLowLink == vIndex) $ do
-        scc <- addSCC v []
-        modifySTRef' output (scc:)
+    when (vLowLink == vIndex) $ modifySTRef' output . (:) =<< addSCC v []
     where
         addSCC v scc = do
             w <- pop
