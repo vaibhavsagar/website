@@ -182,3 +182,6 @@ fhs-chrootenv$ stack exec -- jupyter notebook
 ```
 
 Cool!
+
+This expression is available [on
+GitHub](https://github.com/vaibhavsagar/experiments/blob/master/stack-env-nix/ihaskell.nix).
