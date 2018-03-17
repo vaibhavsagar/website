@@ -119,13 +119,13 @@ in pkgs.buildFHSUserEnv {
   targetPkgs = pkgs: [
     pkgs.blas
     pkgs.cairo.dev
-    pkgs.iana-etc
     pkgs.file
-    pkgs.haskellPackages.stack
     pkgs.gcc
     pkgs.glib.dev
     pkgs.gmp
     pkgs.gnumake
+    pkgs.haskellPackages.stack
+    pkgs.iana-etc
     pkgs.liblapack
     pkgs.pango.dev
     pkgs.perl
@@ -151,13 +151,13 @@ in pkgs.buildFHSUserEnv {
   targetPkgs = pkgs: [
     pkgs.blas
     pkgs.cairo.dev
-    pkgs.iana-etc
     pkgs.file
-    pkgs.haskellPackages.stack
     pkgs.gcc
     pkgs.glib.dev
     pkgs.gmp
     pkgs.gnumake
+    pkgs.haskellPackages.stack
+    pkgs.iana-etc
     pkgs.liblapack
     pkgs.pango.dev
     pkgs.perl
