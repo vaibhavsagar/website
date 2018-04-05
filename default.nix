@@ -1,6 +1,6 @@
 let
   inherit (import <nixpkgs> {}) fetchFromGitHub lib;
-  # ./updater versions.json nixpkgs nixos-17.09
+  # ./updater versions.json nixpkgs nixos-18.03
   versions = lib.mapAttrs
     (_: fetchFromGitHub)
     (builtins.fromJSON (builtins.readFile ./versions.json));
