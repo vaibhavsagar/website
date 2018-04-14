@@ -12,9 +12,10 @@ Ubuntu.
 
 Fortunately, Nixpkgs includes a handy tool called `buildFHSUserEnv` which will
 build a chroot wherein everything is laid out according to the [Filesystem
-Hierarcy Standard](https://en.wikipedia.org/wiki/Filesystem_Hierarchy_Standard)
-that most software is accustomed to. This means we can provide an environment
-with Stack and any dependencies and it will happily run.
+Hierarchy
+Standard](https://en.wikipedia.org/wiki/Filesystem_Hierarchy_Standard) that
+most software is accustomed to. This means we can provide an environment with
+Stack and any dependencies and it will happily run.
 
 Let's walk through doing this for a package like
 [IHaskell](https://github.com/gibiansky/IHaskell). We begin by cloning the
