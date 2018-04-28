@@ -43,6 +43,6 @@ title: Talks
 - [Video](https://www.youtube.com/watch?v=wsNnP3we_R4)
 
 #### Git it Going
-- Where: Canberra Python Users Group May 2016
+- Where: Canberra Python Users Group May 2015
 - [Slides](http://vaibhavsagar.com/git-it-going/)
 - Video
