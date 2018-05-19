@@ -25,7 +25,9 @@ in pkgs.runCommand "dummy" {
 } ""
 ```
 
-If we save this to `default.nix` we can use it as follows:
+If we save this to `default.nix` we can use it as follows (unless you're
+reading this more than six months in the future from the time of writing, more
+on that below):
 
 ```bash
 $ nix-shell default.nix
@@ -46,7 +48,8 @@ Unfortunately, there is a serious flaw with this expression that prevents us
 from guaranteeing this.
 
 The problem is not immediately obvious, and might only manifest days or weeks
-later. The issue is with the second line,
+later, or when you upgrade NixOS to the next version. The issue is with the
+second line,
 
 ```nix
 pkgs = import <nixpkgs>;
