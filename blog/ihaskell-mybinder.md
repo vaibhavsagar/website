@@ -13,7 +13,7 @@ choosing.
 This means that getting an IHaskell installation up and running can be as
 simple as clicking a link, and I'm happy to report that I've gotten this
 working! You can [try it
-here](https://mybinder.org/v2/gh/gibiansky/IHaskell/7a41fa209d071cf7ff7c4e63dbc9f584006efb0d).
+here](https://mybinder.org/v2/gh/gibiansky/IHaskell/master).
 
 I started with the simplest thing I could think of, which was to install system
 dependencies and Jupyter to an Ubuntu container and then run `stack install
