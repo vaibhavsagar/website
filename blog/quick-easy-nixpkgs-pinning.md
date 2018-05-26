@@ -208,8 +208,23 @@ maximum and I'm happy with the way it works for now.
 I hope you find some of the ideas and/or code here useful the next time you're
 wondering if you should pin `nixpkgs` and how to do so!
 
+**Appendix 1**
+
+If you use Nix 2.0 or newer, the `builtins.fetchTarball` command takes a
+`sha256` which means you can replace `fetchFromGitHub` and bootstrap without an
+existing `<nixpkgs>`! The following code snippet is identical to
+`fetchFromGitHub`:
+
+```nix
+fetcher = { owner, repo, rev, sha256 }: builtins.fetchTarball {
+  inherit sha256;
+  url = "https://github.com/${owner}/${repo}/archive/${rev}.tar.gz";
+};
+```
+
 Thanks to [Ahmad Jarara](https://jarmac.org/), [Chris
 Stryczynski](https://twitter.com/@chrisczynski), [Garry
 Cairns](https://github.com/garry-cairns), [Harold
-Treen](https://haroldtreen.com/), [Susan Potter](http://susanpotter.net/), and
-[Tobias Pflug](https://twitter.com/tpflug) for comments and feedback!
+Treen](https://haroldtreen.com/), [Renzo Carbonara](https://ren.zone/), [Susan
+Potter](http://susanpotter.net/), and [Tobias
+Pflug](https://twitter.com/tpflug) for comments and feedback!
