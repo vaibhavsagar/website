@@ -12,7 +12,7 @@ title: Talks
 #### Moving towards dialogue: collaborating with your computer using typed holes!
 
 - Where: !!Con 2018
-- [Slides](https://vaibhavsagar.com/presentations/typed-holes), Video
+- [Slides](https://vaibhavsagar.com/presentations/typed-holes), [Video](https://www.youtube.com/watch?v=0oo8wIi2qBE)
 
 #### Functional DevOps (in a dysfunctional world)
 
