@@ -4,7 +4,8 @@ published: 2018-01-03
 tags: haskell, nix, programming
 --------------------------------------------------------------------------------
 
-_Skip to the end for a faster and easier way of getting this working._
+_Skip to the end for a faster and easier way of getting this working. All you
+have to do is clone the linked repo and run `nix-build default.nix`!_
 
 The section of the Nixpkgs manual that talks about [creating statically linked
 binaries](https://nixos.org/nixpkgs/manual/#creating-statically-linked-binaries)
@@ -18,6 +19,7 @@ That sounds like a challenge. Especially when doing it on other platforms is
 On other platforms, building a static binary is meant to be as simple as
 
 ```bash
+$ cabal update
 $ cabal install --only-dependencies
 $ cabal configure --disable-executable-dynamic --disable-shared --ghc-option=-optl=-static
 $ cabal build
@@ -88,8 +90,9 @@ $ $(nix-build static.nix)/bin/fhs
 and then we can run the commands above with only slight modifications:
 
 ```bash
+$ cabal update
 $ cabal install --only-dependencies --extra-include-dirs=/usr/include --extra-lib-dirs=/usr/lib
-$ cabal configure --disable-executable-dynamic --disable-shared --ghc-option=-optl=-static --ghc-option=-optl=-L/usr/lib
+$ cabal configure --disable-executable-dynamic --disable-shared --ghc-option=-optl=-pthread --ghc-option=-optl=-static --ghc-option=-optl=-L/usr/lib
 $ cabal build
 ```
 
@@ -99,8 +102,9 @@ command, I get a whole bunch of warnings about
 "Using '<function>' in statically linked applications requires at runtime the shared libraries from the glibc version used for linking"
 ```
 
-but these don't seem to cause any issues in practice. You can confirm that the
-executable has been statically linked by running
+which is definitely something to watch out for if you plan on deploying these
+executables to a machine that might be running a different version of `glibc`.
+You can confirm that the executable has been statically linked by running
 
 ```bash
 $ ldd dist/build/blank-me-up/blank-me-up
@@ -137,5 +141,6 @@ configureFlags = [
 
 This is also available in the linked repository.
 
-**Edit 2**: [Moritz Angermann](https://github.com/angerman) improved these
-instructions to be more robust. Thanks Moritz!
+**Edit 2**: [Moritz Angermann](https://github.com/angerman) and [Niklas
+Hambüchen](https://github.com/nh2) improved these instructions to be more
+robust. Thanks Moritz and Niklas!
