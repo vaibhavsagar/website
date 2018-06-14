@@ -31,7 +31,13 @@ data Expr' a
     deriving (Show)
 ```
 
-Let bindings can be easily desugared, which will help us to write a simpler evaluator. However, we'd also like to make sure the desugaring has been implemented correctly, perhaps by converting to some intermediate state where both the name and the correct de Bruijn index coexist peacefully. We have a couple of options, none of which are great:
+Let bindings can be easily desugared into lambda abstractions as follows:
+
+```
+let <n> = <x> in <y> <=> (\n -> y) x
+```
+
+which will help us to write a simpler evaluator. However, we'd also like to make sure the desugaring has been implemented correctly, perhaps by converting to some intermediate state where both the name and the correct de Bruijn index coexist peacefully. We have a couple of options, none of which are great:
 
 1. Define a third data type and then write an indexing pass that converts `Var String` to `Var (String, Int)` and then a desugaring pass that converts that to `Expr a`.
 2. Work entirely within the bigger data type, forget about indexing, and throw errors whenever a `Let` is encountered after a desugaring pass.
@@ -193,11 +199,9 @@ pattern AppLet f a <- AppX _ f a
 pattern LetLet n v e <- ExpX (n,v,e)
 ```
 
-Now we can write a desugarer that preserves names and rewrites our let bindings as follows:
+Now instead of writing a single giant pass, we can write smaller ones!
 
-```
-let <n> = <x> in <y> <=> (\n -> y) x
-```
+We can write a desugarer that preserves names and rewrites our let bindings as follows:
 
 
 ```haskell
