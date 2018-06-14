@@ -97,7 +97,7 @@ $ cabal build
 ```
 
 The difference is the extra options passed to the linker. After the last
-command, I get a whole bunch of warnings about 
+command, I get a whole bunch of warnings about
 ```
 "Using '<function>' in statically linked applications requires at runtime the shared libraries from the glibc version used for linking"
 ```
