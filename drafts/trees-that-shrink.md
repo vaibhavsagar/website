@@ -4,7 +4,9 @@ published: 2018-06-14
 tags: haskell, programming
 --------------------------------------------------------------------------------
 
-Suppose we have a simple algebraic data type representing the lambda calculus with de Bruijn indices:
+I read [this paper](https://www.microsoft.com/en-us/research/wp-content/uploads/2016/11/trees-that-grow.pdf) a while ago and people seemed pretty excited about it, although I couldn't see why. Fortunately, someone posed me an interesting problem recently and in the process of tackling it I believe I know now.
+
+Suppose we have a simple algebraic data type representing the lambda calculus with [de Bruijn indices](https://en.wikipedia.org/wiki/De_Bruijn_index), which are a way of avoiding the messy problem of variable names:
 
 
 ```haskell
@@ -29,12 +31,34 @@ data Expr' a
     deriving (Show)
 ```
 
-Let bindings can be easily desugared, which will help us to write a simpler evaluator. However, we'd also like to make sure the desugaring has been implemented correctly, perhaps by converting to some intermediate state where both the name and the correct de Bruijn index coexist peacefully. We have two options, neither of which is great:
+Let bindings can be easily desugared, which will help us to write a simpler evaluator. However, we'd also like to make sure the desugaring has been implemented correctly, perhaps by converting to some intermediate state where both the name and the correct de Bruijn index coexist peacefully. We have a couple of options, none of which are great:
 
 1. Define a third data type and then write an indexing pass that converts `Var String` to `Var (String, Int)` and then a desugaring pass that converts that to `Expr a`.
 2. Work entirely within the bigger data type, forget about indexing, and throw errors whenever a `Let` is encountered after a desugaring pass.
+3. Combine the desugaring and indexing passes into one, and forget about keeping track of the desugaring.
 
-These problems are (barely) manageable in this case, but what if we want to add more syntax sugar or share this data type with other libraries that have different use cases? We'd either have to write variations on a theme over and over again or say goodbye to type safety. There has to be a better way!
+Let's implement the third:
+
+
+```haskell
+import qualified Data.Map.Strict as Map
+
+type Env = Map.Map String Int
+
+desugarAndAnonymise :: Env -> Expr' a -> Expr a
+desugarAndAnonymise env expr = case expr of
+    Lit' a -> Lit a
+    Var' name -> Var (env Map.! name)
+    Abs' expr' -> let
+        env'  = Map.map succ env
+        in Abs (desugarAndAnonymise env' expr')
+    App' f x -> App (desugarAndAnonymise env f) (desugarAndAnonymise env x)
+    Let' n v expr' -> desugarAndAnonymise env (App' (Abs' expr') v)
+```
+
+That wasn't a lot of fun to write, I have no idea if I did the conversion from names to indices correctly, and there's no easy way to check if I did.
+
+These problems are (barely) manageable in this case, but what if we want to add more syntax sugar or share this data type with other libraries that have different use cases? We'd either have to write variations on a theme over and over again or say goodbye to type safety. It also becomes harder and harder to decompose our functions into smaller ones that only do one thing. There has to be a better way!
 
 This is the subject of a recent paper called [Trees that Grow](https://www.microsoft.com/en-us/research/wp-content/uploads/2016/11/trees-that-grow.pdf) by Shayan Najd and Simon Peyton Jones. They noticed the need for this approach when looking at GHC's abstract syntax tree type but the idiom is generally applicable.
 
@@ -177,10 +201,6 @@ let <n> = <x> in <y> <=> (\n -> y) x
 
 
 ```haskell
-import qualified Data.Map.Strict as Map
-
-type Env = Map.Map String Int
-
 desugar :: Env -> ExpLet a -> ExpAnn a
 desugar env expr = case expr of
     LitLet a -> LitAnn a
@@ -234,3 +254,5 @@ eval [] . anonymise . desugar Map.empty $ AppLet (AppLet konst (LitLet 1)) (LitL
 
 
 Awesome! We have composable compiler passes that are easier to write and to think about. Even with this small example, I hope the benefits are clear.
+
+Thanks to [Andy Chu](http://andychu.net/) and [Peter Bhat Harkins](https://push.cx/) for comments and feedback.
