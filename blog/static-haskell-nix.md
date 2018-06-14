@@ -104,6 +104,8 @@ command, I get a whole bunch of warnings about
 
 which is definitely something to watch out for if you plan on deploying these
 executables to a machine that might be running a different version of `glibc`.
+A more robust solution is to link against e.g. `musl` instead of `glibc`, as
+Niklas Hambüchen has done [here](https://github.com/nh2/static-haskell-nix).
 You can confirm that the executable has been statically linked by running
 
 ```bash
@@ -139,7 +141,12 @@ configureFlags = [
 ];
 ```
 
-This is also available in the linked repository.
+This is also available in the linked repository, and you can pin `nixpkgs` as
+follows to get my exact build:
+
+```
+$ nix-build -I nixpkgs=https://github.com/NixOS/nixpkgs-channels/archive/08d245eb31a3de0ad73719372190ce84c1bf3aee.tar.gz default.nix
+```
 
 **Edit 2**: [Moritz Angermann](https://github.com/angerman) and [Niklas
 Hambüchen](https://github.com/nh2) improved these instructions to be more
