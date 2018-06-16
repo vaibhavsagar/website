@@ -4,12 +4,16 @@ published: 2018-06-15
 tags: programming, nix
 --------------------------------------------------------------------------------
 
-When I first encountered Nix, it seemed magical, and not in a good way. Here
-was something that claimed to solve packaging and dependency management once
-and for all, but what made it work? I found it very difficult to reconcile the
-experience of using it with the knowledge that it was just Linux at the end of
-the day and everything was essentially shell scripts that were being run more
-or less like they would be with any other packaging toolchain.
+When I first encountered Nix, it seemed magical, and not in a good way.
+Instructions such as "copy Firefox with all its dependencies to a remote
+machine with this one command" and "change these two lines in
+`configuration.nix`, rebuild, and now you're running a hypervisor" were
+impressive but inscrutable. Here was something that claimed to solve packaging
+and dependency management once and for all, but what made it work? I found it
+very difficult to reconcile the experience of using it with the knowledge that
+it was just Linux at the end of the day and everything was essentially shell
+scripts that were being run more or less like they would be with any other
+packaging toolchain.
 
 After more than a year of using it professionally and personally, I think I've
 narrowed it down to three methods that Nix uses to achieve its goals: hashing,
@@ -30,7 +34,6 @@ they are present instead of compiling the universe from source each time a
 build needs to happen. It also means that build outputs can be cached remotely
 or even built remotely, with Nix transparently copying over the inputs, running
 the build process, and copying the output back to your local machine.
-
 
 ## Environment Variables
 
@@ -64,10 +67,10 @@ Without hashing, we might have build outputs that are equivalent but no way to
 check this, and we'd have to recompile the universe from scratch each time we
 wanted to do a build.
 
-Without environment variables, we can't ensure that only the dependencies we
-specify are used to produce the build output, and our builds might complete
-successfully on our machine but not on another, which is no better than the
-current non-Nix state of affairs.
+Without full control of environment variables, we can't ensure that only the
+dependencies we specify are used to produce the build output, and our builds
+might complete successfully on our machine but not on another, which is no
+better than the current non-Nix state of affairs.
 
 Without symbolic links, we might have broken build outputs and/or system
 configurations if intermediate files were put in place during a failed build.
