@@ -80,3 +80,6 @@ output and Nix would be completely unsuitable for system deployment.
 I hope this provides some more insight into how Nix achieves its goals. I'm
 more confident that there's no magic here, just difficult and tedious
 engineering!
+
+Thanks to [Annie Cherkaev](https://anniecherkaev.com/) and [Tobias
+Pflug](https://twitter.com/tpflug) for comments and feedback.
