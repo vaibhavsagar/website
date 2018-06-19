@@ -1,10 +1,10 @@
 --------------------------------------------------------------------------------
 title: Trees That Shrink
-published: 2018-06-14
+published: 2018-06-19
 tags: haskell, programming
 --------------------------------------------------------------------------------
 
-I read [this paper](https://www.microsoft.com/en-us/research/wp-content/uploads/2016/11/trees-that-grow.pdf) a while ago and people seemed pretty excited about it, although I couldn't see why. Fortunately, someone posed me an interesting problem recently and in the process of tackling it I believe I know now.
+I read [this paper](https://www.microsoft.com/en-us/research/wp-content/uploads/2016/11/trees-that-grow.pdf) a while ago and people seemed pretty excited about it, although I couldn't see why. Fortunately, someone posed me an interesting problem recently and in the process of tackling it I think I understand now.
 
 Suppose we have a simple algebraic data type representing the lambda calculus with [de Bruijn indices](https://en.wikipedia.org/wiki/De_Bruijn_index), which are a way of avoiding the messy problem of variable names:
 
@@ -66,7 +66,7 @@ That wasn't a lot of fun to write, I have no idea if I did the conversion from n
 
 These problems are (barely) manageable in this case, but what if we want to add more syntax sugar or share this data type with other libraries that have different use cases? We'd either have to write variations on a theme over and over again or say goodbye to type safety. It also becomes harder and harder to decompose our functions into smaller ones that only do one thing. There has to be a better way!
 
-This is the subject of a recent paper called [Trees that Grow](https://www.microsoft.com/en-us/research/wp-content/uploads/2016/11/trees-that-grow.pdf) by Shayan Najd and Simon Peyton Jones. They noticed the need for this approach when looking at GHC's abstract syntax tree type but the idiom is generally applicable.
+This is the subject of [Trees that Grow](https://www.microsoft.com/en-us/research/wp-content/uploads/2016/11/trees-that-grow.pdf) by Shayan Najd and Simon Peyton Jones. They noticed the need for this approach when looking at GHC's abstract syntax tree type but the idiom is generally applicable.
 
 The first insight is that defining different data types for each use case is the wrong approach. Conceptually all these data types are the same type, just with different annotations or decoration, and we should be able to define the base data type with enough extensibility to accommodate all the other use cases.
 
@@ -74,15 +74,12 @@ The second insight is that we can use some of GHC's fancier features to ease the
 
 The third insight is that this can be made to work with other language features, such as generalised abstract data types and existentials! We won't use this here, but it's great to know that it's possible.
 
-Let's see how we can use it to solve our problem. The first thing to do is turn on a bunch of language extensions, as with anything moderately fun in Haskell:
+Let's see how we can use it to solve our problem. The first thing to do is turn on some language extensions, as with anything moderately fun in Haskell:
 
 
 ```haskell
 {-# LANGUAGE TypeFamilies      #-}
-{-# LANGUAGE DataKinds         #-}
 {-# LANGUAGE PatternSynonyms   #-}
-{-# LANGUAGE FlexibleInstances #-}
-{-# LANGUAGE FlexibleContexts  #-}
 ```
 
 The next steps are:
@@ -120,7 +117,7 @@ void :: Void
 void = error "Attempt to evaluate void"
 ```
 
-Now we can define `ExpUD` (UD for undecorated) using `Int` for our `Var` like we originally wanted and `Void` for all other extension points. It might get frustrating to construct and work with these values by hand, so we can use pattern synonyms to ease this pain!
+Now we can define `ExpUD` (UD for "undecorated") using `Int` for our `Var` like we originally wanted and `Void` for all other extension points. It might get frustrating to construct and work with these values by hand, so we can use pattern synonyms to ease this pain.
 
 
 ```haskell
