@@ -4,6 +4,8 @@ published: 2018-06-19
 tags: haskell, programming
 --------------------------------------------------------------------------------
 
+*This blog post is also available as an [IHaskell notebook](https://github.com/vaibhavsagar/notebooks/blob/master/trees-that-shrink/TreesThatShrink.ipynb).*
+
 I read [this paper](https://www.microsoft.com/en-us/research/wp-content/uploads/2016/11/trees-that-grow.pdf) a while ago and people seemed pretty excited about it, although I couldn't see why. Fortunately, someone posed me an interesting problem recently and in the process of tackling it I think I understand now.
 
 Suppose we have a simple algebraic data type representing the lambda calculus with [de Bruijn indices](https://en.wikipedia.org/wiki/De_Bruijn_index), which are a way of avoiding the messy problem of variable names:
