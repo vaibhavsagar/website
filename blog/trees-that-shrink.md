@@ -258,4 +258,88 @@ eval [] . anonymise . desugar Map.empty $ AppLet (AppLet konst (LitLet 1)) (LitL
 
 Awesome! We have composable compiler passes that are easier to write and to think about. Even with this small example, I hope the benefits are clear.
 
+Edit: [Ed Kmett points out](https://www.reddit.com/r/haskell/comments/8s75n3/trees_that_shrink/e0x8se2) that using `Void` makes this approach unnecessarily footgun-prone and suggests using strict fields and `()` instead. This comes with the additional benefit that we can disable constructors with `Void` so we can actually have trees that shrink:
+
+
+```haskell
+data ExpX i a
+    = LitX !(XLit i a) a
+    | VarX !(XVar i a)
+    | AbsX !(XAbs i a) (ExpX i a)
+    | AppX !(XApp i a) (ExpX i a) (ExpX i a)
+    | ExpX !(XExp i a)
+
+type family XLit i a
+type family XVar i a
+type family XAbs i a
+type family XApp i a
+type family XExp i a
+
+type ExpUD a = ExpX UD a
+data UD
+type instance XLit UD a = ()
+type instance XVar UD a = Int
+type instance XAbs UD a = ()
+type instance XApp UD a = ()
+type instance XExp UD a = Void
+
+pattern LitUD :: a -> ExpUD a
+pattern LitUD a <- LitX _ a
+    where LitUD a = LitX () a
+pattern VarUD :: Int -> ExpUD a
+pattern VarUD i <- VarX i
+    where VarUD i = VarX i
+pattern AbsUD :: ExpUD a -> ExpUD a
+pattern AbsUD a <- AbsX _ a
+    where AbsUD a = AbsX () a
+pattern AppUD :: ExpUD a -> ExpUD a -> ExpUD a
+pattern AppUD f a <- AppX _ f a
+    where AppUD f a = AppX () f a
+
+type ExpAnn a = ExpX Ann a
+data Ann
+type instance XLit Ann a = ()
+type instance XVar Ann a = (String, Int)
+type instance XAbs Ann a = String
+type instance XApp Ann a = ()
+type instance XExp Ann a = Void
+
+pattern LitAnn :: a -> ExpAnn a
+pattern LitAnn a <- LitX _ a
+    where LitAnn a = LitX () a
+pattern VarAnn :: String -> Int -> ExpAnn a
+pattern VarAnn s i <- VarX (s,i)
+    where VarAnn s i = VarX (s, i)
+pattern AbsAnn :: String -> ExpAnn a -> ExpAnn a
+pattern AbsAnn s a <- AbsX s a
+    where AbsAnn s a = AbsX s a
+pattern AppAnn :: ExpAnn a -> ExpAnn a -> ExpAnn a
+pattern AppAnn f a <- AppX _ f a
+    where AppAnn f a = AppX () f a
+
+type ExpLet a = ExpX Let a
+data Let
+type instance XLit Let a = ()
+type instance XVar Let a = String
+type instance XAbs Let a = String
+type instance XApp Let a = ()
+type instance XExp Let a = (String, ExpLet a, ExpLet a)
+
+pattern LitLet :: a -> ExpLet a
+pattern LitLet a <- LitX _ a
+    where LitLet a = LitX () a
+pattern VarLet :: String -> ExpLet a
+pattern VarLet s <- VarX s
+    where VarLet s = VarX s
+pattern AbsLet :: String -> ExpLet a -> ExpLet a
+pattern AbsLet s a <- AbsX s a
+    where AbsLet s a = AbsX s a
+pattern AppLet :: ExpLet a -> ExpLet a -> ExpLet a
+pattern AppLet f a <- AppX _ f a
+    where AppLet f a = AppX () f a
+pattern LetLet n v e <- ExpX (n,v,e)
+```
+
+The definitions of `desugar`, `anonymise`, and `eval` are unchanged.
+
 Thanks to [Andy Chu](http://andychu.net/) and [Peter Bhat Harkins](https://push.cx/) for comments and feedback.
