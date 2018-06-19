@@ -258,7 +258,7 @@ eval [] . anonymise . desugar Map.empty $ AppLet (AppLet konst (LitLet 1)) (LitL
 
 Awesome! We have composable compiler passes that are easier to write and to think about. Even with this small example, I hope the benefits are clear.
 
-Edit: [Ed Kmett points out](https://www.reddit.com/r/haskell/comments/8s75n3/trees_that_shrink/e0x8se2) that using `Void` makes this approach unnecessarily footgun-prone and suggests using strict fields and `()` instead. This comes with the additional benefit that we can disable constructors with `Void` so we can actually have trees that shrink:
+Edit: [Ed Kmett points out](https://www.reddit.com/r/haskell/comments/8s75n3/trees_that_shrink/e0x8se2) that using `Void` makes this approach unnecessarily footgun-prone and suggests using strict fields and `()` instead. This allows for simpler pattern synonyms and comes with the additional benefit that we can disable constructors with `Void` so we can actually have trees that shrink:
 
 
 ```haskell
@@ -284,17 +284,13 @@ type instance XApp UD a = ()
 type instance XExp UD a = Void
 
 pattern LitUD :: a -> ExpUD a
-pattern LitUD a <- LitX _ a
-    where LitUD a = LitX () a
+pattern LitUD a = LitX () a
 pattern VarUD :: Int -> ExpUD a
-pattern VarUD i <- VarX i
-    where VarUD i = VarX i
+pattern VarUD i = VarX i
 pattern AbsUD :: ExpUD a -> ExpUD a
-pattern AbsUD a <- AbsX _ a
-    where AbsUD a = AbsX () a
+pattern AbsUD a = AbsX () a
 pattern AppUD :: ExpUD a -> ExpUD a -> ExpUD a
-pattern AppUD f a <- AppX _ f a
-    where AppUD f a = AppX () f a
+pattern AppUD f a = AppX () f a
 
 type ExpAnn a = ExpX Ann a
 data Ann
@@ -305,17 +301,13 @@ type instance XApp Ann a = ()
 type instance XExp Ann a = Void
 
 pattern LitAnn :: a -> ExpAnn a
-pattern LitAnn a <- LitX _ a
-    where LitAnn a = LitX () a
+pattern LitAnn a = LitX () a
 pattern VarAnn :: String -> Int -> ExpAnn a
-pattern VarAnn s i <- VarX (s,i)
-    where VarAnn s i = VarX (s, i)
+pattern VarAnn s i = VarX (s, i)
 pattern AbsAnn :: String -> ExpAnn a -> ExpAnn a
-pattern AbsAnn s a <- AbsX s a
-    where AbsAnn s a = AbsX s a
+pattern AbsAnn s a = AbsX s a
 pattern AppAnn :: ExpAnn a -> ExpAnn a -> ExpAnn a
-pattern AppAnn f a <- AppX _ f a
-    where AppAnn f a = AppX () f a
+pattern AppAnn f a = AppX () f a
 
 type ExpLet a = ExpX Let a
 data Let
@@ -326,17 +318,13 @@ type instance XApp Let a = ()
 type instance XExp Let a = (String, ExpLet a, ExpLet a)
 
 pattern LitLet :: a -> ExpLet a
-pattern LitLet a <- LitX _ a
-    where LitLet a = LitX () a
+pattern LitLet a = LitX () a
 pattern VarLet :: String -> ExpLet a
-pattern VarLet s <- VarX s
-    where VarLet s = VarX s
+pattern VarLet s = VarX s
 pattern AbsLet :: String -> ExpLet a -> ExpLet a
-pattern AbsLet s a <- AbsX s a
-    where AbsLet s a = AbsX s a
+pattern AbsLet s a = AbsX s a
 pattern AppLet :: ExpLet a -> ExpLet a -> ExpLet a
-pattern AppLet f a <- AppX _ f a
-    where AppLet f a = AppX () f a
+pattern AppLet f a = AppX () f a
 pattern LetLet n v e <- ExpX (n,v,e)
 ```
 
