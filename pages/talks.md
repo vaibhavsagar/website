@@ -7,7 +7,7 @@ title: Talks
 #### I Haskell a Git
 
 - Where: YOW! Lambda Jam 2018
-- [Slides](https://github.com/vaibhavsagar/presentations/blob/master/git-from-scratch/Git.ipynb), Video
+- [Slides](https://github.com/vaibhavsagar/presentations/blob/master/git-from-scratch/Git.ipynb), [Video](https://www.youtube.com/watch?v=nVvvY5VRs8o)
 
 #### Moving towards dialogue: collaborating with your computer using typed holes!
 
