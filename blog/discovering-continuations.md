@@ -1505,17 +1505,17 @@ If you looked at the source, you might have noticed something interesting: The d
 ```haskell
 newtype ContT r m a = ContT { (>>-) :: (a -> m r) -> m r }
 
-instance Monad m => Functor (ContT r m) where
+instance Functor (ContT r m) where
     fmap :: (a -> b) -> ContT r m a -> ContT r m b
     fmap f cont = ContT $ \k -> cont >>- (k . f)
 
-instance Monad m => Applicative (ContT r m) where
+instance Applicative (ContT r m) where
     pure :: a -> ContT r m a
     pure a  = ContT $ \k -> k a
     (<*>) :: ContT r m (a -> b) -> ContT r m a -> ContT r m b
     f <*> a = ContT $ \k -> f >>- \f' -> a >>- \a' -> k (f' a')
 
-instance Monad m => Monad (ContT r m) where
+instance Monad (ContT r m) where
     (>>=) :: ContT r m a -> (a -> ContT r m b) -> ContT r m b
     a >>= f = ContT $ \k -> a >>- \a' -> f a' >>- \f' -> k f'
     
