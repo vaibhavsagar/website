@@ -1,0 +1,451 @@
+--------------------------------------------------------------------------------
+title: HAMTs from Scratch
+published: 2018-07-27
+tags: programming, haskell
+--------------------------------------------------------------------------------
+
+_This blog post is also available as an [IHaskell notebook](https://github.com/vaibhavsagar/notebooks/blob/master/hamt/HAMTsFromScratch.ipynb)._
+
+I wanted an explanation for HAMTs (Hash Array Mapped Tries) that was more detailed than [Marek Majkowski's introduction](https://idea.popcount.org/2012-07-25-introduction-to-hamt/) and more approachable than [_Ideal Hash Trees_ by Phil Bagwell](https://lampwww.epfl.ch/papers/idealhashtrees.pdf), the paper that introduced them. HAMTs form the backbone of the [`unordered-containers`](http://hackage.haskell.org/package/unordered-containers) library but the [implementation has been lovingly optimised](https://github.com/tibbe/unordered-containers/blob/efa43a2ab09dc6eb72893d12676a8e188cb4ca63/Data/HashMap/Base.hs) to the point where I think it's too complex to make sense of if you don't already have a good grasp of the underlying concepts. Finally I found [Edward Z. Yang's implementation](https://github.com/ezyang/hamt/blob/a43559795630980eb16ab832a003d8e6acd21cf6/HAMT.hs) and after adapting it I think I'm in a good place to attempt this explanation.
+
+Let's start with a few imports!
+
+
+```haskell
+import Data.Bits
+import Data.ByteArray.Hash
+import Data.ByteString.Char8 (pack)
+import Data.Char
+import Data.Vector (Vector)
+import qualified Data.Vector as V
+import Data.Word
+import Numeric
+import Prelude hiding (lookup)
+import Text.Show.Pretty
+```
+
+We're going to be doing some bit twiddling, so to make things easier I'm going to define a `newtype` that behaves exactly the same as whatever it's wrapping except that its `Show` instance displays the binary representation instead of the decimal one.
+
+
+```haskell
+{-# LANGUAGE GeneralizedNewtypeDeriving #-}
+
+newtype Binary a = Binary a deriving (Enum, Ord, Real, Integral, Eq, Num, Bits, FiniteBits)
+
+instance (FiniteBits a, Show a, Integral a) => Show (Binary a) where
+    show (Binary a) = let
+        str = showIntAtBase 2 intToDigit a ""
+        size = finiteBitSize $ undefined `asTypeOf` a
+        in replicate (size - length str) '0' ++ str
+```
+
+I'm going to use 32-bit hashes (because they're more convenient to display than 64-bit ones) and 16-bit bitmaps. The width of bitmaps is $2^n$ where $n$ is the number of bits of the hash that we use at each level of the tree (more on this below). I'm setting $n=4$ which is what `unordered-containers` uses (as of this writing), but we could e.g. set $n=5$ and use 32-bit bitmaps if we wanted. `Shift` is a multiple of $n$ that we will use to focus on the correct part of the hash.
+
+I'm also going to define a `Hashable` class to decouple the choice of a hash function from the implementation of `HAMT`.
+
+
+```haskell
+type Hash = Binary Word32
+type Bitmap = Binary Word16
+
+bitsPerSubkey :: Int
+bitsPerSubkey = 4
+
+type Shift = Int
+
+class Hashable a where
+    hash :: a -> Hash
+```
+
+For convenience, we'll use the FNV-1 hash function with strings.
+
+
+```haskell
+{-# LANGUAGE TypeSynonymInstances #-}
+{-# LANGUAGE FlexibleInstances #-}
+
+instance Hashable String where
+    hash s = let
+        FnvHash32 h = fnv1Hash (pack s)
+        in Binary h
+```
+
+Here's what it looks like in practice.
+
+
+```haskell
+hash "1" :: Binary Word32
+```
+
+
+    00000101000011000101110100101110
+
+
+A HAMT can be either empty (`None`), a leaf node with the hash, the key, and the value (`Leaf`), or a node with a bitmap and a (non-empty) vector of child HAMTs (`Many`). I've chosen to ignore the possibility of collisions, but we could handle them by adding an extra constructor, e.g. `Colliding` with a hash and a vector of key-value pairs and updating our functions accordingly.
+
+
+```haskell
+data HAMT key value
+    = None
+    | Leaf Hash key value
+    | Many Bitmap (Vector (HAMT key value))
+    deriving (Show)
+
+empty :: HAMT k v
+empty = None
+```
+
+We'll need some helper functions for vectors. `insertAt` inserts an element at a specified index, shifting elements to the right forwards. `updateAt` replaces an element at a specified index with a new element, and `deleteAt` removes an element at an index, shifting elements to the right backwards.
+
+
+```haskell
+insertAt :: Vector a -> Int -> a -> Vector a
+insertAt vector index a = V.take index vector V.++ V.singleton a V.++ V.drop index vector
+
+updateAt :: Vector a -> Int -> a -> Vector a
+updateAt vector index a = vector V.// [(index, a)]
+
+deleteAt :: Vector a -> Int -> Vector a
+deleteAt vector index = (V.take index vector V.++ V.drop (index+1) vector)
+```
+
+I think the bit manipulation functions are crucial to understanding what's going on, and I definitely had to stare at them for quite a while before they started making sense, so before introducing them I'm going to discuss `insert`. My initial definition won't be quite right so I'll call it `insert_` to differentiate it from the correct `insert'` function I present later. The type signature for `insert_` is
+
+```haskell
+insert_ :: Hash -> key -> value -> HAMT key value -> HAMT key value
+```
+
+Inserting a key-value pair into an empty HAMT gives us a single leaf node:
+
+```haskell
+insert_ hash key value None = Leaf hash key value
+```
+
+Inserting a key-value pair into a single leaf node where the hashes match gives us an updated leaf node (because we're pretending collisions don't exist):
+
+```haskell
+insert_ hash key value (Leaf leafHash leafKey leafValue)
+    | hash == leafHash = Leaf hash key value
+```
+
+Inserting into a HAMT consisting of a single leaf node where the hashes don't match upgrades that leaf node to a `Many` node and inserts the key-value pair into that `Many` node:
+
+```haskell
+insert_ hash key value leaf@(Leaf leafHash leafKey leafValue)
+    | hash /= leafHash = insert_ key value (Many someBitmap (V.singleton leaf))
+    where someBitmap = undefined
+```
+
+Where does `someBitmap` come from? Time for an example! Let's start with a `Leaf (hash "1") "1" 1`:
+
+
+```haskell
+h = hash "1"
+leaf = Leaf h "1" 1
+leaf
+```
+
+
+    Leaf 00000101000011000101110100101110 "1" 1
+
+
+`someBitMap` is a 16-bit bitmap where the number of bits set (the `popCount`) is the length of the vector, which in this case is $1$. We want to set one bit, but which bit? We carve off the last $n$ bits using a mask:
+
+
+```haskell
+subkeyMask :: Bitmap
+subkeyMask = (bit bitsPerSubkey) - 1
+subkeyMask
+```
+
+
+    0000000000001111
+
+
+
+```haskell
+--     0101110100101110
+-- .&. 0000000000001111
+-----------------------
+--     0000000000001110
+fragment = fromIntegral h .&. subkeyMask
+fragment
+```
+
+
+    0000000000001110
+
+
+Then we interpret that fragment as a number:
+
+
+```haskell
+Binary position = fragment
+position
+```
+
+
+    14
+
+
+Finally, we set that bit and we have our bitmap:
+
+
+```haskell
+someBitmap :: Bitmap
+someBitmap = Binary $ bit $ fromIntegral position
+someBitmap
+```
+
+
+    0100000000000000
+
+
+We're going to be doing this a lot, so I'll define this as `bitMask_`. The extra `_` is because it isn't quite right for the same reason as `insert_`:
+
+
+```haskell
+bitMask_ :: Hash -> Bitmap
+bitMask_ hash = let
+    fragment = fromIntegral hash .&. subkeyMask
+    Binary position = fragment
+    in Binary (bit (fromIntegral position))
+```
+
+Let's look at the `Many` case. If we try inserting into a node where the bit in the bitmap corresponding to the hash of the key is `0`, then we can insert a leaf node into the vector and set the corresponding bit to `1`:
+
+```haskell
+insert_ hash key value (Many bitmap vector)
+    | bitmap .&. mask == 0 = let
+        leaf = Leaf (hash key) key value
+        vector' = insertAt vector index leaf
+        bitmap' = bitmap .|. hashBitmap
+        in Many bitmap' vector'
+    where
+        mask = bitMask_ hash
+        index = undefined
+```
+
+What `index` do we use? This is where `popCount` makes an appearance. Let's demonstrate by inserting `("10", 2)` into our example. We first get the mask corresponding to `hash "10"`:
+
+
+```haskell
+mask = bitMask_ (hash "10")
+```
+
+Next we want to find the number of lower bits that have been set, so we use `mask - 1` as a mask and get the `popCount`:
+
+
+```haskell
+index = popCount (someBitmap .&. (mask - 1))
+index
+```
+
+
+    0
+
+
+And this is the index we need to insert at! We'll call this `maskIndex`:
+
+
+```haskell
+maskIndex :: Bitmap -> Bitmap -> Int
+maskIndex bitmap mask = popCount (bitmap .&. (mask - 1))
+```
+
+The final case is where the bit in the bitmap is already set, and we need to recursively update the HAMT at the corresponding index:
+
+```haskell
+insert_ hash key value (Many bitmap vector)
+    | bitmap .&. mask == 1 = let
+        subtree' = insert_ hash key value (vector V.! index)
+        vector' = updateAt vector index subtree'
+        in Many bitmap vector'
+    where
+        mask = bitMask_ hash
+        index = maskIndex bitmap mask
+```
+
+But instead of carving off the last $n$ bits of `hash`, we want to recursively carve off the next $n$ bits. This is what's missing from our definition, a `shift` parameter corresponding to how far up the `hash` we're looking. Taking this extra parameter into account, our bit manipulation functions now become:
+
+
+```haskell
+subkeyMask :: Bitmap
+subkeyMask = (bit bitsPerSubkey) - 1
+
+maskIndex :: Bitmap -> Bitmap -> Int
+maskIndex bitmap mask = popCount (bitmap .&. (mask - 1))
+
+subkey :: Hash -> Shift -> Int
+subkey hash shift = fromIntegral $ (fromIntegral $ shiftR hash shift) .&. subkeyMask
+
+bitMask :: Hash -> Shift -> Bitmap
+bitMask hash shift = bit (subkey hash shift)
+```
+
+And we plumb through this `shift` parameter, only modifying it in the final case, to give us the correct definitions of `insert'` and `insert`:
+
+
+```haskell
+insert :: Hashable key => key -> value -> HAMT key value -> HAMT key value
+insert key value hamt = insert' 0 (hash key) key value hamt
+
+insert' :: Shift -> Hash -> key -> value -> HAMT key value -> HAMT key value
+insert' shift hash key value None = Leaf hash key value
+
+insert' shift hash key value leaf@(Leaf leafHash leafKey leafValue)
+    | hash == leafHash = Leaf hash key value
+    | otherwise = insert' shift hash key value (Many (bitMask leafHash shift) (V.singleton leaf))
+
+insert' shift hash key value (Many bitmap vector)
+    | bitmap .&. mask == 0 = let
+        leaf = Leaf hash key value
+        vector' = insertAt vector index leaf
+        bitmap' = bitmap .|. mask
+        in Many bitmap' vector'
+    | otherwise = let
+        subtree = vector V.! index
+        subtree' = insert' (shift+bitsPerSubkey) hash key value subtree
+        vector' = updateAt vector index subtree'
+        in Many bitmap vector'
+    where
+        mask = bitMask hash shift
+        index = maskIndex bitmap mask
+```
+
+Now we can construct HAMTs and inspect them! I'll define a `fromList` function to make things easier and use `pPrint` from `pretty-show` to highlight the tree structure:
+
+
+```haskell
+fromList :: Hashable key => [(key, value)] -> HAMT key value
+fromList = foldr (uncurry insert) empty
+
+example = fromList [("1", 1), ("10", 2), ("100", 3), ("1000", 4)]
+
+pPrint example
+```
+
+
+    Many
+      0100010000000000
+      [ Many
+          0000000100100000
+          [ Leaf 00100000011101101010111101011010 "10" 2
+          , Leaf 10001010111100101011011010001010 "1000" 4
+          ]
+      , Many
+          0000001000000100
+          [ Leaf 00000101000011000101110100101110 "1" 1
+          , Leaf 01110100110101100000101010011110 "100" 3
+          ]
+      ]
+
+
+Compared to `insert`, `lookup` is a walk in the park. It's implemented like we would expect on empty trees and leaf nodes, and it recurses exactly like `insert`, using the bitmap to check possible membership.
+
+
+```haskell
+lookup :: Hashable key => key -> HAMT key value -> Maybe value
+lookup key hamt = lookup' 0 (hash key) hamt
+
+lookup' :: Shift -> Hash -> HAMT key value -> Maybe value
+lookup' shift hash None = Nothing
+
+lookup' shift hash (Leaf leafHash leafKey leafValue)
+    | hash == leafHash = Just leafValue
+    | otherwise = Nothing
+
+lookup' shift hash (Many bitmap vector)
+    | bitmap .&. mask == 0 = Nothing
+    | otherwise = lookup' (shift+bitsPerSubkey) hash (vector V.! index)
+    where
+        mask = bitMask hash shift
+        index = maskIndex bitmap mask
+```
+
+Let's quickly confirm that it works.
+
+
+```haskell
+lookup "100" example
+```
+
+
+    Just 3
+
+
+Finally we come to `delete`, which is only a little more complex. It needs to make sure that there are no `None` nodes in the tree, so if a deletion results in a `None` node, it will unset the bit in the bitmap if there are any sibling nodes, and if it was the only child of a `Many` node, it will replace the `Many` node with itself. `Leaf` nodes similarly replace their parents if they are the only child.
+
+
+```haskell
+delete :: Hashable key => key -> HAMT key value -> HAMT key value
+delete key hamt = delete' 0 (hash key) hamt
+
+delete' :: Shift -> Hash -> HAMT key value -> HAMT key value
+delete' shift hash None = None
+
+delete' shift hash leaf@(Leaf leafHash leafKey leafValue)
+    | hash == leafHash = None
+    | otherwise = leaf
+
+delete' shift hash many@(Many bitmap vector)
+    | bitmap .&. mask == 0 = many
+    | otherwise = let
+        subtree = vector V.! index
+        subtree' = delete' (shift+bitsPerSubkey) hash subtree
+        in case subtree' of
+            None -> if V.length vector == 1
+                then None
+                else Many (bitmap .&. complement mask) (deleteAt vector index)
+            Leaf{} -> if V.length vector == 1
+                then subtree'
+                else  Many bitmap (updateAt vector index subtree')
+            Many{} -> Many bitmap (updateAt vector index subtree')
+    where
+        mask = bitMask hash shift
+        index = maskIndex bitmap mask
+```
+
+Let's see this in action.
+
+
+```haskell
+pPrint $ delete "1000" example
+```
+
+
+    Many
+      0100010000000000
+      [ Many
+          0000000000100000 [ Leaf 00100000011101101010111101011010 "10" 2 ]
+      , Many
+          0000001000000100
+          [ Leaf 00000101000011000101110100101110 "1" 1
+          , Leaf 01110100110101100000101010011110 "100" 3
+          ]
+      ]
+
+
+Note that it's possible to have a situation where we have a `Many` node with only one child, because our replacement behaviour checks the length of the vector before any elements are removed from it. However, removing the last leaf will correctly delete the parent node as well.
+
+
+```haskell
+pPrint $ delete "10" $ delete "1000" example
+```
+
+
+    Many
+      0100000000000000
+      [ Many
+          0000001000000100
+          [ Leaf 00000101000011000101110100101110 "1" 1
+          , Leaf 01110100110101100000101010011110 "100" 3
+          ]
+      ]
+
+
+And we're done!
+
+If you want to use this for something other than educational purposes, I would recommend adding logic to deal with hash collisions, which I intentionally omitted (as I mentioned above). There's also some low-hanging fruit in terms of performance optimisations. The first thing that comes to mind is an additional `Full` constructor for the case where all bits in the bitmap are set, and the next thing is the use of unsafe vector functions that omit bounds checking.
+
+I hope you understand HAMTs better than when you started reading this!
