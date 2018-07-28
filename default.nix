@@ -13,7 +13,7 @@ let
   contentFilter = myFilter [ "blog" "css" "drafts" "extra" "index.html" "pages" "templates" ];
   drv = nixpkgs.haskellPackages.callCabal2nix "website" (builtins.filterSource (sourceFilter ./.) ./.) {};
   site = nixpkgs.runCommand "site" {
-    buildInputs = [ drv nixpkgs.glibcLocales ] ++ drv.env.nativeBuildInputs;
+    buildInputs = [ nixpkgs.glibcLocales ] ++ drv.env.nativeBuildInputs;
     src = builtins.filterSource (contentFilter ./.) ./.;
     LC_ALL = "en_US.UTF-8";
   } ''
