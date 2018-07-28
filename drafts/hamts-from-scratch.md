@@ -6,7 +6,7 @@ tags: programming, haskell
 
 _This blog post is also available as an [IHaskell notebook](https://github.com/vaibhavsagar/notebooks/blob/master/hamt/HAMTsFromScratch.ipynb)._
 
-I wanted an explanation for HAMTs (Hash Array Mapped Tries) that was more detailed than [Marek Majkowski's introduction](https://idea.popcount.org/2012-07-25-introduction-to-hamt/) and more approachable than [_Ideal Hash Trees_ by Phil Bagwell](https://lampwww.epfl.ch/papers/idealhashtrees.pdf), the paper that introduced them. HAMTs form the backbone of the [`unordered-containers`](http://hackage.haskell.org/package/unordered-containers) library but the [implementation has been lovingly optimised](https://github.com/tibbe/unordered-containers/blob/efa43a2ab09dc6eb72893d12676a8e188cb4ca63/Data/HashMap/Base.hs) to the point where I found it impenetrable. [Edward Z. Yang's implementation](https://github.com/ezyang/hamt/blob/a43559795630980eb16ab832a003d8e6acd21cf6/HAMT.hs) is much easier to follow and after adapting it I think I'm in a good place to provide my own take on HAMTs.
+I wanted an explanation for HAMTs (Hash Array Mapped Tries) that was more detailed than [Marek Majkowski's introduction](https://idea.popcount.org/2012-07-25-introduction-to-hamt/) and more approachable than [_Ideal Hash Trees_ by Phil Bagwell](https://lampwww.epfl.ch/papers/idealhashtrees.pdf), the paper that introduced them. If you haven't heard of them before, HAMTs are a way of efficiently representing a hashtable as a [trie](https://en.wikipedia.org/wiki/Trie). They form the backbone of the [`unordered-containers`](http://hackage.haskell.org/package/unordered-containers) library but the [implementation has been lovingly optimised](https://github.com/tibbe/unordered-containers/blob/efa43a2ab09dc6eb72893d12676a8e188cb4ca63/Data/HashMap/Base.hs) to the point where I found it impenetrable. [Edward Z. Yang's implementation](https://github.com/ezyang/hamt/blob/a43559795630980eb16ab832a003d8e6acd21cf6/HAMT.hs) is much easier to follow and after adapting it I think I'm in a good place to provide my own take on them.
 
 Let's start with a few imports! I'll be using these packages:
 
@@ -47,20 +47,55 @@ instance (FiniteBits a, Show a, Integral a) => Show (Binary a) where
         in replicate (size - length str) '0' <> str
 ```
 
-I'm going to use 32-bit hashes (because they're more convenient to display than 64-bit ones) and 16-bit bitmaps. The width of bitmaps is $2^n$ where $n$ is the number of bits of the hash that we use at each level of the tree (more on this below). I'm setting $n=4$ which is what `unordered-containers` uses (as of this writing), but we could e.g. set $n=5$ and use 32-bit bitmaps if we wanted. `Shift` is a multiple of $n$ that we will use to focus on the correct part of the hash.
+Using this `newtype` we can turn this:
 
-I'm also going to define a `Hashable` class to decouple the choice of a hash function from the implementation of `HAMT`.
+
+```haskell
+24732 :: Word16
+```
+
+
+    24732
+
+
+into this:
+
+
+```haskell
+24732 :: Binary Word16
+```
+
+
+    0110000010011100
+
+
+I'm going to use 32-bit hashes (because they're more convenient to display than 64-bit ones) and 16-bit bitmaps. 
 
 
 ```haskell
 type Hash = Binary Word32
 type Bitmap = Binary Word16
+```
 
+The width of bitmaps is $2^n$ where $n$ is the number of bits of the hash that we use at each level of the tree (more on this below). I'm setting $n=4$ which is what `unordered-containers` uses (as of this writing), but we could e.g. set $n=5$ and use 32-bit bitmaps if we wanted. 
+
+
+```haskell
 bitsPerSubkey :: Int
 bitsPerSubkey = 4
+```
 
+`Shift` is a multiple of $n$ that we will use to focus on the correct part of the hash. More on this later.
+
+
+```haskell
 type Shift = Int
+```
 
+I'm also going to define a `Hashable` class to decouple the choice of a hash function from the implementation of `HAMT`.
+
+
+```haskell
 class Hashable a where
     hash :: a -> Hash
 ```
@@ -129,7 +164,7 @@ deleteAt vector index = take index vector <> drop (index+1) vector
 
 ### Insert
 
-I think the bit manipulation functions are crucial to understanding what's going on, and I definitely had to stare at them for quite a while before they started making sense, so before introducing them I'm going to discuss `insert`. My initial definition won't be quite right so I'll call it `insert_` to differentiate it from the correct `insert'` function I present later. The type signature for `insert_` is
+I think the bit manipulation functions are crucial to understanding what's going on, so I'm choosing to motivate them by trying to define `insert` without them and coming up with them as they are needed. My initial definition won't be quite right so I'll call it `insert_` to differentiate it from the correct `insert'` function I present later. The type signature for `insert_` is
 
 ```haskell
 insert_ :: Hash -> key -> value -> HAMT key value -> HAMT key value
@@ -152,7 +187,7 @@ Inserting into a HAMT consisting of a single leaf node where the hashes don't ma
 
 ```haskell
 insert_ hash key value leaf@(Leaf leafHash leafKey leafValue)
-    | hash /= leafHash = insert_ key value (Many someBitmap (V.singleton leaf))
+    | hash /= leafHash = insert_ key value (Many someBitmap (singleton leaf))
     where someBitmap = undefined
 ```
 
@@ -241,7 +276,7 @@ insert_ hash key value (Many bitmap vector)
     | bitmap .&. mask == 0 = let
         leaf = Leaf (hash key) key value
         vector' = insertAt vector index leaf
-        bitmap' = bitmap .|. hashBitmap
+        bitmap' = bitmap .|. mask
         in Many bitmap' vector'
     where
         mask = bitMask_ hash
@@ -480,4 +515,4 @@ And we're done! I hope you understand HAMTs better than when you started reading
 
 If you want to use this for something other than educational purposes, I would recommend adding logic to deal with hash collisions, which I intentionally omitted. There's also some low-hanging fruit in terms of performance optimisations. The first thing that comes to mind is an additional `Full` constructor for the case where all bits in the bitmap are set, and the next thing is the use of unsafe vector functions that omit bounds checking.
 
-Thanks to [Evan Borden](https://twitter.com/evanborden) and [Mark Hopkins](http://mjhopkins.github.io/) for comments and feedback.
+Thanks to [Evan Borden](https://twitter.com/evanborden), [Jean Niklas L'orange](https://hypirion.com/), and [Mark Hopkins](http://mjhopkins.github.io/) for comments and feedback.
