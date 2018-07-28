@@ -8,20 +8,27 @@ _This blog post is also available as an [IHaskell notebook](https://github.com/v
 
 I wanted an explanation for HAMTs (Hash Array Mapped Tries) that was more detailed than [Marek Majkowski's introduction](https://idea.popcount.org/2012-07-25-introduction-to-hamt/) and more approachable than [_Ideal Hash Trees_ by Phil Bagwell](https://lampwww.epfl.ch/papers/idealhashtrees.pdf), the paper that introduced them. HAMTs form the backbone of the [`unordered-containers`](http://hackage.haskell.org/package/unordered-containers) library but the [implementation has been lovingly optimised](https://github.com/tibbe/unordered-containers/blob/efa43a2ab09dc6eb72893d12676a8e188cb4ca63/Data/HashMap/Base.hs) to the point where I found it impenetrable. [Edward Z. Yang's implementation](https://github.com/ezyang/hamt/blob/a43559795630980eb16ab832a003d8e6acd21cf6/HAMT.hs) is much easier to follow and after adapting it I think I'm in a good place to provide my own take on HAMTs.
 
-Let's start with a few imports!
+Let's start with a few imports! I'll be using these packages:
+
+1. [`base`](http://hackage.haskell.org/package/base)
+2. [`bytestring`](http://hackage.haskell.org/package/bytestring)
+3. [`memory`](http://hackage.haskell.org/package/memory)
+4. [`pretty-show`](http://hackage.haskell.org/package/pretty-show)
+5. [`vector`](http://hackage.haskell.org/package/vector)
 
 
 ```haskell
-import Data.Bits (Bits((.|.), (.&.), bit, complement, popCount, shiftR), FiniteBits(finiteBitSize))
-import Data.ByteArray.Hash (FnvHash32(..), fnv1Hash)
+import Data.Bits             (Bits (bit, complement, popCount, shiftR, (.&.), (.|.)),
+                              FiniteBits (finiteBitSize))
+import Data.ByteArray.Hash   (FnvHash32 (..), fnv1Hash)
 import Data.ByteString.Char8 (pack)
-import Data.Char (intToDigit)
-import Data.Semigroup ((<>))
-import Data.Vector (Vector, (//), (!), drop, singleton, take)
-import Data.Word (Word16, Word32)
-import Numeric (showIntAtBase)
-import Prelude hiding (drop, lookup, take)
-import Text.Show.Pretty (pPrint)
+import Data.Char             (intToDigit)
+import Data.Semigroup        ((<>))
+import Data.Vector           (Vector, drop, singleton, take, (!), (//))
+import Data.Word             (Word16, Word32)
+import Numeric               (showIntAtBase)
+import Prelude               hiding (drop, lookup, take)
+import Text.Show.Pretty      (pPrint)
 ```
 
 We're going to be doing some bit twiddling. To make things easier I'm going to define a `newtype` that behaves exactly the same as whatever it's wrapping except that its `Show` instance displays the binary representation instead of the decimal one.
@@ -473,4 +480,4 @@ And we're done! I hope you understand HAMTs better than when you started reading
 
 If you want to use this for something other than educational purposes, I would recommend adding logic to deal with hash collisions, which I intentionally omitted. There's also some low-hanging fruit in terms of performance optimisations. The first thing that comes to mind is an additional `Full` constructor for the case where all bits in the bitmap are set, and the next thing is the use of unsafe vector functions that omit bounds checking.
 
-Thanks to [Evan Borden](https://twitter.com/evanborden) for comments and feedback.
+Thanks to [Evan Borden](https://twitter.com/evanborden) and [Mark Hopkins](http://mjhopkins.github.io/) for comments and feedback.
