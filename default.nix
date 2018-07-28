@@ -13,14 +13,14 @@ let
   contentFilter = myFilter [ "blog" "css" "drafts" "extra" "index.html" "pages" "templates" ];
   drv = nixpkgs.haskellPackages.callCabal2nix "website" (builtins.filterSource (sourceFilter ./.) ./.) {};
   site = nixpkgs.runCommand "site" {
-    buildInputs = [ drv nixpkgs.glibcLocales ];
+    buildInputs = [ drv nixpkgs.glibcLocales ] ++ drv.env.nativeBuildInputs;
     src = builtins.filterSource (contentFilter ./.) ./.;
     LC_ALL = "en_US.UTF-8";
   } ''
     workdir=$(${nixpkgs.coreutils}/bin/mktemp -d)
     cp -R $src/* $workdir
     cd $workdir
-    site build
+    runhaskell ${./site.hs} build
     mkdir -p $out
     cp -R _site/* $out
   '';
