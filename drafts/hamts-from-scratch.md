@@ -10,12 +10,12 @@ I wanted an explanation for HAMTs (Hash Array Mapped Tries) that was more detail
 
 Let's start with a few imports! I'll be using these packages:
 
-1. [`base`](http://hackage.haskell.org/package/base)
-2. [`bytestring`](http://hackage.haskell.org/package/bytestring)
-3. [`memory`](http://hackage.haskell.org/package/memory)
-4. [`pretty-show`](http://hackage.haskell.org/package/pretty-show)
-5. [`timeit`](http://hackage.haskell.org/package/timeit)
-6. [`vector`](http://hackage.haskell.org/package/vector)
+- [`base`](http://hackage.haskell.org/package/base)
+- [`bytestring`](http://hackage.haskell.org/package/bytestring)
+- [`memory`](http://hackage.haskell.org/package/memory)
+- [`pretty-show`](http://hackage.haskell.org/package/pretty-show)
+- [`timeit`](http://hackage.haskell.org/package/timeit)
+- [`vector`](http://hackage.haskell.org/package/vector)
 
 
 ```haskell
@@ -33,7 +33,7 @@ import System.TimeIt         (timeIt)
 import Text.Show.Pretty      (pPrint)
 ```
 
-We're going to be doing some bit twiddling. To make things easier I'm going to define a `newtype` that behaves exactly the same as whatever it's wrapping except that its `Show` instance displays the binary representation instead of the decimal one.
+We're going to be doing some bit twiddling. To make this easier to follow I'm going to define a `newtype` whose `Show` instance displays the binary representation.
 
 
 ```haskell
@@ -128,9 +128,9 @@ hash "1" :: Binary Word32
 
 A HAMT can be
 
-1. empty (`None`)
-2. a leaf node with the hash, the key, and the value (`Leaf`)
-3. a node with a bitmap and a (non-empty) vector of child HAMTs (`Many`).
+- empty (`None`)
+- a leaf node with the hash, the key, and the value (`Leaf`)
+- a node with a bitmap and a (non-empty) vector of child HAMTs (`Many`)
 
 I've chosen to ignore the possibility of collisions, but we could handle them by adding an extra constructor, e.g. `Colliding` with a hash and a vector of key-value pairs.
 
@@ -148,9 +148,9 @@ empty = None
 
 We'll need some helper functions for vectors:
 
-1. `insertAt` inserts an element at a specified index, shifting elements to the right forwards.
-2. `updateAt` replaces an element at a specified index with a new element.
-3. `deleteAt` removes an element at an index, shifting elements to the right backwards.
+- `insertAt` inserts an element at a specified index, shifting elements to the right forwards
+- `updateAt` replaces an element at a specified index with a new element
+- `deleteAt` removes an element at an index, shifting elements to the right backwards
 
 
 ```haskell
@@ -359,7 +359,7 @@ The final case is where the bit in the bitmap is already set. We need to recursi
 ```haskell
 insert_ hash key value (Many bitmap vector)
     | bitmap .&. mask == 1 = let
-        subtree' = insert_ hash key value (vector ! index)
+        subtree' = insert_ hash key value (vector ! index) -- WRONG!
         vector' = updateAt vector index subtree'
         in Many bitmap vector'
     where
@@ -450,9 +450,9 @@ pPrint example
 
 Compared to `insert`, `lookup` is a walk in the park. It's implemented along the same lines as `insert`:
 
-1. On `None` nodes, it fails.
-2. On `Leaf` nodes, it succeeds if the hashes match.
-3. On `Many` nodes, it fails if the bit isn't set, and recurses into the child node otherwise.
+- on `None` nodes, it fails
+- on `Leaf` nodes, it succeeds if the hashes match
+- on `Many` nodes, it fails if the bit isn't set, and recurses into the child node otherwise
 
 
 ```haskell
@@ -501,7 +501,7 @@ timeIt $ print $ fib 30
 
 
     1346269
-    CPU time:   1.14s
+    CPU time:   1.22s
 
 
 We can memoise it by storing previously calculated results and using them if they are available:
@@ -534,7 +534,13 @@ timeIt $ print $ fib 30
 
 ### Delete
 
-Finally we come to `delete`, which is only a little more complex than `lookup`. It needs to make sure that there are no `None` nodes in the tree, so if a deletion results in a `None` node and there are any sibling nodes, it will unset the bit in the bitmap, and if it is the only child of a `Many` node, it will replace the `Many` node with itself. `Leaf` nodes similarly replace their parents if they are the only child.
+Finally we come to `delete`, which is only a little more complex than `lookup`. It needs to make sure that no `Many` node has a child `None` node, so if a `None` node:
+
+- is an only child, it will replace the parent node
+- has any sibling nodes, it will be removed from the parent node's bitmap and vector
+
+
+`Leaf` nodes similarly replace their parents if they are the only child.
 
 
 ```haskell
