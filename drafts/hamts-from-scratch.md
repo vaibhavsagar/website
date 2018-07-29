@@ -418,7 +418,7 @@ insert' shift hash key value (Many bitmap vector)
         index = maskIndex bitmap mask
 ```
 
-Now we can construct HAMTs and inspect them! I'll define a `fromList` function to make things easier and use `pPrint` from `pretty-show` to highlight the tree structure:
+Now we can construct HAMTs and inspect them! I'll define a `fromList` function and use `pPrint` from `pretty-show` to highlight the tree structure:
 
 
 ```haskell
@@ -501,7 +501,7 @@ timeIt $ print $ fib 30
 
 
     1346269
-    CPU time:   1.22s
+    CPU time:   1.15s
 
 
 We can memoise it by storing previously calculated results and using them if they are available:
