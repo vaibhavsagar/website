@@ -24,4 +24,4 @@ let
     mkdir -p $out
     cp -R _site/* $out
   '';
-in if lib.inNixShell then drv.env else site
+in site
