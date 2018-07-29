@@ -14,7 +14,8 @@ Let's start with a few imports! I'll be using these packages:
 2. [`bytestring`](http://hackage.haskell.org/package/bytestring)
 3. [`memory`](http://hackage.haskell.org/package/memory)
 4. [`pretty-show`](http://hackage.haskell.org/package/pretty-show)
-5. [`vector`](http://hackage.haskell.org/package/vector)
+5. [`timeit`](http://hackage.haskell.org/package/timeit)
+6. [`vector`](http://hackage.haskell.org/package/vector)
 
 
 ```haskell
@@ -28,6 +29,7 @@ import Data.Vector           (Vector, drop, singleton, take, (!), (//))
 import Data.Word             (Word16, Word32)
 import Numeric               (showIntAtBase)
 import Prelude               hiding (drop, lookup, take)
+import System.TimeIt         (timeIt)
 import Text.Show.Pretty      (pPrint)
 ```
 
@@ -449,7 +451,14 @@ fib :: Int -> Int
 fib 0 = 1
 fib 1 = 1
 fib n = fib (n-1) + fib (n-2)
+
+timeIt $ print $ fib 30
 ```
+
+
+    1346269
+    CPU time:   1.14s
+
 
 And we can memoise it by storing previously calculated results and using them if they are available:
 
@@ -470,58 +479,13 @@ fib' table n = case lookup n table of
 
 fib :: Int -> Int
 fib n = fst $ fib' empty n
-```
 
-This avoids unnecessary computation, especially if we can reuse the hashtable instead of discarding it:
-
-
-```haskell
-(result, table) = fib' empty 19
-pPrint $ fib' table 20
+timeIt $ print $ fib 30
 ```
 
 
-    ( 10946
-    , Many
-        1111111111111111
-        [ Many
-            0000000000000011
-            [ Leaf 00000000000000000000000000000000 0 1
-            , Leaf 00000000000000000000000000010000 16 1597
-            ]
-        , Many
-            0000000000000011
-            [ Leaf 00000000000000000000000000000001 1 1
-            , Leaf 00000000000000000000000000010001 17 2584
-            ]
-        , Many
-            0000000000000011
-            [ Leaf 00000000000000000000000000000010 2 2
-            , Leaf 00000000000000000000000000010010 18 4181
-            ]
-        , Many
-            0000000000000011
-            [ Leaf 00000000000000000000000000000011 3 3
-            , Leaf 00000000000000000000000000010011 19 6765
-            ]
-        , Many
-            0000000000000011
-            [ Leaf 00000000000000000000000000000100 4 5
-            , Leaf 00000000000000000000000000010100 20 10946
-            ]
-        , Leaf 00000000000000000000000000000101 5 8
-        , Leaf 00000000000000000000000000000110 6 13
-        , Leaf 00000000000000000000000000000111 7 21
-        , Leaf 00000000000000000000000000001000 8 34
-        , Leaf 00000000000000000000000000001001 9 55
-        , Leaf 00000000000000000000000000001010 10 89
-        , Leaf 00000000000000000000000000001011 11 144
-        , Leaf 00000000000000000000000000001100 12 233
-        , Leaf 00000000000000000000000000001101 13 377
-        , Leaf 00000000000000000000000000001110 14 610
-        , Leaf 00000000000000000000000000001111 15 987
-        ]
-    )
+    1346269
+    CPU time:   0.00s
 
 
 ### Delete
