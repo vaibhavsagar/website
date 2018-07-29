@@ -439,9 +439,94 @@ lookup "100" example
     Just 3
 
 
+#### Memoising Fibonacci
+
+We now have enough of an API to use this as a hashtable! Let's use it to memoise the calculation of the Fibonacci sequence. The naïve implementation looks like this:
+
+
+```haskell
+fib :: Int -> Int
+fib 0 = 1
+fib 1 = 1
+fib n = fib (n-1) + fib (n-2)
+```
+
+And we can memoise it by storing previously calculated results and using them if they are available:
+
+
+```haskell
+instance Hashable Int where
+    hash int = Binary (fromIntegral int)
+
+fib' :: HAMT Int Int -> Int -> (Int, HAMT Int Int)
+fib' table 0 = (1, insert 0 1 table)
+fib' table 1 = (1, insert 1 1 table)
+fib' table n = case lookup n table of
+    Just i -> (i, table)
+    Nothing -> let
+        (i1, table')  = fib' table  (n-1)
+        (i2, table'') = fib' table' (n-2)
+        in (i1 + i2, insert n (i1 + i2) table'')
+
+fib :: Int -> Int
+fib n = fst $ fib' empty n
+```
+
+This avoids unnecessary computation, especially if we can reuse the hashtable instead of discarding it:
+
+
+```haskell
+(result, table) = fib' empty 19
+pPrint $ fib' table 20
+```
+
+
+    ( 10946
+    , Many
+        1111111111111111
+        [ Many
+            0000000000000011
+            [ Leaf 00000000000000000000000000000000 0 1
+            , Leaf 00000000000000000000000000010000 16 1597
+            ]
+        , Many
+            0000000000000011
+            [ Leaf 00000000000000000000000000000001 1 1
+            , Leaf 00000000000000000000000000010001 17 2584
+            ]
+        , Many
+            0000000000000011
+            [ Leaf 00000000000000000000000000000010 2 2
+            , Leaf 00000000000000000000000000010010 18 4181
+            ]
+        , Many
+            0000000000000011
+            [ Leaf 00000000000000000000000000000011 3 3
+            , Leaf 00000000000000000000000000010011 19 6765
+            ]
+        , Many
+            0000000000000011
+            [ Leaf 00000000000000000000000000000100 4 5
+            , Leaf 00000000000000000000000000010100 20 10946
+            ]
+        , Leaf 00000000000000000000000000000101 5 8
+        , Leaf 00000000000000000000000000000110 6 13
+        , Leaf 00000000000000000000000000000111 7 21
+        , Leaf 00000000000000000000000000001000 8 34
+        , Leaf 00000000000000000000000000001001 9 55
+        , Leaf 00000000000000000000000000001010 10 89
+        , Leaf 00000000000000000000000000001011 11 144
+        , Leaf 00000000000000000000000000001100 12 233
+        , Leaf 00000000000000000000000000001101 13 377
+        , Leaf 00000000000000000000000000001110 14 610
+        , Leaf 00000000000000000000000000001111 15 987
+        ]
+    )
+
+
 ### Delete
 
-Finally we come to `delete`, which is only a little more complex. It needs to make sure that there are no `None` nodes in the tree, so if a deletion results in a `None` node, it will unset the bit in the bitmap if there are any sibling nodes, and if it was the only child of a `Many` node, it will replace the `Many` node with itself. `Leaf` nodes similarly replace their parents if they are the only child.
+Finally we come to `delete`, which is only a little more complex than `lookup`. It needs to make sure that there are no `None` nodes in the tree, so if a deletion results in a `None` node, it will unset the bit in the bitmap if there are any sibling nodes, and if it was the only child of a `Many` node, it will replace the `Many` node with itself. `Leaf` nodes similarly replace their parents if they are the only child.
 
 
 ```haskell
@@ -515,4 +600,4 @@ And we're done! I hope you understand HAMTs better than when you started reading
 
 If you want to use this for something other than educational purposes, I would recommend adding logic to deal with hash collisions, which I intentionally omitted. There's also some low-hanging fruit in terms of performance optimisations. The first thing that comes to mind is an additional `Full` constructor for the case where all bits in the bitmap are set, and the next thing is the use of unsafe vector functions that omit bounds checking.
 
-Thanks to [Evan Borden](https://twitter.com/evanborden), [Jean Niklas L'orange](https://hypirion.com/), and [Mark Hopkins](http://mjhopkins.github.io/) for comments and feedback.
+Thanks to [Evan Borden](https://twitter.com/evanborden), [Jean Niklas L'orange](https://hypirion.com/), [Mark Hopkins](http://mjhopkins.github.io/), and [Tim Humphries](https://teh.id.au/) for comments and feedback.
