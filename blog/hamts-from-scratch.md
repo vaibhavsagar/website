@@ -487,7 +487,7 @@ lookup "100" example
 
 #### Memoising Fibonacci
 
-We now have enough of an API to use this as a hashtable! Let's use it to memoise the calculation of the Fibonacci sequence. The naïve implementation does a lot of unnecessary recomputation:
+We now have enough of an API to use this as a hashtable! Let's use it to memoise the calculation of the Fibonacci sequence. The naive implementation does a lot of unnecessary recomputation:
 
 
 ```haskell
@@ -501,7 +501,7 @@ timeIt $ print $ fib 30
 
 
     1346269
-    CPU time:   1.21s
+    CPU time:   1.12s
 
 
 We can memoise it by storing previously calculated results and using them if they are available:
