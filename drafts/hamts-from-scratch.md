@@ -1,12 +1,12 @@
 --------------------------------------------------------------------------------
 title: HAMTs from Scratch
-published: 2018-07-27
+published: 2018-07-29
 tags: programming, haskell
 --------------------------------------------------------------------------------
 
 _This blog post is also available as an [IHaskell notebook](https://github.com/vaibhavsagar/notebooks/blob/master/hamt/HAMTsFromScratch.ipynb)._
 
-I wanted an explanation for HAMTs (Hash Array Mapped Tries) that was more detailed than [Marek Majkowski's introduction](https://idea.popcount.org/2012-07-25-introduction-to-hamt/) and more approachable than [_Ideal Hash Trees_ by Phil Bagwell](https://lampwww.epfl.ch/papers/idealhashtrees.pdf), the paper that introduced them. If you haven't heard of them before, HAMTs are a way of efficiently representing a hashtable as a [trie](https://en.wikipedia.org/wiki/Trie). They form the backbone of the [`unordered-containers`](http://hackage.haskell.org/package/unordered-containers) library but the [implementation has been lovingly optimised](https://github.com/tibbe/unordered-containers/blob/efa43a2ab09dc6eb72893d12676a8e188cb4ca63/Data/HashMap/Base.hs) to the point where I found it impenetrable. [Edward Z. Yang's implementation](https://github.com/ezyang/hamt/blob/a43559795630980eb16ab832a003d8e6acd21cf6/HAMT.hs) is much easier to follow and after adapting it I think I'm in a good place to provide my own take on them.
+I wanted an explanation for HAMTs (Hash Array Mapped Tries) that was more detailed than [Marek Majkowski's introduction](https://idea.popcount.org/2012-07-25-introduction-to-hamt/) and more approachable than [_Ideal Hash Trees_ by Phil Bagwell](https://lampwww.epfl.ch/papers/idealhashtrees.pdf), the paper that introduced them. If you haven't heard of them before, HAMTs are a way of efficiently representing a hashtable as a [trie](https://en.wikipedia.org/wiki/Trie), and although they were first envisioned as a mutable data structure they are easily adapted to work as a [persistent data structure](https://en.wikipedia.org/wiki/Persistent_data_structure). They form the backbone of the [`unordered-containers`](http://hackage.haskell.org/package/unordered-containers) library but the [implementation has been lovingly optimised](https://github.com/tibbe/unordered-containers/blob/efa43a2ab09dc6eb72893d12676a8e188cb4ca63/Data/HashMap/Base.hs) to the point where I found it impenetrable. [Edward Z. Yang's implementation](https://github.com/ezyang/hamt/blob/a43559795630980eb16ab832a003d8e6acd21cf6/HAMT.hs) is much easier to follow and after adapting it I think I'm in a good place to provide my own take on them.
 
 Let's start with a few imports! I'll be using these packages:
 
@@ -87,7 +87,7 @@ bitsPerSubkey :: Int
 bitsPerSubkey = 4
 ```
 
-`Shift` is a multiple of $n$ that we will use to focus on the correct part of the hash. More on this later.
+`Shift` is a multiple of $n$ that we will use to focus on the correct part of the hash.
 
 
 ```haskell
@@ -166,7 +166,7 @@ deleteAt vector index = take index vector <> drop (index+1) vector
 
 ### Insert
 
-I think the bit manipulation functions are crucial to understanding what's going on, so I'm choosing to motivate them by trying to define `insert` without them and coming up with them as they are needed. My initial definition won't be quite right so I'll call it `insert_` to differentiate it from the correct `insert'` function I present later. The type signature for `insert_` is
+I think the bit manipulation functions are crucial to understanding what's going on, so I'm going to motivate them by trying to define `insert` without them and coming up with them as they are needed. This initial definition won't be quite right so I'll call it `insert_` to differentiate it from the correct `insert'` function I present later. The type signature for `insert_` is
 
 ```haskell
 insert_ :: Hash -> key -> value -> HAMT key value -> HAMT key value
@@ -201,6 +201,7 @@ Where does `someBitmap` come from? Time for an example! Let's start with a `Leaf
 ```haskell
 h = hash "1"
 leaf = Leaf h "1" 1
+
 leaf
 ```
 
@@ -214,6 +215,7 @@ leaf
 ```haskell
 subkeyMask :: Bitmap
 subkeyMask = (bit bitsPerSubkey) - 1
+
 subkeyMask
 ```
 
@@ -227,7 +229,9 @@ subkeyMask
 -- .&. 0000000000001111
 -----------------------
 --     0000000000001110
+
 fragment = fromIntegral h .&. subkeyMask
+
 fragment
 ```
 
@@ -240,6 +244,7 @@ Then we interpret that fragment as a number:
 
 ```haskell
 Binary position = fragment
+
 position
 ```
 
@@ -253,6 +258,7 @@ Finally, we set that bit and we have our bitmap:
 ```haskell
 someBitmap :: Bitmap
 someBitmap = Binary $ bit $ fromIntegral position
+
 someBitmap
 ```
 
@@ -271,7 +277,7 @@ bitMask_ hash = let
     in Binary (bit (fromIntegral position))
 ```
 
-Let's look at the `Many` case. If we try inserting into a node where the bit in the bitmap corresponding to the hash of the key is `0`, then we can insert a leaf node into the vector and set the corresponding bit to `1`:
+Let's look at the `Many` case. If we try inserting into a node where the bit in the bitmap corresponding to the mask is `0`, this means that there is an empty slot in the vector. We can insert a leaf node into this slot and set the corresponding bit in the bitmap to `1`:
 
 ```haskell
 insert_ hash key value (Many bitmap vector)
@@ -287,18 +293,52 @@ insert_ hash key value (Many bitmap vector)
 
 #### Mask Indexing
 
-What `index` do we use? This is where `popCount` makes an appearance. Let's demonstrate by inserting `("10", 2)` into our example. We first get the mask corresponding to `hash "10"`:
+What `index` do we use? This is where `popCount` makes an appearance. Let's demonstrate by inserting `("10", 2)` into our example. First we get the mask corresponding to `hash "10"`:
 
 
 ```haskell
 mask = bitMask_ (hash "10")
+
+mask
 ```
 
-Next we want to find the number of lower bits that have been set, so we use `mask - 1` as a mask and get the `popCount`:
+
+    0000010000000000
+
+
+Next we want to find the number of lower bits that have been set. We use `mask - 1` as a mask:
 
 
 ```haskell
-index = popCount (someBitmap .&. (mask - 1))
+mask - 1
+```
+
+
+    0000001111111111
+
+
+
+```haskell
+--     0100000000000000
+-- .&. 0000001111111111
+-----------------------
+--     0000000000000000
+
+masked = someBitmap .&. (mask - 1)
+
+masked
+```
+
+
+    0000000000000000
+
+
+Then we count the number of bits set with `popCount`:
+
+
+```haskell
+index = popCount masked
+
 index
 ```
 
@@ -314,7 +354,7 @@ maskIndex :: Bitmap -> Bitmap -> Int
 maskIndex bitmap mask = popCount (bitmap .&. (mask - 1))
 ```
 
-The final case is where the bit in the bitmap is already set, and we need to recursively update the HAMT at the corresponding index:
+The final case is where the bit in the bitmap is already set. We need to recursively update the HAMT at the corresponding index:
 
 ```haskell
 insert_ hash key value (Many bitmap vector)
@@ -327,11 +367,11 @@ insert_ hash key value (Many bitmap vector)
         index = maskIndex bitmap mask
 ```
 
-But instead of carving off the last $n$ bits of `hash`, we want to recursively carve off the next $n$ bits!
+But this definition is wrong, because instead of carving off the last $n$ bits of `hash`, we want to recursively carve off the next $n$ bits!
 
 #### Shifting
 
-This is what's missing from our definition, a `shift` parameter corresponding to how far up the `hash` we're looking. Taking this extra parameter into account, our bit manipulation functions now become:
+This is what's missing from our definition, a `shift` parameter corresponding to how far up the `hash` we're looking. This is why we defined `Shift` above. Taking this extra parameter into account, our bit manipulation functions now become:
 
 
 ```haskell
@@ -348,7 +388,7 @@ bitMask :: Hash -> Shift -> Bitmap
 bitMask hash shift = bit (subkey hash shift)
 ```
 
-And we plumb through this `shift` parameter, only modifying it in the final case, to give us the correct definitions of `insert'` and `insert`:
+We plumb through this `shift` parameter, only modifying it in the final case, to give us the correct definitions of `insert'` and `insert`:
 
 
 ```haskell
@@ -408,7 +448,11 @@ pPrint example
 
 ### Lookup
 
-Compared to `insert`, `lookup` is a walk in the park. It's implemented like we would expect on empty trees and leaf nodes, and it recurses exactly like `insert`, using the bitmap to check possible membership.
+Compared to `insert`, `lookup` is a walk in the park. It's implemented along the same lines as `insert`:
+
+1. On `None` nodes, it fails.
+2. On `Leaf` nodes, it succeeds if the hashes match.
+3. On `Many` nodes, it fails if the bit isn't set, and recurses into the child node otherwise.
 
 
 ```haskell
@@ -443,7 +487,7 @@ lookup "100" example
 
 #### Memoising Fibonacci
 
-We now have enough of an API to use this as a hashtable! Let's use it to memoise the calculation of the Fibonacci sequence. The naïve implementation looks like this:
+We now have enough of an API to use this as a hashtable! Let's use it to memoise the calculation of the Fibonacci sequence. The naïve implementation does a lot of unnecessary recomputation:
 
 
 ```haskell
@@ -460,7 +504,7 @@ timeIt $ print $ fib 30
     CPU time:   1.14s
 
 
-And we can memoise it by storing previously calculated results and using them if they are available:
+We can memoise it by storing previously calculated results and using them if they are available:
 
 
 ```haskell
@@ -490,7 +534,7 @@ timeIt $ print $ fib 30
 
 ### Delete
 
-Finally we come to `delete`, which is only a little more complex than `lookup`. It needs to make sure that there are no `None` nodes in the tree, so if a deletion results in a `None` node, it will unset the bit in the bitmap if there are any sibling nodes, and if it was the only child of a `Many` node, it will replace the `Many` node with itself. `Leaf` nodes similarly replace their parents if they are the only child.
+Finally we come to `delete`, which is only a little more complex than `lookup`. It needs to make sure that there are no `None` nodes in the tree, so if a deletion results in a `None` node and there are any sibling nodes, it will unset the bit in the bitmap, and if it is the only child of a `Many` node, it will replace the `Many` node with itself. `Leaf` nodes similarly replace their parents if they are the only child.
 
 
 ```haskell
@@ -542,7 +586,7 @@ pPrint $ delete "1000" example
       ]
 
 
-Note that it's possible to have a situation where we have a `Many` node with only one child, because our replacement behaviour checks the length of the vector before any elements are removed from it. However, removing the last leaf will correctly delete the parent node as well.
+It's possible to have a situation where we have a `Many` node with only one child, because our replacement behaviour checks the length of the vector before any elements are removed from it. However, removing the last leaf will correctly delete the parent node.
 
 
 ```haskell
