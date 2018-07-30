@@ -131,5 +131,5 @@ feedConfig = FeedConfiguration
     , feedDescription = "A blog with posts in it."
     , feedAuthorName  = "Vaibhav Sagar"
     , feedAuthorEmail = "vaibhavsagar@gmail.com"
-    , feedRoot        = "http://vaibhavsagar.com"
+    , feedRoot        = "https://vaibhavsagar.com"
     }
