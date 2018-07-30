@@ -43,9 +43,9 @@ newtype Binary a = Binary a
     deriving (Enum, Ord, Real, Integral, Eq, Num, Bits, FiniteBits)
 
 instance (FiniteBits a, Show a, Integral a) => Show (Binary a) where
-    show (Binary a) = let
-        str = showIntAtBase 2 intToDigit a ""
-        size = finiteBitSize $ undefined `asTypeOf` a
+    show (Binary n) = let
+        str = showIntAtBase 2 intToDigit n ""
+        size = finiteBitSize $ undefined `asTypeOf` n
         in replicate (size - length str) '0' <> str
 ```
 
@@ -501,7 +501,7 @@ timeIt $ print $ fib 30
 
 
     1346269
-    CPU time:   1.12s
+    CPU time:   1.31s
 
 
 We can memoise it by storing previously calculated results and using them if they are available:
@@ -614,4 +614,4 @@ And we're done! I hope you understand HAMTs better than when you started reading
 
 If you want to use this for something other than educational purposes, I would recommend adding logic to deal with hash collisions, which I intentionally omitted. There's also some low-hanging fruit in terms of performance optimisations. The first thing that comes to mind is an additional `Full` constructor for the case where all bits in the bitmap are set, and the next thing is the use of unsafe vector functions that omit bounds checking.
 
-Thanks to [Evan Borden](https://twitter.com/evanborden), [Jean Niklas L'orange](https://hypirion.com/), [Mark Hopkins](http://mjhopkins.github.io/), and [Tim Humphries](https://teh.id.au/) for comments and feedback.
+Thanks to [Evan Borden](https://twitter.com/evanborden), [Javier Candeira](https://twitter.com/candeira), [Jean Niklas L'orange](https://hypirion.com/), [Mark Hopkins](http://mjhopkins.github.io/), and [Tim Humphries](https://teh.id.au/) for comments and feedback.
