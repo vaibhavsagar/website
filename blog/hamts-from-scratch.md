@@ -45,7 +45,7 @@ newtype Binary a = Binary a
 instance (FiniteBits a, Show a, Integral a) => Show (Binary a) where
     show (Binary n) = let
         str = showIntAtBase 2 intToDigit n ""
-        size = finiteBitSize $ undefined `asTypeOf` n
+        size = finiteBitSize n
         in replicate (size - length str) '0' <> str
 ```
 
