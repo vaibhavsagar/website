@@ -258,7 +258,7 @@ eval [] . anonymise . desugar Map.empty $ AppLet (AppLet konst (LitLet 1)) (LitL
 
 Awesome! We have composable compiler passes that are easier to write and to think about. Even with this small example, I hope the benefits are clear.
 
-Edit: [Ed Kmett points out](https://www.reddit.com/r/haskell/comments/8s75n3/trees_that_shrink/e0x8se2) that using `Void` makes this approach unnecessarily footgun-prone and suggests using strict fields and `()` instead. This allows for simpler pattern synonyms and comes with the additional benefit that we can disable constructors with `Void` so we can actually have trees that shrink:
+Edit: [Edward Kmett points out](https://www.reddit.com/r/haskell/comments/8s75n3/trees_that_shrink/e0x8se2) that using `Void` makes this approach unnecessarily footgun-prone and suggests using strict fields and `()` instead. This allows for simpler pattern synonyms and comes with the additional benefit that we can disable constructors with `Void` so we can actually have trees that shrink:
 
 
 ```haskell
