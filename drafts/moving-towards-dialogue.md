@@ -64,7 +64,7 @@ this is a simple question with a straightforward answer.
 Indeed, the most common response I get when I ask this question is to write
 tests. That sounds reasonable, so let's do that:
 
-```
+```python
 >>> def map(f, ls):
 ...     print("Where are your tests now?")
 ...     return [2, 3, 4]
@@ -78,6 +78,7 @@ Okay, my test passes, so everything must be good, right?
 
 I contend that tests are necessary, but not sufficient. They are problematic
 for at least two reasons:
+
 1. They are only as good as the specification they imply for how a program
    should behave. If that specification is incomplete or wrong, no amount of
    tests will guarantee software that works.
