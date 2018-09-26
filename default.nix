@@ -1,6 +1,6 @@
 let
   # ./updater versions.json nixpkgs nixos-18.03
-  fetcher = { owner, repo, rev, sha256 }: builtins.fetchTarball {
+  fetcher = { owner, repo, rev, sha256, ... }: builtins.fetchTarball {
     inherit sha256;
     url = "https://github.com/${owner}/${repo}/archive/${rev}.tar.gz";
   };
