@@ -90,3 +90,17 @@ Fortunately, tests aren't the only specification of how a program should
 behave. Types can also serve as specifications, and they have the advantage
 that they are extremely well integrated into the language in a way tests
 usually are not.
+
+What does this mean in practice? Let's look at Haskell. Haskell is statically
+typed, which means it expects to know the types of all the expressions in your
+program at compile time. This is nothing special though, lots of other
+languages also claim to be statically typed. What is special about Haskell
+though is that it has type inference, which means that you don't have to
+annotate expressions with their types most of the time because the compiler can
+figure it out. If you put these two features together, you get typed holes!
+
+Let's try to write that same program in Haskell:
+
+```haskell
+
+```
