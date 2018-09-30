@@ -100,8 +100,136 @@ though is that it has type inference, which means that you don't have to
 annotate expressions with their types most of the time because the compiler can
 figure it out. If you put these two features together, you get typed holes!
 
-Let's try to write that same program in Haskell:
+Let's try to write that same program in Haskell with typed holes. To start,
+let's create a file called `Main.hs` with the following contents:
 
 ```haskell
+import Prelude hiding (map)
+
+map :: (a -> b) -> [a] -> [b]
+map f ls = _
+
+plusOne :: Int -> Int
+plusOne i = i + 1
+
+main :: IO ()
+main = print ((map plusOne [1, 2, 3]) == [2, 3, 4])
+```
+
+To automate the cycle of loading this file into GHCi every time we make a
+change, we're going to use [`ghcid`](https://github.com/ndmitchell/ghcid),
+which does essentially that and not much else. This is the result of running
+`ghcid Main.hs`:
 
 ```
+Main.hs:4:12: error:
+    • Found hole: _ :: [b]
+      Where: ‘b’ is a rigid type variable bound by
+               the type signature for:
+                 map :: forall a b. (a -> b) -> [a] -> [b]
+               at Main.hs:3:1-29
+    • In the expression: _
+      In an equation for ‘map’: map f ls = _
+    • Relevant bindings include
+        ls :: [a] (bound at Main.hs:4:7)
+        f :: a -> b (bound at Main.hs:4:5)
+        map :: (a -> b) -> [a] -> [b] (bound at Main.hs:4:1)
+  |
+4 | map f ls = _
+  |
+```
+
+I'd suggest ignoring the middle and instead focusing on the top, which tells us
+the type of the hole, and the bottom, which tells us which bindings are in
+scope that we can use to fill in the hole.
+
+In this case we aren't learning anything new, and we already know that the hole
+is of type `[b]`, but it's useful to know that our view of the world agrees
+with GHC's. Of the bindings available to us, `ls` looks like the most
+promising, and we can split it into one of two cases: an empty list, or some
+element and the rest of the list. We can put a typed hole on the right hand
+side of each case alternative:
+
+```haskell
+import Prelude hiding (map)
+
+map :: (a -> b) -> [a] -> [b]
+map f ls = case ls of
+    [] -> _1
+    x:xs -> _2
+
+plusOne :: Int -> Int
+plusOne i = i + 1
+
+main :: IO ()
+main = print ((map plusOne [1, 2, 3]) == [2, 3, 4])
+```
+
+And our `ghcid` output changes:
+
+```
+Main.hs:5:11-12: error:
+    • Found hole: _1 :: [b]
+      Where: ‘b’ is a rigid type variable bound by
+               the type signature for:
+                 map :: forall a b. (a -> b) -> [a] -> [b]
+               at Main.hs:3:1-29
+      Or perhaps ‘_1’ is mis-spelled, or not in scope
+    • In the expression: _1
+      In a case alternative: [] -> _1
+      In the expression:
+        case ls of
+          [] -> _1
+          x : xs -> _2
+    • Relevant bindings include
+        ls :: [a] (bound at Main.hs:4:7)
+        f :: a -> b (bound at Main.hs:4:5)
+        map :: (a -> b) -> [a] -> [b] (bound at Main.hs:4:1)
+  |
+5 |     [] -> _1
+  |           ^^
+Main.hs:6:13-14: error:
+    • Found hole: _2 :: [b]
+      Where: ‘b’ is a rigid type variable bound by
+               the type signature for:
+                 map :: forall a b. (a -> b) -> [a] -> [b]
+               at Main.hs:3:1-29
+      Or perhaps ‘_2’ is mis-spelled, or not in scope
+    • In the expression: _2
+      In a case alternative: x : xs -> _2
+      In the expression:
+        case ls of
+          [] -> _1
+          x : xs -> _2
+    • Relevant bindings include
+        xs :: [a] (bound at Main.hs:6:7)
+        x :: a (bound at Main.hs:6:5)
+        ls :: [a] (bound at Main.hs:4:7)
+        f :: a -> b (bound at Main.hs:4:5)
+        map :: (a -> b) -> [a] -> [b] (bound at Main.hs:4:1)
+  |
+6 |     x:xs -> _2
+  |             ^^
+```
+
+We haven't learned anything new about the types, but we can make progress
+another way. The only sensible thing to put on the right hand side when given
+an empty list is another empty list, and when given an element and a list the
+most reasonable thing to do is to operate on each of them and put them together
+into a new list:
+
+```haskell
+import Prelude hiding (map)
+
+map :: (a -> b) -> [a] -> [b]
+map f ls = case ls of
+    [] -> []
+    x:xs -> _1:_2
+
+plusOne :: Int -> Int
+plusOne i = i + 1
+
+main :: IO ()
+main = print ((map plusOne [1, 2, 3]) == [2, 3, 4])
+```
+
