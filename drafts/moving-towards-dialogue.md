@@ -214,9 +214,8 @@ Main.hs:6:13-14: error:
 
 We haven't learned anything new about the types, but we can make progress
 another way. The only sensible thing to put on the right hand side when given
-an empty list is another empty list, and when given an element and a list the
-most reasonable thing to do is to operate on each of them and put them together
-into a new list:
+an empty list is another empty list, and after splitting a list apart the most
+reasonable thing to do is to combine two other things into a new list:
 
 ```haskell
 import Prelude hiding (map)
@@ -232,4 +231,113 @@ plusOne i = i + 1
 main :: IO ()
 main = print ((map plusOne [1, 2, 3]) == [2, 3, 4])
 ```
+
+Now the output gets a little more interesting:
+
+```
+Main.hs:6:13-14: error:
+    • Found hole: _1 :: b
+      Where: ‘b’ is a rigid type variable bound by
+               the type signature for:
+                 map :: forall a b. (a -> b) -> [a] -> [b]
+               at Main.hs:3:1-29
+      Or perhaps ‘_1’ is mis-spelled, or not in scope
+    • In the first argument of ‘(:)’, namely ‘_1’
+      In the expression: _1 : _2
+      In a case alternative: x : xs -> _1 : _2
+    • Relevant bindings include
+        xs :: [a] (bound at Main.hs:6:7)
+        x :: a (bound at Main.hs:6:5)
+        ls :: [a] (bound at Main.hs:4:7)
+        f :: a -> b (bound at Main.hs:4:5)
+        map :: (a -> b) -> [a] -> [b] (bound at Main.hs:4:1)
+  |
+6 |     x:xs -> _1:_2
+  |             ^^
+Main.hs:6:16-17: error:
+    • Found hole: _2 :: [b]
+      Where: ‘b’ is a rigid type variable bound by
+               the type signature for:
+                 map :: forall a b. (a -> b) -> [a] -> [b]
+               at Main.hs:3:1-29
+      Or perhaps ‘_2’ is mis-spelled, or not in scope
+    • In the second argument of ‘(:)’, namely ‘_2’
+      In the expression: _1 : _2
+      In a case alternative: x : xs -> _1 : _2
+    • Relevant bindings include
+        xs :: [a] (bound at Main.hs:6:7)
+        x :: a (bound at Main.hs:6:5)
+        ls :: [a] (bound at Main.hs:4:7)
+        f :: a -> b (bound at Main.hs:4:5)
+        map :: (a -> b) -> [a] -> [b] (bound at Main.hs:4:1)
+  |
+6 |     x:xs -> _1:_2
+  |
+```
+
+Our first hole is now of type `b`, and we see that it's possible to get a value
+of this type by applying `f` to `x`. The second hole is still of type `[b]`,
+and we see that the most reasonable way to get a value of this type is to
+recurse, using `map` with `f` and `xs`.
+
+```haskell
+import Prelude hiding (map)
+
+map :: (a -> b) -> [a] -> [b]
+map f ls = case ls of
+    [] -> []
+    x:xs -> f x: map f xs
+
+plusOne :: Int -> Int
+plusOne i = i + 1
+
+main :: IO ()
+main = print ((map plusOne [1, 2, 3]) == [2, 3, 4])
+```
+
+And `ghcid` is satisfied:
+
+```
+All good (1 module, at <time>)
+```
+
+It compiles! But does it work?
+
+```
+$ runhaskell Main.hs
+True
+```
+
+Fantastic! We were able to ask the compiler for hints and get useful answers
+back. This is a gigantic improvement over anything I'm aware of in Python land.
+
+Unfortunately, there is a catch: this program is too easy to break. Let me
+demonstrate my favourite way:
+
+```haskell
+import Prelude hiding (map)
+
+map :: (a -> b) -> [a] -> [b]
+map f ls = []
+
+plusOne :: Int -> Int
+plusOne i = i + 1
+
+main :: IO ()
+main = print ((map plusOne [1, 2, 3]) == [2, 3, 4])
+```
+
+The astute reader will notice that this is the same as my earliest Python
+program. Here is what `ghcid` has to say:
+
+```
+All good (1 module, at <time>)
+```
+
+So what's going on here? It turns out an empty list is a valid list of any
+type. Is it a list of Strings? Yup. Is it a list of Ints? Sure!
+
+One way of avoiding this class of incorrect program is to specify that the
+input and the output lists should be of the same length. It's possible to do
+this in Haskell, but it is a lot of work. Can we do better?
 
