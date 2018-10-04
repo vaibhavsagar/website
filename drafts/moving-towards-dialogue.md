@@ -136,7 +136,7 @@ Main.hs:4:12: error:
         map :: (a -> b) -> [a] -> [b] (bound at Main.hs:4:1)
   |
 4 | map f ls = _
-  |
+  |            ^
 ```
 
 I'd suggest ignoring the middle and instead focusing on the top, which tells us
@@ -272,7 +272,7 @@ Main.hs:6:16-17: error:
         map :: (a -> b) -> [a] -> [b] (bound at Main.hs:4:1)
   |
 6 |     x:xs -> _1:_2
-  |
+  |                ^^
 ```
 
 Our first hole is now of type `b`, and we see that it's possible to get a value
