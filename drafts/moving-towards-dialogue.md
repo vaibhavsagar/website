@@ -121,7 +121,7 @@ change, we're going to use [`ghcid`](https://github.com/ndmitchell/ghcid),
 which does essentially that and not much else. This is the result of running
 `ghcid Main.hs`:
 
-```
+```default
 Main.hs:4:12: error:
     • Found hole: _ :: [b]
       Where: ‘b’ is a rigid type variable bound by
@@ -167,7 +167,7 @@ main = print ((map plusOne [1, 2, 3]) == [2, 3, 4])
 
 And our `ghcid` output changes:
 
-```
+```default
 Main.hs:5:11-12: error:
     • Found hole: _1 :: [b]
       Where: ‘b’ is a rigid type variable bound by
@@ -234,7 +234,7 @@ main = print ((map plusOne [1, 2, 3]) == [2, 3, 4])
 
 Now the output gets a little more interesting:
 
-```
+```default
 Main.hs:6:13-14: error:
     • Found hole: _1 :: b
       Where: ‘b’ is a rigid type variable bound by
@@ -297,13 +297,13 @@ main = print ((map plusOne [1, 2, 3]) == [2, 3, 4])
 
 And `ghcid` is satisfied:
 
-```
+```default
 All good (1 module, at <time>)
 ```
 
 It compiles! But does it work?
 
-```
+```bash
 $ runhaskell Main.hs
 True
 ```
@@ -327,10 +327,11 @@ main :: IO ()
 main = print ((map plusOne [1, 2, 3]) == [2, 3, 4])
 ```
 
-The astute reader will notice that this is the same as my earliest Python
-program. Here is what `ghcid` has to say:
+The astute reader will notice that this is the Haskell equivalent of the
+obviously broken Python program we started with. Here is what `ghcid` has to
+say:
 
-```
+```default
 All good (1 module, at <time>)
 ```
 
