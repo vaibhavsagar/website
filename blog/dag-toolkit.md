@@ -81,7 +81,7 @@ than [Kosaraju's
 algorithm](https://en.wikipedia.org/wiki/Kosaraju's_algorithm), which only
 computes SCCs. Here it is as pseudocode:
 
-```noweb
+```default
  algorithm tarjan is
   input: graph G = (V, E)
   output: set of strongly connected components (sets of vertices)
