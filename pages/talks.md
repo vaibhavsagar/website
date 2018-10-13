@@ -6,17 +6,17 @@ title: Talks
 
 #### I Haskell a Git
 
-- Where: YOW! Lambda Jam 2018
-- [Slides](https://github.com/vaibhavsagar/presentations/blob/master/git-from-scratch/Git.ipynb), [Video](https://www.youtube.com/watch?v=nVvvY5VRs8o)
+- Where: YOW! Lambda Jam 2018, Haskell eXchange 2018
+- [Slides](https://github.com/vaibhavsagar/presentations/blob/master/git-from-scratch/Git.ipynb), [Video (YLJ)](https://www.youtube.com/watch?v=nVvvY5VRs8o), [Video (HaskellX)](https://skillsmatter.com/skillscasts/12302-i-haskell-a-git)
 
 #### Moving towards dialogue: collaborating with your computer using typed holes!
 
-- Where: !!Con 2018
-- [Slides](https://vaibhavsagar.com/presentations/typed-holes), [Video](https://www.youtube.com/watch?v=0oo8wIi2qBE)
+- Where: !!Con 2018, Haskell eXchange 2018
+- [Slides](https://vaibhavsagar.com/presentations/typed-holes), [Video (!!Con)](https://www.youtube.com/watch?v=0oo8wIi2qBE), [Video (HaskellX)](https://skillsmatter.com/skillscasts/12641-lightning-talk-moving-towards-dialogue-collaborating-with-your-computer-using-typed-holes)
 
 #### Functional DevOps (in a dysfunctional world)
 
-- Where: Real World Functional Programming Miniconf, linux.conf.au 2018
+- Where: linux.conf.au 2018 Real World Functional Programming Miniconf
 - [Slides](https://vaibhavsagar.com/presentations/functional-devops/), [Video](https://www.youtube.com/watch?v=RsSNEkBGmj0)
 
 #### Git it Going
