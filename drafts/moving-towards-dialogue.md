@@ -342,3 +342,14 @@ One way of avoiding this class of incorrect program is to specify that the
 input and the output lists should be of the same length. It's possible to do
 this in Haskell, but it is a lot of work. Can we do better?
 
+Enter Idris.
+
+Idris is a functional programming language with a more sophisticated type
+system than Haskell's. Unfortunately it trades off some type inference to
+achieve this, so it's not strictly better than Haskell in every way. It has
+excellent built-in editor support, and therefore has fancier typed holes!
+
+Let's try to implement `map` again:
+
+```idris
+```
