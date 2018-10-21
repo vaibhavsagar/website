@@ -352,4 +352,64 @@ excellent built-in editor support, and therefore has fancier typed holes!
 Let's try to implement `map` again:
 
 ```idris
+data Vect : Nat -> Type -> Type where
+    Nil  : Vect 0 a
+    (::) : a -> Vect length a -> Vect (1 + length) a
+
+implementation (Eq a) => Eq (Vect l a) where
+    (==) []      []      = True
+    (==) (x::xs) (y::ys) = x == y && xs == ys
+
+map : (a -> b) -> Vect length a -> Vect length b
+
+plusOne : Int -> Int
+plusOne i = i + 1
+
+main : IO ()
+main = printLn ((map plusOne [1, 2, 3]) == [2, 3, 4])
+```
+
+Instead of implementing `map` on lists, we'll use a more interesting type
+called `Vect` which is essentially a list that knows about its length. A `Vect`
+can either be `Nil` of length `0` or an element on the front of another `Vect`
+of some length `length` giving us a new `Vect` of length `length + 1`. I've
+also gone ahead defined equality on these `Vect`s because I use it in `main`.
+
+Loading the file into the Idris REPL gives us access to the editor integration:
+
+```bash
+$ idris Main.idr
+     ____    __     _
+    /  _/___/ /____(_)____
+    / // __  / ___/ / ___/     Version 1.3.0
+  _/ // /_/ / /  / (__  )      http://www.idris-lang.org/
+ /___/\__,_/_/  /_/____/       Type :? for help
+
+Idris is free software with ABSOLUTELY NO WARRANTY.
+For details type :warranty.
+Type checking ./Main.idr
+Holes: Main.map
+*Main>
+```
+
+In vim, I can use `<localleader>d` with the cursor on `map` to fill in a
+skeleton definition:
+
+```idris
+data Vect : Nat -> Type -> Type where
+    Nil  : Vect 0 a
+    (::) : a -> Vect length a -> Vect (1 + length) a
+
+implementation (Eq a) => Eq (Vect l a) where
+    (==) []      []      = True
+    (==) (x::xs) (y::ys) = x == y && xs == ys
+
+map : (a -> b) -> Vect length a -> Vect length b
+map f x = ?map_rhs
+
+plusOne : Int -> Int
+plusOne i = i + 1
+
+main : IO ()
+main = printLn ((map plusOne [1, 2, 3]) == [2, 3, 4])
 ```
