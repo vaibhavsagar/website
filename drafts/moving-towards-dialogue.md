@@ -413,3 +413,90 @@ plusOne i = i + 1
 main : IO ()
 main = printLn ((map plusOne [1, 2, 3]) == [2, 3, 4])
 ```
+
+Using `<localleader>t` with the cursor on the typed hole provides a type for
+us:
+
+```default
+  b : Type
+  a : Type
+  f : a -> b
+  length : Nat
+  x : Vect length a
+--------------------------------------
+map_rhs : Vect length b
+```
+
+But we don't need to go down this route. We can make Idris do a case-split for
+us with `<localleader>c` with the cursor on `x`:
+
+```idris
+data Vect : Nat -> Type -> Type where
+    Nil  : Vect 0 a
+    (::) : a -> Vect length a -> Vect (1 + length) a
+
+implementation (Eq a) => Eq (Vect l a) where
+    (==) []      []      = True
+    (==) (x::xs) (y::ys) = x == y && xs == ys
+
+map : (a -> b) -> Vect length a -> Vect length b
+map f [] = ?map_rhs_1
+map f (x :: y) = ?map_rhs_2
+
+plusOne : Int -> Int
+plusOne i = i + 1
+
+main : IO ()
+main = printLn ((map plusOne [1, 2, 3]) == [2, 3, 4])
+```
+
+Again, as with our Haskell example, the only sensible output when the input is
+an empty `Vect` is another empty `Vect`. We think so, but what does Idris
+think? It has a nifty feature called "proof search" that can search the space
+of all possible programs that fit and choose the first one. We can use this
+with `<localleader>o` ('o' is for obvious):
+
+```idris
+data Vect : Nat -> Type -> Type where
+    Nil  : Vect 0 a
+    (::) : a -> Vect length a -> Vect (1 + length) a
+
+implementation (Eq a) => Eq (Vect l a) where
+    (==) []      []      = True
+    (==) (x::xs) (y::ys) = x == y && xs == ys
+
+map : (a -> b) -> Vect length a -> Vect length b
+map f [] = []
+map f (x :: y) = ?map_rhs_2
+
+plusOne : Int -> Int
+plusOne i = i + 1
+
+main : IO ()
+main = printLn ((map plusOne [1, 2, 3]) == [2, 3, 4])
+```
+
+And we get the result we expect. This works for the simple case, but does it
+work for the more complex one?
+
+```idris
+data Vect : Nat -> Type -> Type where
+    Nil  : Vect 0 a
+    (::) : a -> Vect length a -> Vect (1 + length) a
+
+implementation (Eq a) => Eq (Vect l a) where
+    (==) []      []      = True
+    (==) (x::xs) (y::ys) = x == y && xs == ys
+
+map : (a -> b) -> Vect length a -> Vect length b
+map f [] = []
+map f (x :: y) = f x :: map f y
+
+plusOne : Int -> Int
+plusOne i = i + 1
+
+main : IO ()
+main = printLn ((map plusOne [1, 2, 3]) == [2, 3, 4])
+```
+
+It does!
