@@ -7,8 +7,7 @@ tags: programming, haskell
 Many people claim that [refactoring Haskell is a
 joy](https://twitter.com/search?q=haskell%20refactoring). I've certainly found
 this to be the case, but what does that mean in practice? I thought it might be
-useful to demonstrate by refactoring some of my own code from when I was less
-familiar with Haskell.
+useful to demonstrate by refactoring some of my own code.
 
 The code we're looking at today is an implementation of [Tarjan's Strongly
 Connected Components
@@ -131,12 +130,317 @@ checkSat name = do
 
 </details>
 
-I've included 2SAT-specific functionality for completeness, but I'll omit this
-in future listings as I'll only be changing the `tarjan` function and the
-functions it depends on (`strongConnect`, `addSCC`, `push`, and `pop`).
+I've included 2SAT-specific functionality for completeness, but I'll only be
+changing the `tarjan` function and the functions it depends on
+(`strongConnect`, `addSCC`, `push`, and `pop`).
 
 The first change is using more suitable data structures. Tarjan's algorithm is
 only linear in the size of the graph when operations such as checking if `w` is
-on the stack and looking up indices happen in constant time ($O(1)$). I'm currently
-using `Data.Map` and `Data.Set` which are both implemented with trees and are
-$O(\log{}n)$ in these operations.
+on the stack and looking up indices happen in constant time ($O(1)$). I'm
+currently using `Data.Map` and `Data.Set` which are both implemented with trees
+and are $O(\log{}n)$ in these operations. A better choice would be
+[`Data.Vector.Mutable`](http://hackage.haskell.org/package/vector/docs/Data-Vector-Mutable.html)
+from the `vector` package, which does have constant-time operations.
+
+<details>
+<summary>2SAT.hs using `vector`</summary>
+
+```haskell
+{-# LANGUAGE LambdaCase #-}
+
+import qualified Data.Graph as G
+import qualified Data.Array as A
+import qualified Prelude    as P
+
+import Prelude hiding (lookup, read, replicate)
+
+import Control.Monad.ST
+import Data.STRef
+import Control.Monad       (forM_, when)
+import Data.Maybe          (isJust, isNothing, fromJust)
+import Data.Vector.Mutable (STVector, read, replicate, write)
+
+tarjan :: Int -> G.Graph -> Maybe [[Int]]
+tarjan n graph = runST $ do
+    index    <- newSTRef 0
+    stack    <- newSTRef []
+    stackSet <- replicate size False
+    indices  <- replicate size Nothing
+    lowlinks <- replicate size Nothing
+    output   <- newSTRef (Just [])
+
+    forM_ (G.vertices graph) $ \v -> do
+        vIndex <- read indices v
+        when (isNothing vIndex) $
+            strongConnect n v graph index stack stackSet indices lowlinks output
+
+    readSTRef output
+    where
+        size = snd (A.bounds graph) + 1
+
+strongConnect
+    :: Int
+    -> Int
+    -> G.Graph
+    -> STRef s Int
+    -> STRef s [Int]
+    -> STVector s Bool
+    -> STVector s (Maybe Int)
+    -> STVector s (Maybe Int)
+    -> STRef s (Maybe [[Int]])
+    -> ST    s ()
+strongConnect n v graph index stack stackSet indices lowlinks output = do
+    i <- readSTRef index
+    write indices  v (Just i)
+    write lowlinks v (Just i)
+    modifySTRef' index (+1)
+    push stack stackSet v
+
+    forM_ (graph A.! v) $ \w -> read indices w >>= \case
+        Nothing     -> do
+            strongConnect n w graph index stack stackSet indices lowlinks output
+            vLowLink <- fromJust <$> read lowlinks v
+            wLowLink <- fromJust <$> read lowlinks w
+            write lowlinks v (Just (min vLowLink wLowLink))
+        Just wIndex -> do
+            wOnStack <- read stackSet w
+            when wOnStack $ do
+                vLowLink <- fromJust <$> read lowlinks v
+                write lowlinks v (Just (min vLowLink wIndex))
+
+    vLowLink <- fromJust <$> read lowlinks v
+    vIndex   <- fromJust <$> read indices  v
+    when (vLowLink == vIndex) $ do
+        scc <- addSCC n v [] stack stackSet
+        modifySTRef' output $ \sccs -> (:) <$> scc <*> sccs
+
+addSCC :: Int -> Int -> [Int] -> STRef s [Int] -> STVector s Bool -> ST s (Maybe [Int])
+addSCC n v scc stack stackSet = pop stack stackSet >>= \w -> if ((other n w) `elem` scc) then return Nothing else
+    let scc' = w:scc
+    in if w == v then return (Just scc') else addSCC n v scc' stack stackSet
+
+push :: STRef s [Int] -> STVector s Bool -> Int -> ST s ()
+push stack stackSet e = do
+    modifySTRef' stack (e:)
+    write stackSet e True
+
+pop :: STRef s [Int] -> STVector s Bool -> ST s Int
+pop stack stackSet = do
+    e <- head <$> readSTRef stack
+    modifySTRef' stack tail
+    write stackSet e False
+    return e
+
+denormalise     = subtract
+normalise       = (+)
+other n v       = 2*n - v
+clauses n [u,v] = [(other n u, v), (other n v, u)]
+
+checkSat :: String -> IO Bool
+checkSat name = do
+    p <- map (map P.read . words) . lines <$> readFile name
+    let pNo    = head $ head p
+        pn     = map (map (normalise pNo)) $ tail p
+        pGraph = G.buildG (0,2*pNo) $ concatMap (clauses pNo) pn
+    return $ (Nothing /=) $ tarjan pNo pGraph
+```
+
+</details>
+
+<details>
+<summary>2SAT.hs using `(<*>)`</summary>
+
+```haskell
+{-# LANGUAGE LambdaCase #-}
+
+import qualified Data.Graph as G
+import qualified Data.Array as A
+import qualified Prelude    as P
+
+import Prelude hiding (lookup, read, replicate)
+
+import Control.Monad.ST
+import Data.STRef
+import Control.Monad       (forM_, when)
+import Data.Maybe          (isJust, isNothing, fromJust)
+import Data.Vector.Mutable (STVector, read, replicate, write)
+
+tarjan :: Int -> G.Graph -> Maybe [[Int]]
+tarjan n graph = runST $ do
+    index    <- newSTRef 0
+    stack    <- newSTRef []
+    stackSet <- replicate size False
+    indices  <- replicate size Nothing
+    lowlinks <- replicate size Nothing
+    output   <- newSTRef (Just [])
+
+    forM_ (G.vertices graph) $ \v -> do
+        vIndex <- read indices v
+        when (isNothing vIndex) $
+            strongConnect n v graph index stack stackSet indices lowlinks output
+
+    readSTRef output
+    where
+        size = snd (A.bounds graph) + 1
+
+strongConnect
+    :: Int
+    -> Int
+    -> G.Graph
+    -> STRef s Int
+    -> STRef s [Int]
+    -> STVector s Bool
+    -> STVector s (Maybe Int)
+    -> STVector s (Maybe Int)
+    -> STRef s (Maybe [[Int]])
+    -> ST    s ()
+strongConnect n v graph index stack stackSet indices lowlinks output = do
+    i <- readSTRef index
+    write indices  v (Just i)
+    write lowlinks v (Just i)
+    modifySTRef' index (+1)
+    push stack stackSet v
+
+    forM_ (graph A.! v) $ \w -> read indices w >>= \case
+        Nothing -> do
+            strongConnect n w graph index stack stackSet indices lowlinks output
+            write lowlinks v =<< (min <$> read lowlinks v <*> read lowlinks w)
+        Just{}  -> do
+            wOnStack <- read stackSet w
+            when wOnStack $ do
+                write lowlinks v =<< (min <$> read lowlinks v <*> read indices w)
+
+    vLowLink <- fromJust <$> read lowlinks v
+    vIndex   <- fromJust <$> read indices  v
+    when (vLowLink == vIndex) $ do
+        scc <- addSCC n v [] stack stackSet
+        modifySTRef' output $ \sccs -> (:) <$> scc <*> sccs
+
+addSCC :: Int -> Int -> [Int] -> STRef s [Int] -> STVector s Bool -> ST s (Maybe [Int])
+addSCC n v scc stack stackSet = pop stack stackSet >>= \w -> if ((other n w) `elem` scc) then return Nothing else
+    let scc' = w:scc
+    in if w == v then return (Just scc') else addSCC n v scc' stack stackSet
+
+push :: STRef s [Int] -> STVector s Bool -> Int -> ST s ()
+push stack stackSet e = do
+    modifySTRef' stack (e:)
+    write stackSet e True
+
+pop :: STRef s [Int] -> STVector s Bool -> ST s Int
+pop stack stackSet = do
+    e <- head <$> readSTRef stack
+    modifySTRef' stack tail
+    write stackSet e False
+    return e
+
+denormalise     = subtract
+normalise       = (+)
+other n v       = 2*n - v
+clauses n [u,v] = [(other n u, v), (other n v, u)]
+
+checkSat :: String -> IO Bool
+checkSat name = do
+    p <- map (map P.read . words) . lines <$> readFile name
+    let pNo    = head $ head p
+        pn     = map (map (normalise pNo)) $ tail p
+        pGraph = G.buildG (0,2*pNo) $ concatMap (clauses pNo) pn
+    return $ (Nothing /=) $ tarjan pNo pGraph
+```
+</details>
+
+<details>
+<summary>2SAT.hs using `whenM`</summary>
+```haskell
+{-# LANGUAGE LambdaCase #-}
+
+import qualified Data.Graph as G
+import qualified Data.Array as A
+import qualified Prelude    as P
+
+import Prelude hiding (lookup, read, replicate)
+
+import Control.Monad.ST
+import Data.STRef
+import Control.Monad       (forM_)
+import Data.Vector.Mutable (STVector, read, replicate, write)
+
+whenM :: Monad m => m Bool -> m () -> m ()
+whenM condM block = condM >>= \cond -> if cond then block else return ()
+
+tarjan :: Int -> G.Graph -> Maybe [[Int]]
+tarjan n graph = runST $ do
+    index    <- newSTRef 0
+    stack    <- newSTRef []
+    stackSet <- replicate size False
+    indices  <- replicate size Nothing
+    lowlinks <- replicate size Nothing
+    output   <- newSTRef (Just [])
+
+    forM_ (G.vertices graph) $ \v ->
+        whenM ((==) Nothing <$> read indices v) $
+            strongConnect n v graph index stack stackSet indices lowlinks output
+
+    readSTRef output
+    where
+        size = snd (A.bounds graph) + 1
+
+strongConnect
+    :: Int
+    -> Int
+    -> G.Graph
+    -> STRef s Int
+    -> STRef s [Int]
+    -> STVector s Bool
+    -> STVector s (Maybe Int)
+    -> STVector s (Maybe Int)
+    -> STRef s (Maybe [[Int]])
+    -> ST    s ()
+strongConnect n v graph index stack stackSet indices lowlinks output = do
+    i <- readSTRef index
+    write indices  v (Just i)
+    write lowlinks v (Just i)
+    modifySTRef' index (+1)
+    push stack stackSet v
+
+    forM_ (graph A.! v) $ \w -> read indices w >>= \case
+        Nothing -> do
+            strongConnect n w graph index stack stackSet indices lowlinks output
+            write lowlinks v =<< (min <$> read lowlinks v <*> read lowlinks w)
+        Just{}  -> whenM (read stackSet w) $
+            write lowlinks v =<< (min <$> read lowlinks v <*> read indices  w)
+
+    whenM ((==) <$> read lowlinks v <*> read indices v) $ do
+        scc <- addSCC n v [] stack stackSet
+        modifySTRef' output $ \sccs -> (:) <$> scc <*> sccs
+
+addSCC :: Int -> Int -> [Int] -> STRef s [Int] -> STVector s Bool -> ST s (Maybe [Int])
+addSCC n v scc stack stackSet = pop stack stackSet >>= \w -> if ((other n w) `elem` scc) then return Nothing else
+    let scc' = w:scc
+    in if w == v then return (Just scc') else addSCC n v scc' stack stackSet
+
+push :: STRef s [Int] -> STVector s Bool -> Int -> ST s ()
+push stack stackSet e = do
+    modifySTRef' stack (e:)
+    write stackSet e True
+
+pop :: STRef s [Int] -> STVector s Bool -> ST s Int
+pop stack stackSet = do
+    e <- head <$> readSTRef stack
+    modifySTRef' stack tail
+    write stackSet e False
+    return e
+
+denormalise     = subtract
+normalise       = (+)
+other n v       = 2*n - v
+clauses n [u,v] = [(other n u, v), (other n v, u)]
+
+checkSat :: String -> IO Bool
+checkSat name = do
+    p <- map (map P.read . words) . lines <$> readFile name
+    let pNo    = head $ head p
+        pn     = map (map (normalise pNo)) $ tail p
+        pGraph = G.buildG (0,2*pNo) $ concatMap (clauses pNo) pn
+    return $ (Nothing /=) $ tarjan pNo pGraph
+```
+</details>
