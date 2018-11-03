@@ -1,6 +1,6 @@
 --------------------------------------------------------------------------------
 title: Moving Towards Dialogue
-published: 2018-09-25
+published: 2018-11-03
 tags: programming, haskell, idris
 --------------------------------------------------------------------------------
 
@@ -500,3 +500,105 @@ main = printLn ((map plusOne [1, 2, 3]) == [2, 3, 4])
 ```
 
 It does!
+
+What happens when we try to break this like we broke our Haskell program?
+
+
+```idris
+data Vect : Nat -> Type -> Type where
+    Nil  : Vect 0 a
+    (::) : a -> Vect length a -> Vect (1 + length) a
+
+implementation (Eq a) => Eq (Vect l a) where
+    (==) []      []      = True
+    (==) (x::xs) (y::ys) = x == y && xs == ys
+
+map : (a -> b) -> Vect length a -> Vect length b
+map f [] = []
+map f (x :: y) = []
+
+plusOne : Int -> Int
+plusOne i = i + 1
+
+main : IO ()
+main = printLn ((map plusOne [1, 2, 3]) == [2, 3, 4])
+```
+
+This is what Idris has to say:
+
+```default
+*Main> :r
+Type checking ./Main.idr
+Main.idr:11:18-19:
+   |
+11 | map f (x :: y) = []
+   |                  ~~
+When checking right hand side of Main.map with expected type
+        Vect (1 + length) b
+
+Type mismatch between
+        Vect 0 a (Type of [])
+and
+        Vect (S length) b (Expected type)
+
+Specifically:
+        Type mismatch between
+                0
+        and
+                S length
+
+Holes: Main.map
+```
+
+We get a useful and informative error message.
+
+And we've done it! You can download and use these languages today. When using
+other languages with static types, I always felt that they existed merely as
+busywork and I essentially had to shove them down the compiler's throat in
+order to get it to accept my program, and I feel the opposite way about these
+languages. In other words, types are friends, not food! They can help you
+design your program, write that program, and even debug it if necessary.
+
+One aspect of programming that always bothered me was my perception of the
+compiler (or interpreter) as some sort of gatekeeper whose job was to dismiss
+my program until it met some arbitrary standard. Even worse, I would find
+myself writing a program that passed but was subtly incorrect, and I would
+iterate on this process, writing a series of subtly incorrect programs without
+any guidance from my tools. Discovering typed holes and the style of
+programming they enable has shown me a different approach, where I can open up
+a dialogue with my language and collaborate on writing a program whose
+correctness I am more confident of.
+
+That's all I have to say about typed holes, but there's recently been
+interesting work on untyped holes that I would like to mention briefly. Suppose
+you like the idea of holes but not the idea of types, or you work in a language
+that isn't statically typed and you want some of these benefits. What you could
+do is:
+
+1. Write a program with gaps where you're unsure what should happen (we'll call this a _sketch_)
+2. Write some test cases that the correct program should satisfy
+3. Feed both these things to a SAT/SMT solver (a clever program with a bag of tricks)
+4. ???
+5. Profit!!!
+
+The solver churns through the space of all prossible programs and picks the one
+that passes the tests, giving us the correct program we wanted!
+
+This sounds great in theory, so why aren't we doing this yet? There is
+(predictably) a catch, which is that this is still a research topic for now.
+Systems like [Synquid](http://comcom.csail.mit.edu/comcom/#Synquid) and
+[Barliman](https://github.com/webyrd/Barliman) demonstrate the current state of
+the art, and I think it's especially interesting that Synquid has both typed
+and untyped holes, which suggests to me that it is the most promising approach.
+
+I'll leave you with some resources about typed holes, particularly Conor
+McBride's presentations at [YOW! Lambda
+Jam](https://www.youtube.com/watch?v=3U3lV5VPmOU) and [Haskell
+eXchange](https://skillsmatter.com/skillscasts/8893-is-a-type-a-lifebuoy-or-a-lamp)
+that are rich with insight. There's also [a tutorial by Mark
+Wotton](https://www.shimweasel.com/2015/02/17/typed-holes-for-beginners), and
+finally [Hazel](http://hazel.org/), which is a live functional programming
+environment with typed  holes!
+
+I hope I've encouraged you to try this style of programming for yourself.
+There's never been a better time to do it.
