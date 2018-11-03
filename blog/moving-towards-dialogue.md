@@ -586,10 +586,12 @@ that passes the tests, giving us the correct program we wanted!
 
 This sounds great in theory, so why aren't we doing this yet? There is
 (predictably) a catch, which is that this is still a research topic for now.
-Systems like [Synquid](http://comcom.csail.mit.edu/comcom/#Synquid) and
+You can read [Armando Solar-Lezama's PhD thesis on
+this](https://people.csail.mit.edu/asolar/papers/thesis.pdf), and systems like
+[Synquid](http://comcom.csail.mit.edu/comcom/#Synquid) and
 [Barliman](https://github.com/webyrd/Barliman) demonstrate the current state of
-the art, and I think it's especially interesting that Synquid has both typed
-and untyped holes, which suggests to me that it is the most promising approach.
+the art. I think it's especially interesting that Synquid has both typed and
+untyped holes, which suggests to me that it is the most promising approach.
 
 I'll leave you with some resources about typed holes, particularly Conor
 McBride's presentations at [YOW! Lambda
