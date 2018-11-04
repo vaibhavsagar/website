@@ -444,3 +444,197 @@ checkSat name = do
     return $ (Nothing /=) $ tarjan pNo pGraph
 ```
 </details>
+
+<details>
+<summary>2SAT.hs using `where`</summary>
+```haskell
+{-# LANGUAGE LambdaCase #-}
+{-# LANGUAGE ScopedTypeVariables #-}
+
+import qualified Data.Graph as G
+import qualified Data.Array as A
+import qualified Prelude    as P
+
+import Prelude hiding (lookup, read, replicate)
+
+import Control.Monad.ST
+import Data.STRef
+import Control.Monad       (forM_)
+import Data.Vector.Mutable (STVector, read, replicate, write)
+
+whenM :: Monad m => m Bool -> m () -> m ()
+whenM condM block = condM >>= \cond -> if cond then block else return ()
+
+tarjan :: Int -> G.Graph -> Maybe [[Int]]
+tarjan n graph = runST $ do
+    index    <- newSTRef 0
+    stack    <- newSTRef []
+    stackSet <- replicate size False
+    indices  <- replicate size Nothing
+    lowlinks <- replicate size Nothing
+    output   <- newSTRef (Just [])
+
+    forM_ (G.vertices graph) $ \v ->
+        whenM ((==) Nothing <$> read indices v) $
+            strongConnect n v graph index stack stackSet indices lowlinks output
+
+    readSTRef output
+    where
+        size = snd (A.bounds graph) + 1
+
+strongConnect
+    :: forall s
+    .  Int
+    -> Int
+    -> G.Graph
+    -> STRef s Int
+    -> STRef s [Int]
+    -> STVector s Bool
+    -> STVector s (Maybe Int)
+    -> STVector s (Maybe Int)
+    -> STRef s (Maybe [[Int]])
+    -> ST    s ()
+strongConnect n v graph index stack stackSet indices lowlinks output = do
+    i <- readSTRef index
+    write indices  v (Just i)
+    write lowlinks v (Just i)
+    modifySTRef' index (+1)
+    push v
+
+    forM_ (graph A.! v) $ \w -> read indices w >>= \case
+        Nothing -> do
+            strongConnect n w graph index stack stackSet indices lowlinks output
+            write lowlinks v =<< (min <$> read lowlinks v <*> read lowlinks w)
+        Just{}  -> whenM (read stackSet w) $
+            write lowlinks v =<< (min <$> read lowlinks v <*> read indices  w)
+
+    whenM ((==) <$> read lowlinks v <*> read indices v) $ do
+        scc <- addSCC n v []
+        modifySTRef' output $ \sccs -> (:) <$> scc <*> sccs
+    where
+        addSCC :: Int -> Int -> [Int] -> ST s (Maybe [Int])
+        addSCC n v scc = pop >>= \w -> if ((other n w) `elem` scc) then return Nothing else
+            let scc' = w:scc
+            in if w == v then return (Just scc') else addSCC n v scc'
+        push :: Int -> ST s ()
+        push e = do
+            modifySTRef' stack (e:)
+            write stackSet e True
+        pop :: ST s Int
+        pop = do
+            e <- head <$> readSTRef stack
+            modifySTRef' stack tail
+            write stackSet e False
+            return e
+
+denormalise     = subtract
+normalise       = (+)
+other n v       = 2*n - v
+clauses n [u,v] = [(other n u, v), (other n v, u)]
+
+checkSat :: String -> IO Bool
+checkSat name = do
+    p <- map (map P.read . words) . lines <$> readFile name
+    let pNo    = head $ head p
+        pn     = map (map (normalise pNo)) $ tail p
+        pGraph = G.buildG (0,2*pNo) $ concatMap (clauses pNo) pn
+    return $ (Nothing /=) $ tarjan pNo pGraph
+```
+</details>
+
+<details>
+<summary>2SAT.hs using `RecordWildCards`</summary>
+```haskell
+{-# LANGUAGE LambdaCase #-}
+{-# LANGUAGE RecordWildCards #-}
+{-# LANGUAGE ScopedTypeVariables #-}
+
+import qualified Data.Graph as G
+import qualified Data.Array as A
+import qualified Prelude    as P
+
+import Prelude hiding (lookup, read, replicate)
+
+import Control.Monad.ST
+import Data.STRef
+import Control.Monad       (forM_)
+import Data.Vector.Mutable (STVector, read, replicate, write)
+
+data TarjanEnv s = TarjanEnv
+    { index    :: STRef s Int
+    , stack    :: STRef s [Int]
+    , stackSet :: STVector s Bool
+    , indices  :: STVector s (Maybe Int)
+    , lowlinks :: STVector s (Maybe Int)
+    , output   :: STRef s (Maybe [[Int]])
+    }
+
+whenM :: Monad m => m Bool -> m () -> m ()
+whenM condM block = condM >>= \cond -> if cond then block else return ()
+
+tarjan :: Int -> G.Graph -> Maybe [[Int]]
+tarjan n graph = runST $ do
+    tarjanEnv <- TarjanEnv
+        <$> newSTRef 0
+        <*> newSTRef []
+        <*> replicate size False
+        <*> replicate size Nothing
+        <*> replicate size Nothing
+        <*> newSTRef (Just [])
+
+    forM_ (G.vertices graph) $ \v ->
+        whenM ((==) Nothing <$> read (indices tarjanEnv) v) $
+            strongConnect n v graph tarjanEnv
+
+    readSTRef (output tarjanEnv)
+    where
+        size = snd (A.bounds graph) + 1
+
+strongConnect :: forall s. Int -> Int -> G.Graph -> TarjanEnv s -> ST s ()
+strongConnect n v graph TarjanEnv{..} = do
+    i <- readSTRef index
+    write indices  v (Just i)
+    write lowlinks v (Just i)
+    modifySTRef' index (+1)
+    push v
+
+    forM_ (graph A.! v) $ \w -> read indices w >>= \case
+        Nothing -> do
+            strongConnect n w graph TarjanEnv{..}
+            write lowlinks v =<< (min <$> read lowlinks v <*> read lowlinks w)
+        Just{}  -> whenM (read stackSet w) $
+            write lowlinks v =<< (min <$> read lowlinks v <*> read indices  w)
+
+    whenM ((==) <$> read lowlinks v <*> read indices v) $ do
+        scc <- addSCC n v []
+        modifySTRef' output $ \sccs -> (:) <$> scc <*> sccs
+    where
+        addSCC :: Int -> Int -> [Int] -> ST s (Maybe [Int])
+        addSCC n v scc = pop >>= \w -> if ((other n w) `elem` scc) then return Nothing else
+            let scc' = w:scc
+            in if w == v then return (Just scc') else addSCC n v scc'
+        push :: Int -> ST s ()
+        push e = do
+            modifySTRef' stack (e:)
+            write stackSet e True
+        pop :: ST s Int
+        pop = do
+            e <- head <$> readSTRef stack
+            modifySTRef' stack tail
+            write stackSet e False
+            return e
+
+denormalise     = subtract
+normalise       = (+)
+other n v       = 2*n - v
+clauses n [u,v] = [(other n u, v), (other n v, u)]
+
+checkSat :: String -> IO Bool
+checkSat name = do
+    p <- map (map P.read . words) . lines <$> readFile name
+    let pNo    = head $ head p
+        pn     = map (map (normalise pNo)) $ tail p
+        pGraph = G.buildG (0,2*pNo) $ concatMap (clauses pNo) pn
+    return $ (Nothing /=) $ tarjan pNo pGraph
+```
+</details>
