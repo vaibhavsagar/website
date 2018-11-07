@@ -244,8 +244,10 @@ checkSat name = do
         pGraph = G.buildG (0,2*pNo) $ concatMap (clauses pNo) pn
     return $ (Nothing /=) $ tarjan pNo pGraph
 ```
-
 </details>
+
+I didn't notice a significant difference in speed on my inputs, but it's good
+to know that the algorithm has been implemented correctly now.
 
 <details>
 <summary>2SAT.hs using `(<*>)`</summary>
