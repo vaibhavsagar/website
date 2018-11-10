@@ -350,6 +350,8 @@ checkSat name = do
 ```
 </details>
 
+This is much nicer with the applicative combinators.
+
 <details>
 <summary>2SAT.hs using `whenM`</summary>
 ```haskell
