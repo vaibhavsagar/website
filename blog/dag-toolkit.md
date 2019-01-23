@@ -132,8 +132,8 @@ computes SCCs. Here it is as pseudocode:
 The algorithm does a depth-first search, keeping track of two properties for
 each vertex: when it was encountered (the _index_) and the lowest index of any
 vertex reachable from this vertex (the _lowlink_). It pushes vertices on to a
-stack as it goes and outputs a strongly connected component when it cannot find
-any vertices it has not seen before.
+stack as it goes and outputs a strongly connected component when it finds a
+completely processed vertex whose index and lowlink are the same.
 
 As presented it is very imperative and I like Haskell, but fortunately
 [imperative
