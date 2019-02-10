@@ -12,8 +12,9 @@ useful to demonstrate by refactoring some of my own code.
 The code we're looking at today is an implementation of [Tarjan's Strongly
 Connected Components
 algorithm](https://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algorithm)
-used to determine whether a given 2-SAT problem is satisfiable or not, and was
-written to complete [an online
+used to determine whether a given [2-SAT
+problem](https://en.wikipedia.org/wiki/2-satisfiability) is satisfiable or not,
+and was written to complete [an online
 course](https://online.stanford.edu/course/algorithms-design-and-analysis-part-1)
 that is now offered in a different form. I've [written about Tarjan's algorithm
 previously](http://vaibhavsagar.com/blog/2017/06/10/dag-toolkit/) and it can be
