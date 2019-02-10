@@ -1,6 +1,6 @@
 --------------------------------------------------------------------------------
 title: "Refactoring Haskell: A Case Study"
-published: 2018-02-28
+published: 2019-02-10
 tags: programming, haskell
 --------------------------------------------------------------------------------
 
@@ -12,12 +12,12 @@ useful to demonstrate by refactoring some of my own code.
 The code we're looking at today is an implementation of [Tarjan's Strongly
 Connected Components
 algorithm](https://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algorithm)
-used to determine whether a given 2SAT problem is satisfiable or not, and was
+used to determine whether a given 2-SAT problem is satisfiable or not, and was
 written to complete [an online
 course](https://online.stanford.edu/course/algorithms-design-and-analysis-part-1)
 that is now offered in a different form. I've [written about Tarjan's algorithm
 previously](http://vaibhavsagar.com/blog/2017/06/10/dag-toolkit/) and it can be
-used to determine the satisfiability of a 2SAT problem by checking if any SCC
+used to determine the satisfiability of a 2-SAT problem by checking if any SCC
 contains both a variable and its negation. If it does, we have a contradiction
 and the problem is unsatisfiable, otherwise the problem is satisfiable.
 
@@ -135,12 +135,15 @@ changing the `tarjan` function and the functions it depends on
 (`strongConnect`, `addSCC`, `push`, and `pop`).
 
 The first change is using more suitable data structures. Tarjan's algorithm is
-only linear in the size of the graph when operations such as checking if `w` is
-on the stack and looking up indices happen in constant time ($O(1)$). I'm
+only linear in the size of the graph when operations, such as checking if `w` is
+on the stack and looking up indices, happen in constant time ($O(1)$). I'm
 currently using `Data.Map` and `Data.Set` which are both implemented with trees
 and are $O(\log{}n)$ in these operations. A better choice would be
 [`Data.Vector.Mutable`](http://hackage.haskell.org/package/vector/docs/Data-Vector-Mutable.html)
 from the `vector` package, which does have constant-time operations.
+
+This refactoring mostly consists of initialising vectors with a known length
+and replacing calls to `lookup` and `insert` with calls to `read` and `write`.
 
 <details>
 <summary>2SAT.hs using `vector`</summary>
@@ -247,7 +250,30 @@ checkSat name = do
 </details>
 
 I didn't notice a significant difference in speed on my inputs, but it's good
-to know that the algorithm has been implemented correctly now.
+to know that the algorithm has been implemented with the correct asymptotics
+now!
+
+_Sidenote: A `Vector` of `Bool`s can be much more compactly represented as a
+sequence of 0s and 1s, which are just machine words. For implementations of
+this in Haskell, see the [bv](hackage.haskell.org/package/bv) or
+[bv-little](hackage.haskell.org/package/bv-little) packages. Using these could
+be another possible refactoring._
+
+Looking at the code again, I notice some repetition of the form
+
+```haskell
+x <- fromJust <$> lookup vectorX i
+y <- fromJust <$> lookup vectorY j
+write vectorZ k (Just (operation x y))
+```
+
+and with the judicious use of `(=<<)` and `(<*>)` this can instead be
+
+```haskell
+write vectorZ k =<< (operation <$> lookup vectorX i <*> lookup vectorY j)
+```
+
+There are a couple of other places we could use `(<*>)`:
 
 <details>
 <summary>2SAT.hs using `(<*>)`</summary>
@@ -352,6 +378,17 @@ checkSat name = do
 
 This is much nicer with the applicative combinators.
 
+I would like to clean up that `when` as well, but I'd need a function like
+
+```haskell
+whenM :: Monad m => m Bool -> m () -> m ()
+```
+which is [available in Neil Mitchell's `extra`
+package](hackage.haskell.org/package/extra/docs/Control-Monad-Extra.html#v:whenM).
+
+I don't think it's worth pulling in that dependency though, so I'll just copy
+that definition:
+
 <details>
 <summary>2SAT.hs using `whenM`</summary>
 ```haskell
@@ -448,6 +485,13 @@ checkSat name = do
     return $ (Nothing /=) $ tarjan pNo pGraph
 ```
 </details>
+
+Since most of the auxiliary functions aren't used outside `strongConnect`, it
+might make sense to put them under a `where` clause. This would also make the
+parameters passed to `strongConnect` available to these functions. This is one
+place that the `ScopedTypeVariables` language extension is necessary, otherwise
+GHC can't tell that the `s` in the type signature of `strongConnect` is the
+same `s` as the one in each type signature under the `where` clause.
 
 <details>
 <summary>2SAT.hs using `where`</summary>
@@ -546,6 +590,11 @@ checkSat name = do
 ```
 </details>
 
+Instead of a large number of implictly related variables, it might be nice to
+define a single product type containing our entire environment and pass just
+one value around. With `RecordWildCards` only minimal code changes are
+required:
+
 <details>
 <summary>2SAT.hs using `RecordWildCards`</summary>
 ```haskell
@@ -642,3 +691,10 @@ checkSat name = do
     return $ (Nothing /=) $ tarjan pNo pGraph
 ```
 </details>
+
+I think this is a good place to stop. Although more refactoring is certainly
+possible, my last two steps did not reduce the line count and may have in fact
+made the code harder to understand. If you'd like to follow along, I have the
+code (and some test data) available [at this
+gist](https://gist.github.com/vaibhavsagar/2418c9dd79da431065ad0d80e690b12f)
+with each commit representing a refactoring step.
