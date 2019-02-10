@@ -701,4 +701,4 @@ gist](https://gist.github.com/vaibhavsagar/2418c9dd79da431065ad0d80e690b12f)
 with each revision representing a refactoring step.
 
 _Thanks to [Mat Fournier](http://www.matfournier.com/) for suggestions and
-feedback.
+feedback._
