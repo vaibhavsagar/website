@@ -4,6 +4,11 @@ published: 2018-01-03
 tags: haskell, nix, programming
 --------------------------------------------------------------------------------
 
+_Most of the instructions in this blog post have been improved on in Niklas
+Hambüchen's https://github.com/nh2/static-haskell-nix, so if you're primarily
+interesting in getting things working quickly I would recommend looking there
+first._
+
 _Skip to the end for a faster and easier way of getting this working. All you
 have to do is clone the linked repo and run `nix-build default.nix`!_
 
