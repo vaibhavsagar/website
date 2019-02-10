@@ -22,7 +22,7 @@ used to determine the satisfiability of a 2-SAT problem by checking if any SCC
 contains both a variable and its negation. If it does, we have a contradiction
 and the problem is unsatisfiable, otherwise the problem is satisfiable.
 
-The initial version of the code is as follows:
+The initial version of the code is as follows (expand by clicking the arrow):
 
 <details>
 <summary>Initial 2SAT.hs</summary>
