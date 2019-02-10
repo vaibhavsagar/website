@@ -697,4 +697,4 @@ possible, my last two steps did not reduce the line count and may have in fact
 made the code harder to understand. If you'd like to follow along, I have the
 code (and some test data) available [at this
 gist](https://gist.github.com/vaibhavsagar/2418c9dd79da431065ad0d80e690b12f)
-with each commit representing a refactoring step.
+with each revision representing a refactoring step.
