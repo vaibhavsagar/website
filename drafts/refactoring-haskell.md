@@ -256,9 +256,9 @@ now!
 
 _Sidenote: A `Vector` of `Bool`s can be much more compactly represented as a
 sequence of 0s and 1s, which are just machine words. For implementations of
-this in Haskell, see the [bv](hackage.haskell.org/package/bv) or
-[bv-little](hackage.haskell.org/package/bv-little) packages. Using these could
-be another possible refactoring._
+this in Haskell, see the [bv](https://hackage.haskell.org/package/bv) or
+[bv-little](https://hackage.haskell.org/package/bv-little) packages. Using
+these could be another possible refactoring._
 
 Looking at the code again, I notice some repetition of the form
 
