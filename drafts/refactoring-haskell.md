@@ -22,10 +22,19 @@ used to determine the satisfiability of a 2-SAT problem by checking if any SCC
 contains both a variable and its negation. If it does, we have a contradiction
 and the problem is unsatisfiable, otherwise the problem is satisfiable.
 
-The initial version of the code is as follows (expand by clicking the arrow):
+This code isn't particularly elegant or easy to follow, and it's lousy with
+mutable state. Despite these drawbacks, it is still relatively straightforward
+to refactor.
+
+If you'd like to follow along, I have the code (and some test data) available
+[at this
+gist](https://gist.github.com/vaibhavsagar/2418c9dd79da431065ad0d80e690b12f)
+with each revision representing a refactoring step.
+
+The initial version of the code is as follows:
 
 <details>
-<summary>Initial 2SAT.hs</summary>
+<summary style="cursor: pointer">Initial 2SAT.hs</summary>
 
 ```haskell
 {-# LANGUAGE LambdaCase #-}
@@ -147,7 +156,7 @@ This refactoring mostly consists of initialising vectors with a known length
 and replacing calls to `lookup` and `insert` with calls to `read` and `write`.
 
 <details>
-<summary>2SAT.hs using `vector`</summary>
+<summary style="cursor: pointer">2SAT.hs using `vector`</summary>
 
 ```haskell
 {-# LANGUAGE LambdaCase #-}
@@ -277,7 +286,7 @@ write vectorZ k =<< (operation <$> lookup vectorX i <*> lookup vectorY j)
 There are a couple of other places we could use `(<*>)`:
 
 <details>
-<summary>2SAT.hs using `(<*>)`</summary>
+<summary style="cursor: pointer">2SAT.hs using `(<*>)`</summary>
 
 ```haskell
 {-# LANGUAGE LambdaCase #-}
@@ -379,7 +388,8 @@ checkSat name = do
 
 This is much nicer with the applicative combinators.
 
-I would like to clean up that `when` as well, but I'd need a function like
+I would like to clean up that `when` as well, and for that I'd need a function
+like
 
 ```haskell
 whenM :: Monad m => m Bool -> m () -> m ()
@@ -391,7 +401,7 @@ I don't think it's worth pulling in that dependency though, so I'll just copy
 that definition:
 
 <details>
-<summary>2SAT.hs using `whenM`</summary>
+<summary style="cursor: pointer">2SAT.hs using `whenM`</summary>
 ```haskell
 {-# LANGUAGE LambdaCase #-}
 
@@ -487,6 +497,8 @@ checkSat name = do
 ```
 </details>
 
+Now I don't actually even need `when` anymore!
+
 Since most of the auxiliary functions aren't used outside `strongConnect`, it
 might make sense to put them under a `where` clause. This would also make the
 parameters passed to `strongConnect` available to these functions. This is one
@@ -495,7 +507,7 @@ GHC can't tell that the `s` in the type signature of `strongConnect` is the
 same `s` as the one in each type signature under the `where` clause.
 
 <details>
-<summary>2SAT.hs using `where`</summary>
+<summary style="cursor: pointer">2SAT.hs using `where`</summary>
 ```haskell
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE ScopedTypeVariables #-}
@@ -591,13 +603,16 @@ checkSat name = do
 ```
 </details>
 
+I think the logic is clearer now that the auxiliary functions take fewer
+arguments.
+
 Instead of a large number of implictly related variables, it might be nice to
 define a single product type containing our entire environment and pass just
 one value around. With `RecordWildCards` only minimal code changes are
 required:
 
 <details>
-<summary>2SAT.hs using `RecordWildCards`</summary>
+<summary style="cursor: pointer">2SAT.hs using `RecordWildCards`</summary>
 ```haskell
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE RecordWildCards #-}
@@ -693,12 +708,139 @@ checkSat name = do
 ```
 </details>
 
-I think this is a good place to stop. Although more refactoring is certainly
-possible, my last two steps did not reduce the line count and may have in fact
-made the code harder to understand. If you'd like to follow along, I have the
-code (and some test data) available [at this
-gist](https://gist.github.com/vaibhavsagar/2418c9dd79da431065ad0d80e690b12f)
-with each revision representing a refactoring step.
+Let's pause here. Although more refactoring is certainly possible, my last two
+steps did not reduce the line count and may have in fact made the code harder
+to understand.
 
-_Thanks to [Mat Fournier](http://www.matfournier.com/) for suggestions and
+How have we benefited from this refactoring? Aside from the code being shorter
+and better structured, it's now easier to make meaningful improvements. For
+example, this implementation is more inefficient than it needs to be, because
+it doesn't short-circuit when it finds that the current problem is
+unsatisfiable. Instead it works through the rest of the problem, only to throw
+all that work away. A sophisticated solution to this problem might involve the
+use of the
+[`ExceptT`](https://hackage.haskell.org/package/transformers/docs/Control-Monad-Trans-Except.html)
+monad transformer to throw an exception and exit early, but there is a simpler
+approach: we can store an extra boolean variable denoting whether or not the
+current problem is possibly satisfiable, and only continue working if it is.
+I'll call this variable `possible`, update it in `addSCC`, and check for it
+before each call to `strongConnect` in `tarjan`. It takes more effort to
+reformat the code than to make this change:
+
+<details>
+<summary style="cursor: pointer">2SAT.hs with short-circuiting</summary>
+```haskell
+{-# LANGUAGE LambdaCase #-}
+{-# LANGUAGE RecordWildCards #-}
+{-# LANGUAGE ScopedTypeVariables #-}
+
+import qualified Data.Graph as G
+import qualified Data.Array as A
+import qualified Prelude    as P
+
+import Prelude hiding (lookup, read, replicate)
+
+import Control.Monad.ST
+import Data.STRef
+import Control.Monad       (forM_)
+import Data.Vector.Mutable (STVector, read, replicate, write)
+
+data TarjanEnv s = TarjanEnv
+    { index    :: STRef s Int
+    , stack    :: STRef s [Int]
+    , stackSet :: STVector s Bool
+    , indices  :: STVector s (Maybe Int)
+    , lowlinks :: STVector s (Maybe Int)
+    , output   :: STRef s (Maybe [[Int]])
+    , possible :: STRef s Bool
+    }
+
+whenM :: Monad m => m Bool -> m () -> m ()
+whenM condM block = condM >>= \cond -> if cond then block else return ()
+
+tarjan :: Int -> G.Graph -> Maybe [[Int]]
+tarjan n graph = runST $ do
+    tarjanEnv <- TarjanEnv
+        <$> newSTRef 0
+        <*> newSTRef []
+        <*> replicate size False
+        <*> replicate size Nothing
+        <*> replicate size Nothing
+        <*> newSTRef (Just [])
+        <*> newSTRef True
+
+    forM_ (G.vertices graph) $ \v ->
+        whenM ((&&)
+            <$> ((==) Nothing <$> read (indices tarjanEnv) v)
+            <*> readSTRef (possible tarjanEnv)) $
+                strongConnect n v graph tarjanEnv
+
+    readSTRef (output tarjanEnv)
+    where
+        size = snd (A.bounds graph) + 1
+
+strongConnect :: forall s. Int -> Int -> G.Graph -> TarjanEnv s -> ST s ()
+strongConnect n v graph TarjanEnv{..} = do
+    i <- readSTRef index
+    write indices  v (Just i)
+    write lowlinks v (Just i)
+    modifySTRef' index (+1)
+    push v
+
+    forM_ (graph A.! v) $ \w -> read indices w >>= \case
+        Nothing -> do
+            strongConnect n w graph TarjanEnv{..}
+            write lowlinks v =<< (min <$> read lowlinks v <*> read lowlinks w)
+        Just{}  -> whenM (read stackSet w) $
+            write lowlinks v =<< (min <$> read lowlinks v <*> read indices  w)
+
+    whenM ((==) <$> read lowlinks v <*> read indices v) $ do
+        scc <- addSCC n v []
+        modifySTRef' output $ \sccs -> (:) <$> scc <*> sccs
+    where
+        addSCC :: Int -> Int -> [Int] -> ST s (Maybe [Int])
+        addSCC n v scc = pop >>= \w -> if ((other n w) `elem` scc)
+            then writeSTRef possible False >> return Nothing
+            else
+                let scc' = w:scc
+                in if w == v then return (Just scc') else addSCC n v scc'
+        push :: Int -> ST s ()
+        push e = do
+            modifySTRef' stack (e:)
+            write stackSet e True
+        pop :: ST s Int
+        pop = do
+            e <- head <$> readSTRef stack
+            modifySTRef' stack tail
+            write stackSet e False
+            return e
+
+denormalise     = subtract
+normalise       = (+)
+other n v       = 2*n - v
+clauses n [u,v] = [(other n u, v), (other n v, u)]
+
+checkSat :: String -> IO Bool
+checkSat name = do
+    p <- map (map P.read . words) . lines <$> readFile name
+    let pNo    = head $ head p
+        pn     = map (map (normalise pNo)) $ tail p
+        pGraph = G.buildG (0,2*pNo) $ concatMap (clauses pNo) pn
+    return $ (Nothing /=) $ tarjan pNo pGraph
+```
+</details>
+
+This change does seem to make a significant difference, and it's good to know
+we're not doing useless work.
+
+I think this is a good place to stop, and I hope I've been able to demonstrate
+some of Haskell's strengths when it comes to refactoring. In my experience,
+it's not usually necessary to deeply understand Haskell code in order to
+attempt a refactoring, especially if it's backed by well-chosen types and a
+good test suite. I also find that I'm able to be more daring when writing new
+code, because bad up-front design is less costly and even the jankiest working
+code can be gently massaged into something presentable.
+
+_Thanks to
+[Joel Burget](https://joelburget.com/), [Mat Fournier](http://www.matfournier.com/), [Robert Klotzner](https://eskimor.gonimo.com/), [Tenor](https://github.com/L8D), [Tom Harding](http://www.tomharding.me/), and [Tyler Weir](http://www.tylerweir.com/) for suggestions and
 feedback._
