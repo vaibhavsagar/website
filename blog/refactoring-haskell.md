@@ -608,8 +608,9 @@ arguments.
 
 Instead of a large number of implictly related variables, it might be nice to
 define a single product type containing our entire environment and pass just
-one value around. With `RecordWildCards` only minimal code changes are
-required:
+one value around. With `RecordWildCards` only minimal code changes are required
+(although I strongly recommend against using this extension for anything other
+than cute blog posts, please use `NamedFieldPuns` instead):
 
 <details>
 <summary style="cursor: pointer">2SAT.hs using `RecordWildCards`</summary>
