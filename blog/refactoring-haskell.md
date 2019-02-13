@@ -608,15 +608,13 @@ arguments.
 
 Instead of a large number of implictly related variables, it might be nice to
 define a single product type containing our entire environment and pass just
-one value around. With `RecordWildCards` only minimal code changes are required
-(although I strongly recommend against using this extension for anything other
-than cute blog posts, please use `NamedFieldPuns` instead):
+one value around. With `NamedFieldPuns` only minimal code changes are required:
 
 <details>
-<summary style="cursor: pointer">2SAT.hs using `RecordWildCards`</summary>
+<summary style="cursor: pointer">2SAT.hs using `NamedFieldPuns`</summary>
 ```haskell
 {-# LANGUAGE LambdaCase #-}
-{-# LANGUAGE RecordWildCards #-}
+{-# LANGUAGE NamedFieldPuns #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 
 import qualified Data.Graph as G
@@ -661,7 +659,7 @@ tarjan n graph = runST $ do
         size = snd (A.bounds graph) + 1
 
 strongConnect :: forall s. Int -> Int -> G.Graph -> TarjanEnv s -> ST s ()
-strongConnect n v graph TarjanEnv{..} = do
+strongConnect n v graph tarjanEnv@TarjanEnv{ index, stack, stackSet, indices, lowlinks, output } = do
     i <- readSTRef index
     write indices  v (Just i)
     write lowlinks v (Just i)
@@ -670,7 +668,7 @@ strongConnect n v graph TarjanEnv{..} = do
 
     forM_ (graph A.! v) $ \w -> read indices w >>= \case
         Nothing -> do
-            strongConnect n w graph TarjanEnv{..}
+            strongConnect n w graph tarjanEnv
             write lowlinks v =<< (min <$> read lowlinks v <*> read lowlinks w)
         Just{}  -> whenM (read stackSet w) $
             write lowlinks v =<< (min <$> read lowlinks v <*> read indices  w)
@@ -732,7 +730,7 @@ reformat the code than to make this change:
 <summary style="cursor: pointer">2SAT.hs with short-circuiting</summary>
 ```haskell
 {-# LANGUAGE LambdaCase #-}
-{-# LANGUAGE RecordWildCards #-}
+{-# LANGUAGE NamedFieldPuns #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 
 import qualified Data.Graph as G
@@ -781,7 +779,7 @@ tarjan n graph = runST $ do
         size = snd (A.bounds graph) + 1
 
 strongConnect :: forall s. Int -> Int -> G.Graph -> TarjanEnv s -> ST s ()
-strongConnect n v graph TarjanEnv{..} = do
+strongConnect n v graph tarjanEnv@TarjanEnv{ index, stack, stackSet, indices, lowlinks, output, possible } = do
     i <- readSTRef index
     write indices  v (Just i)
     write lowlinks v (Just i)
@@ -790,7 +788,7 @@ strongConnect n v graph TarjanEnv{..} = do
 
     forM_ (graph A.! v) $ \w -> read indices w >>= \case
         Nothing -> do
-            strongConnect n w graph TarjanEnv{..}
+            strongConnect n w graph tarjanEnv
             write lowlinks v =<< (min <$> read lowlinks v <*> read lowlinks w)
         Just{}  -> whenM (read stackSet w) $
             write lowlinks v =<< (min <$> read lowlinks v <*> read indices  w)
