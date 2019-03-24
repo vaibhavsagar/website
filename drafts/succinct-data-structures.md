@@ -47,3 +47,25 @@ operate on this bitvector using `rank` and `select` operations. `rank(i)`
 counts the number of occurrences of a symbol upto and including a particular
 index `i`, and `select(i)` provides the index where the `i`th symbol is
 located.
+
+Using these operations, we can perform more sophisticated queries such as
+determining the next sibling node or the parent node.
+
+These data structures are known as compact, succinct, or implicit data
+structures based on how much space they take up compared to the
+information-theoretical lower bound. The primary advantage they have over other
+forms of data compression is that they do not have to be decompressed before
+useful work can be done with them.
+
+So far this seems like a fun computer science party trick, but are there
+real-world applications of this body of knowledge?
+
+One application is to working with semi-structured textual formats, such as
+CSVs and JSON. When working with these, we usually have to parse the entire
+document, even if we only care about a specific field. It would be nice if we
+could somehow create an index the data (without parsing it first) and then only
+pluck out the specific data that we care about. This idea of efficiently
+encoding the structure separately matches what we've seen so far, and is the
+subject of ["Semi-Indexing Semi-Structured Data in Tiny
+Space"](http://www.di.unipi.it/~ottavian/files/semi_index_cikm.pdf) by Giuseppe
+Ottaviano and Roberto Grossi
