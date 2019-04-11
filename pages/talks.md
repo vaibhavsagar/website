@@ -25,6 +25,10 @@ title: Talks
 
 ## Meetup
 
+#### HAMTs From Scratch
+- Where: NYHUG April 2019
+- [Notebook](https://github.com/vaibhavsagar/notebooks/blob/master/hamt/HAMTPresentation.ipynb), [Video](https://www.youtube.com/watch?v=wgMgtgVZdYg)
+
 #### Functional DevOps in a Dysfunctional World
 - Where: Haskell.SG February 2018
 - [Slides](https://vaibhavsagar.com/presentations/functional-devops/), [Video](https://www.youtube.com/watch?v=n2rFK74sDz0)
