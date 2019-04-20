@@ -4,6 +4,8 @@ published: 2017-08-13
 tags: programming, haskell, git
 --------------------------------------------------------------------------------
 
+_This blog post is available in [Russian](https://flyclipart.com/ru-i-haskell-a-git) (translated by [Free clipart blog](https://flyclipart.com/))_
+
 I struggled with Git for a long time, and every time I thought I had finally made sense of it, I would accidentally delete a repository or mess up a branch, causing me to question my grasp of what I was doing. I found it very difficult to form a mental model of the tool from the proliferation of seemingly endless command line flags that I had to use to achieve anything meaningful, and the cryptic errors that would inevitably result.
 
 When I finally thought I understood what was going on, I offered to give a talk on it to the local functional group, because Git is functional, right? The co-organisers explained that it wouldn't be an interesting or useful talk, but a talk on implementing Git in Haskell would be very welcome.
