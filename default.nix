@@ -15,7 +15,7 @@ let
   site = nixpkgs.runCommand "site" {
     buildInputs = [ nixpkgs.glibcLocales ] ++ drv.env.nativeBuildInputs;
     src = builtins.filterSource (contentFilter ./.) ./.;
-    LC_ALL = "en_US.UTF-8";
+    LANG = "en_US.UTF-8";
   } ''
     workdir=$(${nixpkgs.coreutils}/bin/mktemp -d)
     cp -R $src/* $workdir
