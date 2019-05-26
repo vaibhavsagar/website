@@ -1,14 +1,16 @@
 --------------------------------------------------------------------------------
-title: Functional Infrastructure in a Dysfunctional World
-published: 2017-11-10
-tags: programming, nix
+title: Functional DevOps in a Dysfunctional World
+published: 2019-05-26
+tags: programming, nix, devops
 --------------------------------------------------------------------------------
 
-I've been using Nix and NixOS at work for the last couple of months, and I
-really like it! It's made my job easier and less stressful. The website markets
-it as 'declarative', 'reliable', and 'DevOps-friendly', and I'd like to
-demonstrate what that means and make a case for using it in your
-infrastructure.
+What is DevOps about? For me it's about the phrase
+
+> It works on my machine.
+
+I've been guilty of saying this in the past, and quite frankly, it isn't good
+enough. After the development team has written their last line of code, some
+amount of work still needs to happen in order for the software to deliver value.
 
 To make things easier, I'm not assuming that you already run NixOS. Any Linux
 distro should do, as long as you've [installed
@@ -51,20 +53,18 @@ executable blank-me-up
   default-language:    Haskell2010
 ```
 
-(Any resemblance to [the first example in Scotty's
-README](https://github.com/scotty-web/scotty/blob/306fee7121dc41a55bd4e9b785f8366198de7e3c/README.md#scotty-)
-is purely coincidental.)
+(This example is taken straight from [Scotty's
+README](https://github.com/scotty-web/scotty/blob/306fee7121dc41a55bd4e9b785f8366198de7e3c/README.md#scotty-).)
 
 Our first step is to build this app and quickly check that it works. We'll need
 Nix and `cabal2nix`, which turns `.cabal` files into configuration for the Nix
-package manager. Assuming we've
+package manager. Assuming we've installed `cabal2nix`:
 
 ```bash
 $ nix-env -i cabal2nix
 <a lot of output>
 created <number> symlinks in user environment
 ```
-
 How do we know it worked? Try `nix-env -q` (short for `--query`):
 
 ```bash
@@ -180,6 +180,7 @@ of the language, see
 [here](https://nixos.org/nix/manual/#ch-expression-language).
 
 1. These are the arguments to this expression that the caller will pass.
+   Another way to think of this is as a form of dependency injection.
 1. `let` expressions work similarly to Haskell.
 1. This is the equivalent of our `nix-build` from before.
 1. We define a single option that enables our service.
@@ -239,20 +240,15 @@ install VirtualBox and set up a host-only network called `vboxnet0`.
 
 We'll be using the [instructions from the
 manual](https://nixos.org/nixops/manual/#idm140737318606176) as our starting
-point. Create the two files indicated there:
+point. Create two files:
 
 *ops/trivial.nix*
 ```nix
 {
   network.description = "Web server";
+  network.enableRollback = true;
 
-  webserver =
-    { config, pkgs, ... }:
-    { services.httpd.enable = true;
-      services.httpd.adminAddr = "alice@example.org";
-      services.httpd.documentRoot = "${pkgs.valgrind.doc}/share/doc/valgrind/html";
-      networking.firewall.allowedTCPPorts = [ 80 ];
-    };
+  webserver = import ./webserver.nix;
 }
 ```
 
@@ -262,29 +258,18 @@ point. Create the two files indicated there:
   webserver =
     { config, pkgs, ... }:
     { deployment.targetEnv = "virtualbox";
+      deployment.virtualbox.headless = true; # don't show a display
       deployment.virtualbox.memorySize = 1024; # megabytes
       deployment.virtualbox.vcpu = 2; # number of cpus
     };
 }
 ```
 
-We need to make a small change to `ops/trivial.nix`: we already have the
-service configuration we want in `ops/webserver.nix` so we can import and use
-that:
-
-*ops/trivial.nix*
-```nix
-{
-  network.description = "Web server";
-
-  webserver = import ./webserver.nix;
-}
-```
-
 We should now be able to create a new deployment:
 
 ```bash
-$ nixops create ops/trivial.nix ops/trivial-vbox.nix -d trivial
+$ cd ops
+$ nixops create trivial.nix trivial-vbox.nix -d trivial
 ```
 
 and deploy it:
