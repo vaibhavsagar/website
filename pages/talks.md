@@ -4,6 +4,11 @@ title: Talks
 
 ## Conference
 
+#### You Won’t Believe This One Weird CPU Instruction!
+
+- Where: !!Con 2019
+- [Slides](https://vaibhavsagar.com/presentations/popcount), [Video](https://www.youtube.com/watch?v=bLFqLfz2Fmc)
+
 #### I Haskell a Git
 
 - Where: YOW! Lambda Jam 2018, Haskell eXchange 2018
