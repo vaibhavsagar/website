@@ -12,6 +12,39 @@ I've been guilty of saying this in the past, and quite frankly, it isn't good
 enough. After the development team has written their last line of code, some
 amount of work still needs to happen in order for the software to deliver value.
 
+A few jobs ago I was at a small web development shop, and my deployment
+workflow was as follows:
+
+1. Log on to the development server and take careful notes on how it had diverged from the production server.
+1. Log on to the production server and do a `git pull` to get the latest code changes.
+1. Perform database migrations.
+1. Manually make any other required changes.
+
+Despite my best efforts, I would inevitably run into issues whenever I did
+this, resulting in site outages and frustrated clients. This was far from
+ideal, but I wasn't able to articulate why at the time.
+
+I think a better deployment process has the following properties:
+
+- **Automatic**: instead of a manual multi-step process, it has a single step,
+  which can be performed automatically.
+
+- **Repeatable**: instead of only being able to deploy to one lovingly
+  hand-maintained server, it can deploy reliably multiple times to multiple
+  servers.
+
+- **Idempotent**: if the target is already in the desired state, no extra work
+  needs to be done.
+
+- **Reversible**: if it turns out I made a mistake, I can go back to the
+  previous state.
+
+- **Atomic**: an external observer can only see the new state or the old state,
+  not any intermediate state.
+
+I hope to demonstrate how the Nix suite of tools (Nix, NixOS, and NixOps)
+fulfill these properties and provide a better DevOps experience.
+
 To make things easier, I'm not assuming that you already run NixOS. Any Linux
 distro should do, as long as you've [installed
 Nix](https://nixos.org/nix/download.html). macOS users will be able to follow
@@ -21,8 +54,7 @@ along until I get to the NixOps section.
 
 ## Packaging
 
-Suppose we are in ops, and have been given a small Haskell app to get up and
-running:
+Suppose we have been given a small Haskell app to get up and running:
 
 *Main.hs*
 ```haskell
@@ -215,8 +247,30 @@ we can use `jq` to clean it up:
 $ nix-instantiate --eval -E '(import <nixpkgs/nixos/lib/eval-config.nix> { modules = [./ops/webserver.nix]; }).config.systemd.units."blank-me-up.service".text' | jq -r
 ```
 
+Here's what that looks like on my machine:
+
+<details>
+<summary style="cursor: pointer;">Generated `systemd` service</summary>
+```default
+[Unit]
+After=network.target
+Description=Blank Me Up
+
+[Service]
+Environment="LOCALE_ARCHIVE=/nix/store/6zw7gxja0gvbdzm0gl73xydkdffwbapr-glibc-locales-2.27/lib/locale/locale-archive"
+Environment="PATH=/nix/store/d9s1kq1bnwqgxwcvv4zrc36ysnxg8gv7-coreutils-8.30/bin:/nix/store/krhqmaqal0gklh15rs2bwrqzz8mg9lrn-findutils-4.6.0/bin:/nix/store/wnjv27b3j6jfdl0968xpcymlc7chpqil-gnugrep-3.3/bin:/nix/store/x1khw8x0465xhkv6w31af75syyyxc65j-gnused-4.7/bin:/nix/store/dz4mrfbjjlzj8g9j66nmkrzvny40pzcc-systemd-239.20190219/bin:/nix/store/d9s1kq1bnwqgxwcvv4zrc36ysnxg8gv7-coreutils-8.30/sbin:/nix/store/krhqmaqal0gklh15rs2bwrqzz8mg9lrn-findutils-4.6.0/sbin:/nix/store/wnjv27b3j6jfdl0968xpcymlc7chpqil-gnugrep-3.3/sbin:/nix/store/x1khw8x0465xhkv6w31af75syyyxc65j-gnused-4.7/sbin:/nix/store/dz4mrfbjjlzj8g9j66nmkrzvny40pzcc-systemd-239.20190219/sbin"
+Environment="TZDIR=/nix/store/5dqqp2qyyw1j69zg1r9iydjpbx9j886x-tzdata-2019a/share/zoneinfo"
+
+
+
+ExecStart=/nix/store/1c4mkx5bd1sj285x06g6293pbqaw4bl5-blank-me-up-0.1.0.0/bin/blank-me-up
+KillMode=process
+Restart=always
+```
+</details>
+
 Hopefully at this point you're convinced that Nix can take some quasi-JSON and
-turn it into a binary and a systemd service file. Let's deploy this!
+turn it into a binary and a `systemd` service file. Let's deploy this!
 
 ## Deploying
 
@@ -294,4 +348,11 @@ $ nixops ssh -d trivial webserver
 
 ## Responding to change
 
-This is fantastic, but deployments are rarely fire-and-forget. How does
+This is fantastic, but deployments are rarely fire-and-forget. What happens
+when our requirements change? There's a serious issue with our application,
+which is that it hardcodes the port that it listens on. If we wanted it to
+listen on a different port, or to run more than one instance of it on the same
+machine, we'd need to do something differently.
+
+The easy solution would be to talk to the developers and have them implement
+support, but in the meantime, how should we proceed?
