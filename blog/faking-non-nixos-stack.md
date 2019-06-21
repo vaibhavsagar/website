@@ -136,7 +136,7 @@ in pkgs.buildFHSUserEnv {
     pkgs.zlib.dev
   ];
   profile = ''
-    export C_INCLUDE_PATH=/usr/include:$C_INClUDE_PATH
+    export C_INCLUDE_PATH=/usr/include:$C_INCLUDE_PATH
   '';
 }
 ```
@@ -169,7 +169,7 @@ in pkgs.buildFHSUserEnv {
     pkgs.zlib.dev
   ];
   profile = ''
-    export C_INCLUDE_PATH=/usr/include:$C_INClUDE_PATH
+    export C_INCLUDE_PATH=/usr/include:$C_INCLUDE_PATH
   '';
 }
 ```
