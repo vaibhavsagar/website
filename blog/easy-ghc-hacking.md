@@ -14,7 +14,7 @@ I wanted to focus on a small part of his presentation, which is about loading
 [GHC into GHCi](https://gitlab.haskell.org/ghc/ghc/wikis/building/in-ghci) and
 using [`ghcid`](https://github.com/ndmitchell/ghcid) to automatically reload
 GHC on changes. This has been possible for almost a year now, [thanks to work
-by Michael Sloan](https://gitlab.haskell.org/ghc/ghc/wikis/building/in-ghci).
+by Michael Sloan](https://mgsloan.com/posts/ghcinception/).
 
 Putting this together with [Alp Mestanogullari's
 `ghc.nix`](https://github.com/alpmestan/ghc.nix), it's now possible to
