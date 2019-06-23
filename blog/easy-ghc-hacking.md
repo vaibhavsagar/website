@@ -5,16 +5,17 @@ tags: haskell, nix, programming
 --------------------------------------------------------------------------------
 
 At ZuriHac 2019 [Matthew Pickering](https://github.com/mpickering) talked about
-[Tools for working on GHC](https://www.youtube.com/watch?v=Q2ZDovqIxCw).
+[tools for working on GHC](https://www.youtube.com/watch?v=Q2ZDovqIxCw).
 There's [an associated blog
 post](https://mpickering.github.io/posts/2019-06-11-ghc-tools.html) which is
-also interesting.
+also well worth reading.
 
 I wanted to focus on a small part of his presentation, which is about loading
 [GHC into GHCi](https://gitlab.haskell.org/ghc/ghc/wikis/building/in-ghci) and
 using [`ghcid`](https://github.com/ndmitchell/ghcid) to automatically reload
-GHC on changes. This has been possible for almost a year now, [thanks to work
-by Michael Sloan](https://mgsloan.com/posts/ghcinception/).
+GHC on changes. This has been possible for almost a year now, [as described in
+this blog post by Michael Sloan](https://mgsloan.com/posts/ghcinception/). It
+has since been improved to be even easier to use!
 
 Putting this together with [Alp Mestanogullari's
 `ghc.nix`](https://github.com/alpmestan/ghc.nix), it's now possible to
