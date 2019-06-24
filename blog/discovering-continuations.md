@@ -39,88 +39,22 @@ instance Functor (Cont r) where
 ```
 
 
-<style>/* Styles used for the Hoogle display in the pager */
-.hoogle-doc {
-display: block;
-padding-bottom: 1.3em;
-padding-left: 0.4em;
-}
-.hoogle-code {
-display: block;
-font-family: monospace;
-white-space: pre;
-}
-.hoogle-text {
-display: block;
-}
-.hoogle-name {
-color: green;
-font-weight: bold;
-}
-.hoogle-head {
-font-weight: bold;
-}
-.hoogle-sub {
-display: block;
-margin-left: 0.4em;
-}
-.hoogle-package {
-font-weight: bold;
-font-style: italic;
-}
-.hoogle-module {
-font-weight: bold;
-}
-.hoogle-class {
-font-weight: bold;
-}
-.get-type {
-color: green;
-font-weight: bold;
-font-family: monospace;
-display: block;
-white-space: pre-wrap;
-}
-.show-type {
-color: green;
-font-weight: bold;
-font-family: monospace;
-margin-left: 1em;
-}
-.mono {
-font-family: monospace;
-display: block;
-}
-.err-msg {
-color: red;
-font-style: italic;
-font-family: monospace;
-white-space: pre;
-display: block;
-}
-#unshowable {
-color: red;
-font-weight: bold;
-}
-.err-msg.in.collapse {
-padding-top: 0.7em;
-}
-.highlight-code {
-white-space: pre;
-font-family: monospace;
-}
-.suggestion-warning { 
-font-weight: bold;
-color: rgb(200, 130, 0);
-}
-.suggestion-error { 
-font-weight: bold;
-color: red;
-}
-.suggestion-name {
-font-weight: bold;
-}
-</style><pre class='err-msg'>&lt;interactive&gt;:3:19: error:<br/>    • Found hole: _ :: Cont r b<br/>      Where: ‘r’ is a rigid type variable bound by the instance declaration at &lt;interactive&gt;:1:10-25<br/>             ‘b’ is a rigid type variable bound by<br/>               the type signature for:<br/>                 fmap :: forall a b. (a -&gt; b) -&gt; Cont r a -&gt; Cont r b<br/>               at &lt;interactive&gt;:2:13-44<br/>    • In the expression: _<br/>      In an equation for ‘fmap’: fmap f cont = _<br/>      In the instance declaration for ‘Functor (Cont r)’<br/>    • Relevant bindings include<br/>        cont :: Cont r a (bound at &lt;interactive&gt;:3:12)<br/>        f :: a -&gt; b (bound at &lt;interactive&gt;:3:10)<br/>        fmap :: (a -&gt; b) -&gt; Cont r a -&gt; Cont r b (bound at &lt;interactive&gt;:3:5)</pre>
+    <interactive>:3:19: error:
+        • Found hole: _ :: Cont r b
+          Where: ‘b’ is a rigid type variable bound by
+                   the type signature for:
+                     fmap :: forall a b. (a -> b) -> Cont r a -> Cont r b
+                   at <interactive>:2:13-44
+                 ‘r’ is a rigid type variable bound by
+                   the instance declaration
+                   at <interactive>:1:10-25
+        • In the expression: _
+          In an equation for ‘fmap’: fmap f cont = _
+          In the instance declaration for ‘Functor (Cont r)’
+        • Relevant bindings include
+            cont :: Cont r a (bound at <interactive>:3:12)
+            f :: a -> b (bound at <interactive>:3:10)
+            fmap :: (a -> b) -> Cont r a -> Cont r b (bound at <interactive>:3:5)
 
 
 We didn't really need a typed hole to tell us this, but at least we know what we have to work with. We know we have to provide a `Cont` value, so let's narrow our typed hole that way.
@@ -133,88 +67,22 @@ instance Functor (Cont r) where
 ```
 
 
-<style>/* Styles used for the Hoogle display in the pager */
-.hoogle-doc {
-display: block;
-padding-bottom: 1.3em;
-padding-left: 0.4em;
-}
-.hoogle-code {
-display: block;
-font-family: monospace;
-white-space: pre;
-}
-.hoogle-text {
-display: block;
-}
-.hoogle-name {
-color: green;
-font-weight: bold;
-}
-.hoogle-head {
-font-weight: bold;
-}
-.hoogle-sub {
-display: block;
-margin-left: 0.4em;
-}
-.hoogle-package {
-font-weight: bold;
-font-style: italic;
-}
-.hoogle-module {
-font-weight: bold;
-}
-.hoogle-class {
-font-weight: bold;
-}
-.get-type {
-color: green;
-font-weight: bold;
-font-family: monospace;
-display: block;
-white-space: pre-wrap;
-}
-.show-type {
-color: green;
-font-weight: bold;
-font-family: monospace;
-margin-left: 1em;
-}
-.mono {
-font-family: monospace;
-display: block;
-}
-.err-msg {
-color: red;
-font-style: italic;
-font-family: monospace;
-white-space: pre;
-display: block;
-}
-#unshowable {
-color: red;
-font-weight: bold;
-}
-.err-msg.in.collapse {
-padding-top: 0.7em;
-}
-.highlight-code {
-white-space: pre;
-font-family: monospace;
-}
-.suggestion-warning { 
-font-weight: bold;
-color: rgb(200, 130, 0);
-}
-.suggestion-error { 
-font-weight: bold;
-color: red;
-}
-.suggestion-name {
-font-weight: bold;
-}
-</style><pre class='err-msg'>&lt;interactive&gt;:3:26: error:<br/>    • Found hole: _ :: (b -&gt; r) -&gt; r<br/>      Where: ‘b’ is a rigid type variable bound by<br/>               the type signature for:<br/>                 fmap :: forall a b. (a -&gt; b) -&gt; Cont r a -&gt; Cont r b<br/>               at &lt;interactive&gt;:2:13-44<br/>             ‘r’ is a rigid type variable bound by the instance declaration at &lt;interactive&gt;:1:10-25<br/>    • In the second argument of ‘(<span>&dollar;</span>)’, namely ‘_’<br/>      In the expression: Cont <span>&dollar;</span> _<br/>      In an equation for ‘fmap’: fmap f cont = Cont <span>&dollar;</span> _<br/>    • Relevant bindings include<br/>        cont :: Cont r a (bound at &lt;interactive&gt;:3:12)<br/>        f :: a -&gt; b (bound at &lt;interactive&gt;:3:10)<br/>        fmap :: (a -&gt; b) -&gt; Cont r a -&gt; Cont r b (bound at &lt;interactive&gt;:3:5)</pre>
+    <interactive>:3:26: error:
+        • Found hole: _ :: (b -> r) -> r
+          Where: ‘b’ is a rigid type variable bound by
+                   the type signature for:
+                     fmap :: forall a b. (a -> b) -> Cont r a -> Cont r b
+                   at <interactive>:2:13-44
+                 ‘r’ is a rigid type variable bound by
+                   the instance declaration
+                   at <interactive>:1:10-25
+        • In the second argument of ‘($)’, namely ‘_’
+          In the expression: Cont $ _
+          In an equation for ‘fmap’: fmap f cont = Cont $ _
+        • Relevant bindings include
+            cont :: Cont r a (bound at <interactive>:3:12)
+            f :: a -> b (bound at <interactive>:3:10)
+            fmap :: (a -> b) -> Cont r a -> Cont r b (bound at <interactive>:3:5)
 
 
 The type of our hole is more helpful here. Now we know (if we were previously uncertain) that we somehow need to use `f` to turn the `a` into a `b`. We also know that `Cont` takes a parameter, let's add that in and see if it helps.
@@ -227,88 +95,19 @@ instance Functor (Cont r) where
 ```
 
 
-<style>/* Styles used for the Hoogle display in the pager */
-.hoogle-doc {
-display: block;
-padding-bottom: 1.3em;
-padding-left: 0.4em;
-}
-.hoogle-code {
-display: block;
-font-family: monospace;
-white-space: pre;
-}
-.hoogle-text {
-display: block;
-}
-.hoogle-name {
-color: green;
-font-weight: bold;
-}
-.hoogle-head {
-font-weight: bold;
-}
-.hoogle-sub {
-display: block;
-margin-left: 0.4em;
-}
-.hoogle-package {
-font-weight: bold;
-font-style: italic;
-}
-.hoogle-module {
-font-weight: bold;
-}
-.hoogle-class {
-font-weight: bold;
-}
-.get-type {
-color: green;
-font-weight: bold;
-font-family: monospace;
-display: block;
-white-space: pre-wrap;
-}
-.show-type {
-color: green;
-font-weight: bold;
-font-family: monospace;
-margin-left: 1em;
-}
-.mono {
-font-family: monospace;
-display: block;
-}
-.err-msg {
-color: red;
-font-style: italic;
-font-family: monospace;
-white-space: pre;
-display: block;
-}
-#unshowable {
-color: red;
-font-weight: bold;
-}
-.err-msg.in.collapse {
-padding-top: 0.7em;
-}
-.highlight-code {
-white-space: pre;
-font-family: monospace;
-}
-.suggestion-warning { 
-font-weight: bold;
-color: rgb(200, 130, 0);
-}
-.suggestion-error { 
-font-weight: bold;
-color: red;
-}
-.suggestion-name {
-font-weight: bold;
-}
-</style><pre class='err-msg'>&lt;interactive&gt;:3:32: error:<br/>    • Found hole: _ :: r<br/>      Where: ‘r’ is a rigid type variable bound by the instance declaration at &lt;interactive&gt;:1:10-25<br/>    • In the expression: _<br/>      In the second argument of ‘(<span>&dollar;</span>)’, namely ‘\ k -&gt; _’<br/>      In the expression: Cont <span>&dollar;</span> \ k -&gt; _<br/>    • Relevant bindings include<br/>        k :: b -&gt; r (bound at &lt;interactive&gt;:3:27)<br/>        cont :: Cont r a (bound at &lt;interactive&gt;:3:12)<br/>        f :: a -&gt; b (bound at &lt;interactive&gt;:3:10)<br/>        fmap :: (a -&gt; b) -&gt; Cont r a -&gt; Cont r b (bound at &lt;interactive&gt;:3:5)</pre>
+    <interactive>:3:32: error:
+        • Found hole: _ :: r
+          Where: ‘r’ is a rigid type variable bound by
+                   the instance declaration
+                   at <interactive>:1:10-25
+        • In the expression: _
+          In the second argument of ‘($)’, namely ‘\ k -> _’
+          In the expression: Cont $ \ k -> _
+        • Relevant bindings include
+            k :: b -> r (bound at <interactive>:3:27)
+            cont :: Cont r a (bound at <interactive>:3:12)
+            f :: a -> b (bound at <interactive>:3:10)
+            fmap :: (a -> b) -> Cont r a -> Cont r b (bound at <interactive>:3:5)
 
 
 In general, we know all of our definitions will be of the form `Cont $ \k -> _` and that's a safe starting point. We now know that we need to use `k` on the result of applying `f` to some `a` to finally result in an `r`, but where does the `a` come from? The only thing we can do at this point is 'unwrap' the `cont` using `>>-`. What happens when we do that?
@@ -321,88 +120,23 @@ instance Functor (Cont r) where
 ```
 
 
-<style>/* Styles used for the Hoogle display in the pager */
-.hoogle-doc {
-display: block;
-padding-bottom: 1.3em;
-padding-left: 0.4em;
-}
-.hoogle-code {
-display: block;
-font-family: monospace;
-white-space: pre;
-}
-.hoogle-text {
-display: block;
-}
-.hoogle-name {
-color: green;
-font-weight: bold;
-}
-.hoogle-head {
-font-weight: bold;
-}
-.hoogle-sub {
-display: block;
-margin-left: 0.4em;
-}
-.hoogle-package {
-font-weight: bold;
-font-style: italic;
-}
-.hoogle-module {
-font-weight: bold;
-}
-.hoogle-class {
-font-weight: bold;
-}
-.get-type {
-color: green;
-font-weight: bold;
-font-family: monospace;
-display: block;
-white-space: pre-wrap;
-}
-.show-type {
-color: green;
-font-weight: bold;
-font-family: monospace;
-margin-left: 1em;
-}
-.mono {
-font-family: monospace;
-display: block;
-}
-.err-msg {
-color: red;
-font-style: italic;
-font-family: monospace;
-white-space: pre;
-display: block;
-}
-#unshowable {
-color: red;
-font-weight: bold;
-}
-.err-msg.in.collapse {
-padding-top: 0.7em;
-}
-.highlight-code {
-white-space: pre;
-font-family: monospace;
-}
-.suggestion-warning { 
-font-weight: bold;
-color: rgb(200, 130, 0);
-}
-.suggestion-error { 
-font-weight: bold;
-color: red;
-}
-.suggestion-name {
-font-weight: bold;
-}
-</style><pre class='err-msg'>&lt;interactive&gt;:3:41: error:<br/>    • Found hole: _ :: a -&gt; r<br/>      Where: ‘a’ is a rigid type variable bound by<br/>               the type signature for:<br/>                 fmap :: forall a b. (a -&gt; b) -&gt; Cont r a -&gt; Cont r b<br/>               at &lt;interactive&gt;:2:13-44<br/>             ‘r’ is a rigid type variable bound by the instance declaration at &lt;interactive&gt;:1:10-25<br/>    • In the second argument of ‘&gt;&gt;-’, namely ‘_’<br/>      In the expression: cont &gt;&gt;- _<br/>      In the second argument of ‘(<span>&dollar;</span>)’, namely ‘\ k -&gt; cont &gt;&gt;- _’<br/>    • Relevant bindings include<br/>        k :: b -&gt; r (bound at &lt;interactive&gt;:3:27)<br/>        cont :: Cont r a (bound at &lt;interactive&gt;:3:12)<br/>        f :: a -&gt; b (bound at &lt;interactive&gt;:3:10)<br/>        fmap :: (a -&gt; b) -&gt; Cont r a -&gt; Cont r b (bound at &lt;interactive&gt;:3:5)</pre>
+    <interactive>:3:41: error:
+        • Found hole: _ :: a -> r
+          Where: ‘a’ is a rigid type variable bound by
+                   the type signature for:
+                     fmap :: forall a b. (a -> b) -> Cont r a -> Cont r b
+                   at <interactive>:2:13-44
+                 ‘r’ is a rigid type variable bound by
+                   the instance declaration
+                   at <interactive>:1:10-25
+        • In the second argument of ‘>>-’, namely ‘_’
+          In the expression: cont >>- _
+          In the second argument of ‘($)’, namely ‘\ k -> cont >>- _’
+        • Relevant bindings include
+            k :: b -> r (bound at <interactive>:3:27)
+            cont :: Cont r a (bound at <interactive>:3:12)
+            f :: a -> b (bound at <interactive>:3:10)
+            fmap :: (a -> b) -> Cont r a -> Cont r b (bound at <interactive>:3:5)
 
 
 It looks like we might have everything we need to complete this definition! We can create a function of type `a -> r` by composing `k` and `f`. 
@@ -424,88 +158,18 @@ instance Applicative (Cont r) where
 ```
 
 
-<style>/* Styles used for the Hoogle display in the pager */
-.hoogle-doc {
-display: block;
-padding-bottom: 1.3em;
-padding-left: 0.4em;
-}
-.hoogle-code {
-display: block;
-font-family: monospace;
-white-space: pre;
-}
-.hoogle-text {
-display: block;
-}
-.hoogle-name {
-color: green;
-font-weight: bold;
-}
-.hoogle-head {
-font-weight: bold;
-}
-.hoogle-sub {
-display: block;
-margin-left: 0.4em;
-}
-.hoogle-package {
-font-weight: bold;
-font-style: italic;
-}
-.hoogle-module {
-font-weight: bold;
-}
-.hoogle-class {
-font-weight: bold;
-}
-.get-type {
-color: green;
-font-weight: bold;
-font-family: monospace;
-display: block;
-white-space: pre-wrap;
-}
-.show-type {
-color: green;
-font-weight: bold;
-font-family: monospace;
-margin-left: 1em;
-}
-.mono {
-font-family: monospace;
-display: block;
-}
-.err-msg {
-color: red;
-font-style: italic;
-font-family: monospace;
-white-space: pre;
-display: block;
-}
-#unshowable {
-color: red;
-font-weight: bold;
-}
-.err-msg.in.collapse {
-padding-top: 0.7em;
-}
-.highlight-code {
-white-space: pre;
-font-family: monospace;
-}
-.suggestion-warning { 
-font-weight: bold;
-color: rgb(200, 130, 0);
-}
-.suggestion-error { 
-font-weight: bold;
-color: red;
-}
-.suggestion-name {
-font-weight: bold;
-}
-</style><pre class='err-msg'>&lt;interactive&gt;:3:27: error:<br/>    • Found hole: _ :: r<br/>      Where: ‘r’ is a rigid type variable bound by the instance declaration at &lt;interactive&gt;:1:10-29<br/>    • In the expression: _<br/>      In the second argument of ‘(<span>&dollar;</span>)’, namely ‘\ k -&gt; _’<br/>      In the expression: Cont <span>&dollar;</span> \ k -&gt; _<br/>    • Relevant bindings include<br/>        k :: a -&gt; r (bound at &lt;interactive&gt;:3:22)<br/>        a :: a (bound at &lt;interactive&gt;:3:10)<br/>        pure :: a -&gt; Cont r a (bound at &lt;interactive&gt;:3:5)</pre>
+    <interactive>:3:27: error:
+        • Found hole: _ :: r
+          Where: ‘r’ is a rigid type variable bound by
+                   the instance declaration
+                   at <interactive>:1:10-29
+        • In the expression: _
+          In the second argument of ‘($)’, namely ‘\ k -> _’
+          In the expression: Cont $ \ k -> _
+        • Relevant bindings include
+            k :: a -> r (bound at <interactive>:3:22)
+            a :: a (bound at <interactive>:3:10)
+            pure :: a -> Cont r a (bound at <interactive>:3:5)
 
 
 That was pretty easy. We need an `r` and we have an `a` and a `k` that takes an `a` to an `r`.
@@ -529,88 +193,19 @@ instance Applicative (Cont r) where
 ```
 
 
-<style>/* Styles used for the Hoogle display in the pager */
-.hoogle-doc {
-display: block;
-padding-bottom: 1.3em;
-padding-left: 0.4em;
-}
-.hoogle-code {
-display: block;
-font-family: monospace;
-white-space: pre;
-}
-.hoogle-text {
-display: block;
-}
-.hoogle-name {
-color: green;
-font-weight: bold;
-}
-.hoogle-head {
-font-weight: bold;
-}
-.hoogle-sub {
-display: block;
-margin-left: 0.4em;
-}
-.hoogle-package {
-font-weight: bold;
-font-style: italic;
-}
-.hoogle-module {
-font-weight: bold;
-}
-.hoogle-class {
-font-weight: bold;
-}
-.get-type {
-color: green;
-font-weight: bold;
-font-family: monospace;
-display: block;
-white-space: pre-wrap;
-}
-.show-type {
-color: green;
-font-weight: bold;
-font-family: monospace;
-margin-left: 1em;
-}
-.mono {
-font-family: monospace;
-display: block;
-}
-.err-msg {
-color: red;
-font-style: italic;
-font-family: monospace;
-white-space: pre;
-display: block;
-}
-#unshowable {
-color: red;
-font-weight: bold;
-}
-.err-msg.in.collapse {
-padding-top: 0.7em;
-}
-.highlight-code {
-white-space: pre;
-font-family: monospace;
-}
-.suggestion-warning { 
-font-weight: bold;
-color: rgb(200, 130, 0);
-}
-.suggestion-error { 
-font-weight: bold;
-color: red;
-}
-.suggestion-name {
-font-weight: bold;
-}
-</style><pre class='err-msg'>&lt;interactive&gt;:5:28: error:<br/>    • Found hole: _ :: r<br/>      Where: ‘r’ is a rigid type variable bound by the instance declaration at &lt;interactive&gt;:1:10-29<br/>    • In the expression: _<br/>      In the second argument of ‘(<span>&dollar;</span>)’, namely ‘\ k -&gt; _’<br/>      In the expression: Cont <span>&dollar;</span> \ k -&gt; _<br/>    • Relevant bindings include<br/>        k :: b -&gt; r (bound at &lt;interactive&gt;:5:23)<br/>        a :: Cont r a (bound at &lt;interactive&gt;:5:11)<br/>        f :: Cont r (a -&gt; b) (bound at &lt;interactive&gt;:5:5)<br/>        (&lt;*&gt;) :: Cont r (a -&gt; b) -&gt; Cont r a -&gt; Cont r b (bound at &lt;interactive&gt;:5:7)</pre>
+    <interactive>:5:28: error:
+        • Found hole: _ :: r
+          Where: ‘r’ is a rigid type variable bound by
+                   the instance declaration
+                   at <interactive>:1:10-29
+        • In the expression: _
+          In the second argument of ‘($)’, namely ‘\ k -> _’
+          In the expression: Cont $ \ k -> _
+        • Relevant bindings include
+            k :: b -> r (bound at <interactive>:5:23)
+            a :: Cont r a (bound at <interactive>:5:11)
+            f :: Cont r (a -> b) (bound at <interactive>:5:5)
+            (<*>) :: Cont r (a -> b) -> Cont r a -> Cont r b (bound at <interactive>:5:7)
 
 
 From above, we know we can 'unwrap' `Cont` values using `>>-`.
@@ -625,88 +220,23 @@ instance Applicative (Cont r) where
 ```
 
 
-<style>/* Styles used for the Hoogle display in the pager */
-.hoogle-doc {
-display: block;
-padding-bottom: 1.3em;
-padding-left: 0.4em;
-}
-.hoogle-code {
-display: block;
-font-family: monospace;
-white-space: pre;
-}
-.hoogle-text {
-display: block;
-}
-.hoogle-name {
-color: green;
-font-weight: bold;
-}
-.hoogle-head {
-font-weight: bold;
-}
-.hoogle-sub {
-display: block;
-margin-left: 0.4em;
-}
-.hoogle-package {
-font-weight: bold;
-font-style: italic;
-}
-.hoogle-module {
-font-weight: bold;
-}
-.hoogle-class {
-font-weight: bold;
-}
-.get-type {
-color: green;
-font-weight: bold;
-font-family: monospace;
-display: block;
-white-space: pre-wrap;
-}
-.show-type {
-color: green;
-font-weight: bold;
-font-family: monospace;
-margin-left: 1em;
-}
-.mono {
-font-family: monospace;
-display: block;
-}
-.err-msg {
-color: red;
-font-style: italic;
-font-family: monospace;
-white-space: pre;
-display: block;
-}
-#unshowable {
-color: red;
-font-weight: bold;
-}
-.err-msg.in.collapse {
-padding-top: 0.7em;
-}
-.highlight-code {
-white-space: pre;
-font-family: monospace;
-}
-.suggestion-warning { 
-font-weight: bold;
-color: rgb(200, 130, 0);
-}
-.suggestion-error { 
-font-weight: bold;
-color: red;
-}
-.suggestion-name {
-font-weight: bold;
-}
-</style><pre class='err-msg'>&lt;interactive&gt;:5:34: error:<br/>    • Found hole: _ :: (a -&gt; b) -&gt; r<br/>      Where: ‘a’ is a rigid type variable bound by<br/>               the type signature for:<br/>                 (&lt;*&gt;) :: forall a b. Cont r (a -&gt; b) -&gt; Cont r a -&gt; Cont r b<br/>               at &lt;interactive&gt;:4:14-52<br/>             ‘b’ is a rigid type variable bound by<br/>               the type signature for:<br/>                 (&lt;*&gt;) :: forall a b. Cont r (a -&gt; b) -&gt; Cont r a -&gt; Cont r b<br/>               at &lt;interactive&gt;:4:14-52<br/>             ‘r’ is a rigid type variable bound by the instance declaration at &lt;interactive&gt;:1:10-29<br/>    • In the second argument of ‘&gt;&gt;-’, namely ‘_’<br/>      In the expression: f &gt;&gt;- _<br/>      In the second argument of ‘(<span>&dollar;</span>)’, namely ‘\ k -&gt; f &gt;&gt;- _’<br/>    • Relevant bindings include<br/>        k :: b -&gt; r (bound at &lt;interactive&gt;:5:23)<br/>        a :: Cont r a (bound at &lt;interactive&gt;:5:11)<br/>        f :: Cont r (a -&gt; b) (bound at &lt;interactive&gt;:5:5)<br/>        (&lt;*&gt;) :: Cont r (a -&gt; b) -&gt; Cont r a -&gt; Cont r b (bound at &lt;interactive&gt;:5:7)</pre>
+    <interactive>:5:34: error:
+        • Found hole: _ :: (a -> b) -> r
+          Where: ‘a’, ‘b’ are rigid type variables bound by
+                   the type signature for:
+                     (<*>) :: forall a b. Cont r (a -> b) -> Cont r a -> Cont r b
+                   at <interactive>:4:14-52
+                 ‘r’ is a rigid type variable bound by
+                   the instance declaration
+                   at <interactive>:1:10-29
+        • In the second argument of ‘>>-’, namely ‘_’
+          In the expression: f >>- _
+          In the second argument of ‘($)’, namely ‘\ k -> f >>- _’
+        • Relevant bindings include
+            k :: b -> r (bound at <interactive>:5:23)
+            a :: Cont r a (bound at <interactive>:5:11)
+            f :: Cont r (a -> b) (bound at <interactive>:5:5)
+            (<*>) :: Cont r (a -> b) -> Cont r a -> Cont r b (bound at <interactive>:5:7)
 
 
 Let's keep going.
@@ -721,88 +251,21 @@ instance Applicative (Cont r) where
 ```
 
 
-<style>/* Styles used for the Hoogle display in the pager */
-.hoogle-doc {
-display: block;
-padding-bottom: 1.3em;
-padding-left: 0.4em;
-}
-.hoogle-code {
-display: block;
-font-family: monospace;
-white-space: pre;
-}
-.hoogle-text {
-display: block;
-}
-.hoogle-name {
-color: green;
-font-weight: bold;
-}
-.hoogle-head {
-font-weight: bold;
-}
-.hoogle-sub {
-display: block;
-margin-left: 0.4em;
-}
-.hoogle-package {
-font-weight: bold;
-font-style: italic;
-}
-.hoogle-module {
-font-weight: bold;
-}
-.hoogle-class {
-font-weight: bold;
-}
-.get-type {
-color: green;
-font-weight: bold;
-font-family: monospace;
-display: block;
-white-space: pre-wrap;
-}
-.show-type {
-color: green;
-font-weight: bold;
-font-family: monospace;
-margin-left: 1em;
-}
-.mono {
-font-family: monospace;
-display: block;
-}
-.err-msg {
-color: red;
-font-style: italic;
-font-family: monospace;
-white-space: pre;
-display: block;
-}
-#unshowable {
-color: red;
-font-weight: bold;
-}
-.err-msg.in.collapse {
-padding-top: 0.7em;
-}
-.highlight-code {
-white-space: pre;
-font-family: monospace;
-}
-.suggestion-warning { 
-font-weight: bold;
-color: rgb(200, 130, 0);
-}
-.suggestion-error { 
-font-weight: bold;
-color: red;
-}
-.suggestion-name {
-font-weight: bold;
-}
-</style><pre class='err-msg'>&lt;interactive&gt;:5:54: error:<br/>    • Found hole: _ :: r<br/>      Where: ‘r’ is a rigid type variable bound by the instance declaration at &lt;interactive&gt;:1:10-29<br/>    • In the expression: _<br/>      In the second argument of ‘&gt;&gt;-’, namely ‘\ a' -&gt; _’<br/>      In the expression: a &gt;&gt;- \ a' -&gt; _<br/>    • Relevant bindings include<br/>        a' :: a (bound at &lt;interactive&gt;:5:48)<br/>        f' :: a -&gt; b (bound at &lt;interactive&gt;:5:35)<br/>        k :: b -&gt; r (bound at &lt;interactive&gt;:5:23)<br/>        a :: Cont r a (bound at &lt;interactive&gt;:5:11)<br/>        f :: Cont r (a -&gt; b) (bound at &lt;interactive&gt;:5:5)<br/>        (&lt;*&gt;) :: Cont r (a -&gt; b) -&gt; Cont r a -&gt; Cont r b (bound at &lt;interactive&gt;:5:7)</pre>
+    <interactive>:5:54: error:
+        • Found hole: _ :: r
+          Where: ‘r’ is a rigid type variable bound by
+                   the instance declaration
+                   at <interactive>:1:10-29
+        • In the expression: _
+          In the second argument of ‘>>-’, namely ‘\ a' -> _’
+          In the expression: a >>- \ a' -> _
+        • Relevant bindings include
+            a' :: a (bound at <interactive>:5:48)
+            f' :: a -> b (bound at <interactive>:5:35)
+            k :: b -> r (bound at <interactive>:5:23)
+            a :: Cont r a (bound at <interactive>:5:11)
+            f :: Cont r (a -> b) (bound at <interactive>:5:5)
+            (<*>) :: Cont r (a -> b) -> Cont r a -> Cont r b (bound at <interactive>:5:7)
 
 
 Perfect, we want an `r` and we have
@@ -832,88 +295,19 @@ instance Monad (Cont r) where
 ```
 
 
-<style>/* Styles used for the Hoogle display in the pager */
-.hoogle-doc {
-display: block;
-padding-bottom: 1.3em;
-padding-left: 0.4em;
-}
-.hoogle-code {
-display: block;
-font-family: monospace;
-white-space: pre;
-}
-.hoogle-text {
-display: block;
-}
-.hoogle-name {
-color: green;
-font-weight: bold;
-}
-.hoogle-head {
-font-weight: bold;
-}
-.hoogle-sub {
-display: block;
-margin-left: 0.4em;
-}
-.hoogle-package {
-font-weight: bold;
-font-style: italic;
-}
-.hoogle-module {
-font-weight: bold;
-}
-.hoogle-class {
-font-weight: bold;
-}
-.get-type {
-color: green;
-font-weight: bold;
-font-family: monospace;
-display: block;
-white-space: pre-wrap;
-}
-.show-type {
-color: green;
-font-weight: bold;
-font-family: monospace;
-margin-left: 1em;
-}
-.mono {
-font-family: monospace;
-display: block;
-}
-.err-msg {
-color: red;
-font-style: italic;
-font-family: monospace;
-white-space: pre;
-display: block;
-}
-#unshowable {
-color: red;
-font-weight: bold;
-}
-.err-msg.in.collapse {
-padding-top: 0.7em;
-}
-.highlight-code {
-white-space: pre;
-font-family: monospace;
-}
-.suggestion-warning { 
-font-weight: bold;
-color: rgb(200, 130, 0);
-}
-.suggestion-error { 
-font-weight: bold;
-color: red;
-}
-.suggestion-name {
-font-weight: bold;
-}
-</style><pre class='err-msg'>&lt;interactive&gt;:3:28: error:<br/>    • Found hole: _ :: r<br/>      Where: ‘r’ is a rigid type variable bound by the instance declaration at &lt;interactive&gt;:1:10-23<br/>    • In the expression: _<br/>      In the second argument of ‘(<span>&dollar;</span>)’, namely ‘\ k -&gt; _’<br/>      In the expression: Cont <span>&dollar;</span> \ k -&gt; _<br/>    • Relevant bindings include<br/>        k :: b -&gt; r (bound at &lt;interactive&gt;:3:23)<br/>        f :: a -&gt; Cont r b (bound at &lt;interactive&gt;:3:11)<br/>        a :: Cont r a (bound at &lt;interactive&gt;:3:5)<br/>        (&gt;&gt;=) :: Cont r a -&gt; (a -&gt; Cont r b) -&gt; Cont r b (bound at &lt;interactive&gt;:3:7)</pre>
+    <interactive>:3:28: error:
+        • Found hole: _ :: r
+          Where: ‘r’ is a rigid type variable bound by
+                   the instance declaration
+                   at <interactive>:1:10-23
+        • In the expression: _
+          In the second argument of ‘($)’, namely ‘\ k -> _’
+          In the expression: Cont $ \ k -> _
+        • Relevant bindings include
+            k :: b -> r (bound at <interactive>:3:23)
+            f :: a -> Cont r b (bound at <interactive>:3:11)
+            a :: Cont r a (bound at <interactive>:3:5)
+            (>>=) :: Cont r a -> (a -> Cont r b) -> Cont r b (bound at <interactive>:3:7)
 
 
 As before, our first order of business is to unwrap the `a`.
@@ -926,88 +320,20 @@ instance Monad (Cont r) where
 ```
 
 
-<style>/* Styles used for the Hoogle display in the pager */
-.hoogle-doc {
-display: block;
-padding-bottom: 1.3em;
-padding-left: 0.4em;
-}
-.hoogle-code {
-display: block;
-font-family: monospace;
-white-space: pre;
-}
-.hoogle-text {
-display: block;
-}
-.hoogle-name {
-color: green;
-font-weight: bold;
-}
-.hoogle-head {
-font-weight: bold;
-}
-.hoogle-sub {
-display: block;
-margin-left: 0.4em;
-}
-.hoogle-package {
-font-weight: bold;
-font-style: italic;
-}
-.hoogle-module {
-font-weight: bold;
-}
-.hoogle-class {
-font-weight: bold;
-}
-.get-type {
-color: green;
-font-weight: bold;
-font-family: monospace;
-display: block;
-white-space: pre-wrap;
-}
-.show-type {
-color: green;
-font-weight: bold;
-font-family: monospace;
-margin-left: 1em;
-}
-.mono {
-font-family: monospace;
-display: block;
-}
-.err-msg {
-color: red;
-font-style: italic;
-font-family: monospace;
-white-space: pre;
-display: block;
-}
-#unshowable {
-color: red;
-font-weight: bold;
-}
-.err-msg.in.collapse {
-padding-top: 0.7em;
-}
-.highlight-code {
-white-space: pre;
-font-family: monospace;
-}
-.suggestion-warning { 
-font-weight: bold;
-color: rgb(200, 130, 0);
-}
-.suggestion-error { 
-font-weight: bold;
-color: red;
-}
-.suggestion-name {
-font-weight: bold;
-}
-</style><pre class='err-msg'>&lt;interactive&gt;:3:41: error:<br/>    • Found hole: _ :: r<br/>      Where: ‘r’ is a rigid type variable bound by the instance declaration at &lt;interactive&gt;:1:10-23<br/>    • In the expression: _<br/>      In the second argument of ‘&gt;&gt;-’, namely ‘\ a' -&gt; _’<br/>      In the expression: a &gt;&gt;- \ a' -&gt; _<br/>    • Relevant bindings include<br/>        a' :: a (bound at &lt;interactive&gt;:3:35)<br/>        k :: b -&gt; r (bound at &lt;interactive&gt;:3:23)<br/>        f :: a -&gt; Cont r b (bound at &lt;interactive&gt;:3:11)<br/>        a :: Cont r a (bound at &lt;interactive&gt;:3:5)<br/>        (&gt;&gt;=) :: Cont r a -&gt; (a -&gt; Cont r b) -&gt; Cont r b (bound at &lt;interactive&gt;:3:7)</pre>
+    <interactive>:3:41: error:
+        • Found hole: _ :: r
+          Where: ‘r’ is a rigid type variable bound by
+                   the instance declaration
+                   at <interactive>:1:10-23
+        • In the expression: _
+          In the second argument of ‘>>-’, namely ‘\ a' -> _’
+          In the expression: a >>- \ a' -> _
+        • Relevant bindings include
+            a' :: a (bound at <interactive>:3:35)
+            k :: b -> r (bound at <interactive>:3:23)
+            f :: a -> Cont r b (bound at <interactive>:3:11)
+            a :: Cont r a (bound at <interactive>:3:5)
+            (>>=) :: Cont r a -> (a -> Cont r b) -> Cont r b (bound at <interactive>:3:7)
 
 
 We can apply `f` to this unwrapped value to get a continuation that we can unwrap again.
@@ -1020,88 +346,21 @@ instance Monad (Cont r) where
 ```
 
 
-<style>/* Styles used for the Hoogle display in the pager */
-.hoogle-doc {
-display: block;
-padding-bottom: 1.3em;
-padding-left: 0.4em;
-}
-.hoogle-code {
-display: block;
-font-family: monospace;
-white-space: pre;
-}
-.hoogle-text {
-display: block;
-}
-.hoogle-name {
-color: green;
-font-weight: bold;
-}
-.hoogle-head {
-font-weight: bold;
-}
-.hoogle-sub {
-display: block;
-margin-left: 0.4em;
-}
-.hoogle-package {
-font-weight: bold;
-font-style: italic;
-}
-.hoogle-module {
-font-weight: bold;
-}
-.hoogle-class {
-font-weight: bold;
-}
-.get-type {
-color: green;
-font-weight: bold;
-font-family: monospace;
-display: block;
-white-space: pre-wrap;
-}
-.show-type {
-color: green;
-font-weight: bold;
-font-family: monospace;
-margin-left: 1em;
-}
-.mono {
-font-family: monospace;
-display: block;
-}
-.err-msg {
-color: red;
-font-style: italic;
-font-family: monospace;
-white-space: pre;
-display: block;
-}
-#unshowable {
-color: red;
-font-weight: bold;
-}
-.err-msg.in.collapse {
-padding-top: 0.7em;
-}
-.highlight-code {
-white-space: pre;
-font-family: monospace;
-}
-.suggestion-warning { 
-font-weight: bold;
-color: rgb(200, 130, 0);
-}
-.suggestion-error { 
-font-weight: bold;
-color: red;
-}
-.suggestion-name {
-font-weight: bold;
-}
-</style><pre class='err-msg'>&lt;interactive&gt;:3:57: error:<br/>    • Found hole: _ :: r<br/>      Where: ‘r’ is a rigid type variable bound by the instance declaration at &lt;interactive&gt;:1:10-23<br/>    • In the expression: _<br/>      In the second argument of ‘&gt;&gt;-’, namely ‘\ f' -&gt; _’<br/>      In the expression: f a' &gt;&gt;- \ f' -&gt; _<br/>    • Relevant bindings include<br/>        f' :: b (bound at &lt;interactive&gt;:3:51)<br/>        a' :: a (bound at &lt;interactive&gt;:3:35)<br/>        k :: b -&gt; r (bound at &lt;interactive&gt;:3:23)<br/>        f :: a -&gt; Cont r b (bound at &lt;interactive&gt;:3:11)<br/>        a :: Cont r a (bound at &lt;interactive&gt;:3:5)<br/>        (&gt;&gt;=) :: Cont r a -&gt; (a -&gt; Cont r b) -&gt; Cont r b (bound at &lt;interactive&gt;:3:7)</pre>
+    <interactive>:3:57: error:
+        • Found hole: _ :: r
+          Where: ‘r’ is a rigid type variable bound by
+                   the instance declaration
+                   at <interactive>:1:10-23
+        • In the expression: _
+          In the second argument of ‘>>-’, namely ‘\ f' -> _’
+          In the expression: f a' >>- \ f' -> _
+        • Relevant bindings include
+            f' :: b (bound at <interactive>:3:51)
+            a' :: a (bound at <interactive>:3:35)
+            k :: b -> r (bound at <interactive>:3:23)
+            f :: a -> Cont r b (bound at <interactive>:3:11)
+            a :: Cont r a (bound at <interactive>:3:5)
+            (>>=) :: Cont r a -> (a -> Cont r b) -> Cont r b (bound at <interactive>:3:7)
 
 
 We want an `r` and we have `k` and `f'`. Let's put them together!
@@ -1124,88 +383,19 @@ callCC f = Cont $ \k -> _
 ```
 
 
-<style>/* Styles used for the Hoogle display in the pager */
-.hoogle-doc {
-display: block;
-padding-bottom: 1.3em;
-padding-left: 0.4em;
-}
-.hoogle-code {
-display: block;
-font-family: monospace;
-white-space: pre;
-}
-.hoogle-text {
-display: block;
-}
-.hoogle-name {
-color: green;
-font-weight: bold;
-}
-.hoogle-head {
-font-weight: bold;
-}
-.hoogle-sub {
-display: block;
-margin-left: 0.4em;
-}
-.hoogle-package {
-font-weight: bold;
-font-style: italic;
-}
-.hoogle-module {
-font-weight: bold;
-}
-.hoogle-class {
-font-weight: bold;
-}
-.get-type {
-color: green;
-font-weight: bold;
-font-family: monospace;
-display: block;
-white-space: pre-wrap;
-}
-.show-type {
-color: green;
-font-weight: bold;
-font-family: monospace;
-margin-left: 1em;
-}
-.mono {
-font-family: monospace;
-display: block;
-}
-.err-msg {
-color: red;
-font-style: italic;
-font-family: monospace;
-white-space: pre;
-display: block;
-}
-#unshowable {
-color: red;
-font-weight: bold;
-}
-.err-msg.in.collapse {
-padding-top: 0.7em;
-}
-.highlight-code {
-white-space: pre;
-font-family: monospace;
-}
-.suggestion-warning { 
-font-weight: bold;
-color: rgb(200, 130, 0);
-}
-.suggestion-error { 
-font-weight: bold;
-color: red;
-}
-.suggestion-name {
-font-weight: bold;
-}
-</style><pre class='err-msg'>&lt;interactive&gt;:2:25: error:<br/>    • Found hole: _ :: r<br/>      Where: ‘r’ is a rigid type variable bound by<br/>               the type signature for:<br/>                 callCC :: forall b r a. ((b -&gt; Cont r a) -&gt; Cont r b) -&gt; Cont r b<br/>               at &lt;interactive&gt;:1:1-51<br/>    • In the expression: _<br/>      In the second argument of ‘(<span>&dollar;</span>)’, namely ‘\ k -&gt; _’<br/>      In the expression: Cont <span>&dollar;</span> \ k -&gt; _<br/>    • Relevant bindings include<br/>        k :: b -&gt; r (bound at &lt;interactive&gt;:2:20)<br/>        f :: (b -&gt; Cont r a) -&gt; Cont r b (bound at &lt;interactive&gt;:2:8)<br/>        callCC :: ((b -&gt; Cont r a) -&gt; Cont r b) -&gt; Cont r b (bound at &lt;interactive&gt;:2:1)</pre>
+    <interactive>:2:25: error:
+        • Found hole: _ :: r
+          Where: ‘r’ is a rigid type variable bound by
+                   the type signature for:
+                     callCC :: forall b r a. ((b -> Cont r a) -> Cont r b) -> Cont r b
+                   at <interactive>:1:1-51
+        • In the expression: _
+          In the second argument of ‘($)’, namely ‘\ k -> _’
+          In the expression: Cont $ \ k -> _
+        • Relevant bindings include
+            k :: b -> r (bound at <interactive>:2:20)
+            f :: (b -> Cont r a) -> Cont r b (bound at <interactive>:2:8)
+            callCC :: ((b -> Cont r a) -> Cont r b) -> Cont r b (bound at <interactive>:2:1)
 
 
 Our definition involves `b`, but the only `b` we have available is wrapped up in `f`. We need to provide an argument of a certain type to `f`, and then unwrap the result of that? Time to bring out the big guns: multiple typed holes!
@@ -1217,88 +407,35 @@ callCC f = Cont $ \k -> f _1 >>- _2
 ```
 
 
-<style>/* Styles used for the Hoogle display in the pager */
-.hoogle-doc {
-display: block;
-padding-bottom: 1.3em;
-padding-left: 0.4em;
-}
-.hoogle-code {
-display: block;
-font-family: monospace;
-white-space: pre;
-}
-.hoogle-text {
-display: block;
-}
-.hoogle-name {
-color: green;
-font-weight: bold;
-}
-.hoogle-head {
-font-weight: bold;
-}
-.hoogle-sub {
-display: block;
-margin-left: 0.4em;
-}
-.hoogle-package {
-font-weight: bold;
-font-style: italic;
-}
-.hoogle-module {
-font-weight: bold;
-}
-.hoogle-class {
-font-weight: bold;
-}
-.get-type {
-color: green;
-font-weight: bold;
-font-family: monospace;
-display: block;
-white-space: pre-wrap;
-}
-.show-type {
-color: green;
-font-weight: bold;
-font-family: monospace;
-margin-left: 1em;
-}
-.mono {
-font-family: monospace;
-display: block;
-}
-.err-msg {
-color: red;
-font-style: italic;
-font-family: monospace;
-white-space: pre;
-display: block;
-}
-#unshowable {
-color: red;
-font-weight: bold;
-}
-.err-msg.in.collapse {
-padding-top: 0.7em;
-}
-.highlight-code {
-white-space: pre;
-font-family: monospace;
-}
-.suggestion-warning { 
-font-weight: bold;
-color: rgb(200, 130, 0);
-}
-.suggestion-error { 
-font-weight: bold;
-color: red;
-}
-.suggestion-name {
-font-weight: bold;
-}
-</style><pre class='err-msg'>&lt;interactive&gt;:2:27: error:<br/>    • Found hole: _1 :: b -&gt; Cont r a<br/>      Where: ‘b’ is a rigid type variable bound by<br/>               the type signature for:<br/>                 callCC :: forall b r a. ((b -&gt; Cont r a) -&gt; Cont r b) -&gt; Cont r b<br/>               at &lt;interactive&gt;:1:1-51<br/>             ‘r’ is a rigid type variable bound by<br/>               the type signature for:<br/>                 callCC :: forall b r a. ((b -&gt; Cont r a) -&gt; Cont r b) -&gt; Cont r b<br/>               at &lt;interactive&gt;:1:1-51<br/>             ‘a’ is a rigid type variable bound by<br/>               the type signature for:<br/>                 callCC :: forall b r a. ((b -&gt; Cont r a) -&gt; Cont r b) -&gt; Cont r b<br/>               at &lt;interactive&gt;:1:1-51<br/>      Or perhaps ‘_1’ is mis-spelled, or not in scope<br/>    • In the first argument of ‘f’, namely ‘_1’<br/>      In the first argument of ‘&gt;&gt;-’, namely ‘f _1’<br/>      In the expression: f _1 &gt;&gt;- _2<br/>    • Relevant bindings include<br/>        k :: b -&gt; r (bound at &lt;interactive&gt;:2:20)<br/>        f :: (b -&gt; Cont r a) -&gt; Cont r b (bound at &lt;interactive&gt;:2:8)<br/>        callCC :: ((b -&gt; Cont r a) -&gt; Cont r b) -&gt; Cont r b (bound at &lt;interactive&gt;:2:1)<br/>&lt;interactive&gt;:2:34: error:<br/>    • Found hole: _2 :: b -&gt; r<br/>      Where: ‘b’ is a rigid type variable bound by<br/>               the type signature for:<br/>                 callCC :: forall b r a. ((b -&gt; Cont r a) -&gt; Cont r b) -&gt; Cont r b<br/>               at &lt;interactive&gt;:1:1-51<br/>             ‘r’ is a rigid type variable bound by<br/>               the type signature for:<br/>                 callCC :: forall b r a. ((b -&gt; Cont r a) -&gt; Cont r b) -&gt; Cont r b<br/>               at &lt;interactive&gt;:1:1-51<br/>      Or perhaps ‘_2’ is mis-spelled, or not in scope<br/>    • In the second argument of ‘&gt;&gt;-’, namely ‘_2’<br/>      In the expression: f _1 &gt;&gt;- _2<br/>      In the second argument of ‘(<span>&dollar;</span>)’, namely ‘\ k -&gt; f _1 &gt;&gt;- _2’<br/>    • Relevant bindings include<br/>        k :: b -&gt; r (bound at &lt;interactive&gt;:2:20)<br/>        f :: (b -&gt; Cont r a) -&gt; Cont r b (bound at &lt;interactive&gt;:2:8)<br/>        callCC :: ((b -&gt; Cont r a) -&gt; Cont r b) -&gt; Cont r b (bound at &lt;interactive&gt;:2:1)</pre>
+    <interactive>:2:27: error:
+        • Found hole: _1 :: b -> Cont r a
+          Where: ‘b’, ‘r’, ‘a’ are rigid type variables bound by
+                   the type signature for:
+                     callCC :: forall b r a. ((b -> Cont r a) -> Cont r b) -> Cont r b
+                   at <interactive>:1:1-51
+          Or perhaps ‘_1’ is mis-spelled, or not in scope
+        • In the first argument of ‘f’, namely ‘_1’
+          In the first argument of ‘>>-’, namely ‘f _1’
+          In the expression: f _1 >>- _2
+        • Relevant bindings include
+            k :: b -> r (bound at <interactive>:2:20)
+            f :: (b -> Cont r a) -> Cont r b (bound at <interactive>:2:8)
+            callCC :: ((b -> Cont r a) -> Cont r b) -> Cont r b (bound at <interactive>:2:1)
+    <interactive>:2:34: error:
+        • Found hole: _2 :: b -> r
+          Where: ‘b’, ‘r’ are rigid type variables bound by
+                   the type signature for:
+                     callCC :: forall b r a. ((b -> Cont r a) -> Cont r b) -> Cont r b
+                   at <interactive>:1:1-51
+          Or perhaps ‘_2’ is mis-spelled, or not in scope
+        • In the second argument of ‘>>-’, namely ‘_2’
+          In the expression: f _1 >>- _2
+          In the second argument of ‘($)’, namely ‘\ k -> f _1 >>- _2’
+        • Relevant bindings include
+            k :: b -> r (bound at <interactive>:2:20)
+            f :: (b -> Cont r a) -> Cont r b (bound at <interactive>:2:8)
+            callCC :: ((b -> Cont r a) -> Cont r b) -> Cont r b (bound at <interactive>:2:1)
+          Valid hole fits include k :: b -> r (bound at <interactive>:2:20)
 
 
 Great, `k` fits perfectly into the second hole. That was easy.
@@ -1310,88 +447,19 @@ callCC f = Cont $ \k -> f _ >>- k
 ```
 
 
-<style>/* Styles used for the Hoogle display in the pager */
-.hoogle-doc {
-display: block;
-padding-bottom: 1.3em;
-padding-left: 0.4em;
-}
-.hoogle-code {
-display: block;
-font-family: monospace;
-white-space: pre;
-}
-.hoogle-text {
-display: block;
-}
-.hoogle-name {
-color: green;
-font-weight: bold;
-}
-.hoogle-head {
-font-weight: bold;
-}
-.hoogle-sub {
-display: block;
-margin-left: 0.4em;
-}
-.hoogle-package {
-font-weight: bold;
-font-style: italic;
-}
-.hoogle-module {
-font-weight: bold;
-}
-.hoogle-class {
-font-weight: bold;
-}
-.get-type {
-color: green;
-font-weight: bold;
-font-family: monospace;
-display: block;
-white-space: pre-wrap;
-}
-.show-type {
-color: green;
-font-weight: bold;
-font-family: monospace;
-margin-left: 1em;
-}
-.mono {
-font-family: monospace;
-display: block;
-}
-.err-msg {
-color: red;
-font-style: italic;
-font-family: monospace;
-white-space: pre;
-display: block;
-}
-#unshowable {
-color: red;
-font-weight: bold;
-}
-.err-msg.in.collapse {
-padding-top: 0.7em;
-}
-.highlight-code {
-white-space: pre;
-font-family: monospace;
-}
-.suggestion-warning { 
-font-weight: bold;
-color: rgb(200, 130, 0);
-}
-.suggestion-error { 
-font-weight: bold;
-color: red;
-}
-.suggestion-name {
-font-weight: bold;
-}
-</style><pre class='err-msg'>&lt;interactive&gt;:2:27: error:<br/>    • Found hole: _ :: b -&gt; Cont r a<br/>      Where: ‘b’ is a rigid type variable bound by<br/>               the type signature for:<br/>                 callCC :: forall b r a. ((b -&gt; Cont r a) -&gt; Cont r b) -&gt; Cont r b<br/>               at &lt;interactive&gt;:1:1-51<br/>             ‘r’ is a rigid type variable bound by<br/>               the type signature for:<br/>                 callCC :: forall b r a. ((b -&gt; Cont r a) -&gt; Cont r b) -&gt; Cont r b<br/>               at &lt;interactive&gt;:1:1-51<br/>             ‘a’ is a rigid type variable bound by<br/>               the type signature for:<br/>                 callCC :: forall b r a. ((b -&gt; Cont r a) -&gt; Cont r b) -&gt; Cont r b<br/>               at &lt;interactive&gt;:1:1-51<br/>    • In the first argument of ‘f’, namely ‘_’<br/>      In the first argument of ‘&gt;&gt;-’, namely ‘f _’<br/>      In the expression: f _ &gt;&gt;- k<br/>    • Relevant bindings include<br/>        k :: b -&gt; r (bound at &lt;interactive&gt;:2:20)<br/>        f :: (b -&gt; Cont r a) -&gt; Cont r b (bound at &lt;interactive&gt;:2:8)<br/>        callCC :: ((b -&gt; Cont r a) -&gt; Cont r b) -&gt; Cont r b (bound at &lt;interactive&gt;:2:1)</pre>
+    <interactive>:2:27: error:
+        • Found hole: _ :: b -> Cont r a
+          Where: ‘b’, ‘r’, ‘a’ are rigid type variables bound by
+                   the type signature for:
+                     callCC :: forall b r a. ((b -> Cont r a) -> Cont r b) -> Cont r b
+                   at <interactive>:1:1-51
+        • In the first argument of ‘f’, namely ‘_’
+          In the first argument of ‘>>-’, namely ‘f _’
+          In the expression: f _ >>- k
+        • Relevant bindings include
+            k :: b -> r (bound at <interactive>:2:20)
+            f :: (b -> Cont r a) -> Cont r b (bound at <interactive>:2:8)
+            callCC :: ((b -> Cont r a) -> Cont r b) -> Cont r b (bound at <interactive>:2:1)
 
 
 We're being asked to provide a function that takes one argument and returns a continuation. Let's fill in the boilerplate and see where that takes us.
@@ -1403,88 +471,21 @@ callCC f = Cont $ \k -> f (\b -> Cont $ \k' -> _) >>- k
 ```
 
 
-<style>/* Styles used for the Hoogle display in the pager */
-.hoogle-doc {
-display: block;
-padding-bottom: 1.3em;
-padding-left: 0.4em;
-}
-.hoogle-code {
-display: block;
-font-family: monospace;
-white-space: pre;
-}
-.hoogle-text {
-display: block;
-}
-.hoogle-name {
-color: green;
-font-weight: bold;
-}
-.hoogle-head {
-font-weight: bold;
-}
-.hoogle-sub {
-display: block;
-margin-left: 0.4em;
-}
-.hoogle-package {
-font-weight: bold;
-font-style: italic;
-}
-.hoogle-module {
-font-weight: bold;
-}
-.hoogle-class {
-font-weight: bold;
-}
-.get-type {
-color: green;
-font-weight: bold;
-font-family: monospace;
-display: block;
-white-space: pre-wrap;
-}
-.show-type {
-color: green;
-font-weight: bold;
-font-family: monospace;
-margin-left: 1em;
-}
-.mono {
-font-family: monospace;
-display: block;
-}
-.err-msg {
-color: red;
-font-style: italic;
-font-family: monospace;
-white-space: pre;
-display: block;
-}
-#unshowable {
-color: red;
-font-weight: bold;
-}
-.err-msg.in.collapse {
-padding-top: 0.7em;
-}
-.highlight-code {
-white-space: pre;
-font-family: monospace;
-}
-.suggestion-warning { 
-font-weight: bold;
-color: rgb(200, 130, 0);
-}
-.suggestion-error { 
-font-weight: bold;
-color: red;
-}
-.suggestion-name {
-font-weight: bold;
-}
-</style><pre class='err-msg'>&lt;interactive&gt;:2:48: error:<br/>    • Found hole: _ :: r<br/>      Where: ‘r’ is a rigid type variable bound by<br/>               the type signature for:<br/>                 callCC :: forall b r a. ((b -&gt; Cont r a) -&gt; Cont r b) -&gt; Cont r b<br/>               at &lt;interactive&gt;:1:1-51<br/>    • In the expression: _<br/>      In the second argument of ‘(<span>&dollar;</span>)’, namely ‘\ k' -&gt; _’<br/>      In the expression: Cont <span>&dollar;</span> \ k' -&gt; _<br/>    • Relevant bindings include<br/>        k' :: a -&gt; r (bound at &lt;interactive&gt;:2:42)<br/>        b :: b (bound at &lt;interactive&gt;:2:29)<br/>        k :: b -&gt; r (bound at &lt;interactive&gt;:2:20)<br/>        f :: (b -&gt; Cont r a) -&gt; Cont r b (bound at &lt;interactive&gt;:2:8)<br/>        callCC :: ((b -&gt; Cont r a) -&gt; Cont r b) -&gt; Cont r b (bound at &lt;interactive&gt;:2:1)</pre>
+    <interactive>:2:48: error:
+        • Found hole: _ :: r
+          Where: ‘r’ is a rigid type variable bound by
+                   the type signature for:
+                     callCC :: forall b r a. ((b -> Cont r a) -> Cont r b) -> Cont r b
+                   at <interactive>:1:1-51
+        • In the expression: _
+          In the second argument of ‘($)’, namely ‘\ k' -> _’
+          In the expression: Cont $ \ k' -> _
+        • Relevant bindings include
+            k' :: a -> r (bound at <interactive>:2:42)
+            b :: b (bound at <interactive>:2:29)
+            k :: b -> r (bound at <interactive>:2:20)
+            f :: (b -> Cont r a) -> Cont r b (bound at <interactive>:2:8)
+            callCC :: ((b -> Cont r a) -> Cont r b) -> Cont r b (bound at <interactive>:2:1)
 
 
 And we're done! We can get an `r` by applying `k` to `b`.
