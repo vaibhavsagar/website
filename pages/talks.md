@@ -4,6 +4,11 @@ title: Talks
 
 ## Conference
 
+#### Yes, IHaskell Can Do That!
+
+- Where: New York :: Compose 2019
+- [Slides](https://vaibhavsagar.com/presentations/ihaskell-can-do-that), [Video](https://www.youtube.com/watch?v=nYBW4ExtNvo)
+
 #### You Won’t Believe This One Weird CPU Instruction!
 
 - Where: !!Con 2019
