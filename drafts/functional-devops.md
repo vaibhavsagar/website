@@ -51,7 +51,7 @@ distro should do, as long as you've [installed
 Nix](https://nixos.org/nix/download.html). macOS users will be able to follow
 along until I get to the NixOps section.
 
-# Shippping it
+# Shipping it
 
 ## Packaging
 
