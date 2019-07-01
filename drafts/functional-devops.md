@@ -4,7 +4,7 @@ published: 2019-05-26
 tags: programming, nix, devops
 --------------------------------------------------------------------------------
 
-What is DevOps about? For me it's about the phrase
+What is DevOps about? For me it's about my relationship to the phrase
 
 > It works on my machine.
 
@@ -16,15 +16,16 @@ A few jobs ago I was at a small web development shop, and my deployment
 workflow was as follows:
 
 1. Log on to the development server and take careful notes on how it had diverged from the production server.
+1. Carefully set aside some time to 'do the deploy'.
 1. Log on to the production server and do a `git pull` to get the latest code changes.
-1. Perform database migrations.
+1. Perform database migrations according to the notes you made earlier.
 1. Manually make any other required changes.
 
 Despite my best efforts, I would inevitably run into issues whenever I did
 this, resulting in site outages and frustrated clients. This was far from
 ideal, but I wasn't able to articulate why at the time.
 
-I think a better deployment process has the following properties:
+I posit that a better deployment process has the following properties:
 
 - **Automatic**: instead of a manual multi-step process, it has a single step,
   which can be performed automatically.
@@ -346,13 +347,114 @@ $ nixops ssh -d trivial webserver
 [root@webserver:~]# systemctl status blank-me-up
 ```
 
-## Responding to change
+# Responding to change
 
 This is fantastic, but deployments are rarely fire-and-forget. What happens
-when our requirements change? There's a serious issue with our application,
-which is that it hardcodes the port that it listens on. If we wanted it to
-listen on a different port, or to run more than one instance of it on the same
-machine, we'd need to do something differently.
+when our requirements change? In fact, there's a serious issue with our
+application, which is that it hardcodes the port that it listens on. If we
+wanted it to listen on a different port, or to run more than one instance of it
+on the same machine, we'd need to do something differently.
 
-The easy solution would be to talk to the developers and have them implement
+The correct solution would be to talk to the developers and have them implement
 support, but in the meantime, how should we proceed?
+
+## Patching
+
+Nix gives us full control over each part of the build and deployment process,
+and we can patch the software as a stopgap measure. Although this scenario is
+somewhat contrived, I have in fact had to take matters into my own hands like
+this in the past when the development team hasn't been able to prioritise
+fixing a production issue.
+
+Our new expression looks like this:
+
+*nix/patched.nix*
+```nix
+args@{ nixpkgs ? import <nixpkgs> {}, compiler ? "default" }:
+
+(import ./default.nix args).overrideAttrs (old: {
+  postPatch = let
+    oldImport = ''
+      import Web.Scotty
+    '';
+    newImport = ''
+      import Web.Scotty
+      import System.Environment (getArgs)
+    '';
+    oldMain = ''
+      main = scotty 3000 $ do
+    '';
+    newMain = ''
+      main = getArgs >>= \(port:_) -> scotty (read port) $ do
+    '';
+  in ''
+    substituteInPlace Main.hs --replace '${oldImport}' '${newImport}'
+    substituteInPlace Main.hs --replace '${oldMain}'   '${newMain}'
+    cat Main.hs
+  '';
+})
+```
+
+I've added that `cat Main.hs` at the end to
+
+- confirm that the file was correctly patched
+- emphasise that arbitrary shell commands can be executed
+
+We can create a new service definition to use this expression:
+
+*nix/service-patched.nix*
+```nix
+{ config, lib, pkgs, ... }:
+
+let
+  blank-me-up = pkgs.callPackage ./patched.nix { nixpkgs = pkgs; };
+  cfg = config.services.blank-me-up;
+in {
+  options.services.blank-me-up.enable = lib.mkEnableOption "Blank Me Up";
+  options.services.blank-me-up.port = lib.mkOption {
+    default = 3000;
+    type = lib.types.int;
+  };
+
+  config = lib.mkIf cfg.enable {
+    networking.firewall.allowedTCPPorts = [ cfg.port ];
+
+    systemd.services.blank-me-up = {
+      description = "Blank Me Up";
+      after = [ "network.target" ];
+      wantedBy = [ "multi-user.target" ];
+      serviceConfig = {
+        ExecStart = "${blank-me-up}/bin/blank-me-up ${toString cfg.port}";
+        Restart = "always";
+        KillMode = "process";
+      };
+    };
+  };
+}
+```
+
+We make sure to pass the configured port in on startup and open the firewall
+appropriately.
+
+## Deploying (Again)
+
+We update `webserver.nix` to use the patched service and specify a different
+port:
+
+```nix
+{ ... }: {
+  imports = [ ../nix/service-patched.nix ];
+  services.blank-me-up.enable = true;
+  services.blank-me-up.port = 3001;
+}
+```
+
+And we can deploy again!
+
+```bash
+$ nixops deploy -d trivial
+```
+
+The service should now be running on `http://<ip>:3001` instead of
+`http://<ip>:3000`.
+
