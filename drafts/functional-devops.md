@@ -51,9 +51,9 @@ distro should do, as long as you've [installed
 Nix](https://nixos.org/nix/download.html). macOS users will be able to follow
 along until I get to the NixOps section.
 
-# Shipping it
+## Shipping it
 
-## Packaging
+### Packaging
 
 Suppose we have been given a small Haskell app to get up and running:
 
@@ -173,7 +173,7 @@ tries to think of build outputs as a pure function of its inputs, and since our
 inputs are unchanged, it is able to give us back the same path that it did
 before. This is what we mean when we say Nix is declarative.
 
-## Service Configuration
+### Service Configuration
 
 Okay, now that we're able to successfully build the app, let's configure a
 service file so that `systemd` can manage our app. I don't know of any tools
@@ -273,7 +273,7 @@ Restart=always
 Hopefully at this point you're convinced that Nix can take some quasi-JSON and
 turn it into a binary and a `systemd` service file. Let's deploy this!
 
-## Deploying
+### Deploying
 
 First, we install NixOps:
 
@@ -347,7 +347,7 @@ $ nixops ssh -d trivial webserver
 [root@webserver:~]# systemctl status blank-me-up
 ```
 
-# Responding to change
+## Responding to change
 
 This is fantastic, but deployments are rarely fire-and-forget. What happens
 when our requirements change? In fact, there's a serious issue with our
@@ -358,7 +358,7 @@ on the same machine, we'd need to do something differently.
 The correct solution would be to talk to the developers and have them implement
 support, but in the meantime, how should we proceed?
 
-## Patching
+### Patching
 
 Nix gives us full control over each part of the build and deployment process,
 and we can patch the software as a stopgap measure. Although this scenario is
@@ -436,7 +436,7 @@ in {
 We make sure to pass the configured port in on startup and open the firewall
 appropriately.
 
-## Deploying (Again)
+### Deploying (Again)
 
 We update `webserver.nix` to use the patched service and specify a different
 port:
