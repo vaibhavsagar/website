@@ -458,3 +458,10 @@ $ nixops deploy -d trivial
 The service should now be running on `http://<ip>:3001` instead of
 `http://<ip>:3000`.
 
+If we made a mistake, rolling back is easy:
+
+```bash
+$ nixops rollback -d trivial 1
+switching from generation 2 to 1
+<more output>
+```
