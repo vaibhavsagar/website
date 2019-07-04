@@ -117,7 +117,7 @@ $ cd nix
 $ cabal2nix ../app/ --shell > default.nix
 ```
 
-`default.nix` should look something like 
+`default.nix` might look something like 
 
 ```nix
 { nixpkgs ? import <nixpkgs> {}, compiler ? "default" }:
@@ -165,6 +165,10 @@ $ readlink result
 /nix/store/<hash>-blank-me-up-0.1.0.0
 ```
 
+Notice that we've built a Haskell executable without having to directly deal
+with any Haskell-specific tooling (unless you count `cabal2nix`). Nix works
+best if you allow it full control over builds, as we do here.
+
 What happens if we run `nix-build` again without changing anything?
 
 ```bash
@@ -175,7 +179,7 @@ $ nix-build
 It should be nearly instantaneous and not require rebuilding anything. Nix
 tries to think of build outputs as a pure function of its inputs, and since our
 inputs are unchanged, it is able to give us back the same path that it did
-before. This is what we mean when we say Nix is declarative.
+before. This is what I mean when I say Nix is declarative.
 
 What if we break our app:
 
