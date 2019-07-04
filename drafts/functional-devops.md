@@ -1,8 +1,12 @@
 --------------------------------------------------------------------------------
 title: Functional DevOps in a Dysfunctional World
-published: 2019-05-26
+published: 2019-07-04
 tags: programming, nix, devops
 --------------------------------------------------------------------------------
+
+_This is a pseudo-transcript of [a presentation I gave at the linux.conf.au
+2018 Real World Functional Programming
+Miniconf](https://www.youtube.com/watch?v=RsSNEkBGmj0)._
 
 What is DevOps about? For me it's about my relationship to the phrase
 
@@ -173,6 +177,48 @@ tries to think of build outputs as a pure function of its inputs, and since our
 inputs are unchanged, it is able to give us back the same path that it did
 before. This is what we mean when we say Nix is declarative.
 
+What if we break our app:
+
+```diff
+--- a/functional-devops/app/Main.hs
++++ b/functional-devops/app/Main.hs
+@@ -4,6 +4,8 @@ import Web.Scotty
+
+ import Data.Monoid (mconcat)
+
++broken
++
+ main = scotty 3000 $ do
+     get "/:word" $ do
+         beam <- param "word"
+
+```
+
+and try to build again?
+
+```bash
+$ nix-build
+<...>
+Building executable 'blank-me-up' for blank-me-up-0.1.0.0..
+[1 of 1] Compiling Main             ( Main.hs, dist/build/blank-me-up/blank-me-up-tmp/Main.o )
+
+Main.hs:7:1: error:
+    Parse error: module header, import declaration
+    or top-level declaration expected.
+  |
+7 | broken
+  | ^^^^^^
+builder for '/nix/store/<hash>-blank-me-up-0.1.0.0.drv' failed with exit code 1
+error: build of '/nix/store/<hash>-blank-me-up-0.1.0.0.drv' failed
+<...>
+```
+
+It fails, as one would hope, but more importantly the previous symlink at
+`result` is still available! This is because `nix-build` completes the build
+before atomically updating the symlink at `result` to point to the new
+artifact. This way, we can move from one known working state to another,
+without exposing our users to any intermediate brokenness.
+
 ### Service Configuration
 
 Okay, now that we're able to successfully build the app, let's configure a
@@ -282,12 +328,11 @@ $ nix-env -i nixops
 ```
 
 We also have to set up VirtualBox, which I'll be using as my deploy target. If
-you're using NixOS this is as simple as adding the following lines to
+you're using NixOS this is as simple as adding the following line to
 `configuration.nix`:
 
 ```nix
 virtualisation.virtualbox.host.enable = true;
-virtualisation.virtualbox.guest.enable = true;
 ```
 
 and running `sudo nixos-rebuild switch`. If you're using another Linux distro,
@@ -338,6 +383,11 @@ and at least one mention of `ssh://root@<ip>`, which is the IP of our target.
 
 We should then be able to go to `http://<ip>:3000` and see our web app in
 action!
+
+```bash
+$ curl http://<ip>:3000/help
+<h1>Scotty, help me up!</h1>
+```
 
 NixOps also allows us to SSH in for troubleshooting purposes or to view logs:
 
@@ -458,10 +508,31 @@ $ nixops deploy -d trivial
 The service should now be running on `http://<ip>:3001` instead of
 `http://<ip>:3000`.
 
+```bash
+$ curl http://<ip>:3001/pull
+<h1>Scotty, pull me up!</h1>
+```
+
 If we made a mistake, rolling back is easy:
 
 ```bash
+$ nixops list-generations -d trivial
+   1   <timestamp>
+   2   <timestamp>   (current)
+
 $ nixops rollback -d trivial 1
 switching from generation 2 to 1
+webserver> copying closure...
+trivial> closures copied successfully
 <more output>
 ```
+
+and in fact nothing needs to be copied to the target, because the previous
+deployment is still there.
+
+## Conclusion
+
+As demonstrated, the Nix ecosystem allows us to impose order on the usually
+messy and ad-hoc practice of packaging and deploying software at scale. I'm
+satisfied that this is the way forward and hope that you will consider using
+these tools to tackle problems of your own!
