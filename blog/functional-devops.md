@@ -308,13 +308,13 @@ After=network.target
 Description=Blank Me Up
 
 [Service]
-Environment="LOCALE_ARCHIVE=/nix/store/6zw7gxja0gvbdzm0gl73xydkdffwbapr-glibc-locales-2.27/lib/locale/locale-archive"
-Environment="PATH=/nix/store/d9s1kq1bnwqgxwcvv4zrc36ysnxg8gv7-coreutils-8.30/bin:/nix/store/krhqmaqal0gklh15rs2bwrqzz8mg9lrn-findutils-4.6.0/bin:/nix/store/wnjv27b3j6jfdl0968xpcymlc7chpqil-gnugrep-3.3/bin:/nix/store/x1khw8x0465xhkv6w31af75syyyxc65j-gnused-4.7/bin:/nix/store/dz4mrfbjjlzj8g9j66nmkrzvny40pzcc-systemd-239.20190219/bin:/nix/store/d9s1kq1bnwqgxwcvv4zrc36ysnxg8gv7-coreutils-8.30/sbin:/nix/store/krhqmaqal0gklh15rs2bwrqzz8mg9lrn-findutils-4.6.0/sbin:/nix/store/wnjv27b3j6jfdl0968xpcymlc7chpqil-gnugrep-3.3/sbin:/nix/store/x1khw8x0465xhkv6w31af75syyyxc65j-gnused-4.7/sbin:/nix/store/dz4mrfbjjlzj8g9j66nmkrzvny40pzcc-systemd-239.20190219/sbin"
-Environment="TZDIR=/nix/store/5dqqp2qyyw1j69zg1r9iydjpbx9j886x-tzdata-2019a/share/zoneinfo"
+Environment="LOCALE_ARCHIVE=/nix/store/<hash>-glibc-locales-2.27/lib/locale/locale-archive"
+Environment="PATH=/nix/store/<hash>-coreutils-8.30/bin:/nix/store/<hash>-findutils-4.6.0/bin:/nix/store/<hash>-gnugrep-3.3/bin:/nix/store/<hash>-gnused-4.7/bin:/nix/store/<hash>-systemd-239.20190219/bin:/nix/store/<hash>-coreutils-8.30/sbin:/nix/store/<hash>-findutils-4.6.0/sbin:/nix/store/<hash>-gnugrep-3.3/sbin:/nix/store/<hash>-gnused-4.7/sbin:/nix/store/<hash>-systemd-239.20190219/sbin"
+Environment="TZDIR=/nix/store/<hash>-tzdata-2019a/share/zoneinfo"
 
 
 
-ExecStart=/nix/store/1c4mkx5bd1sj285x06g6293pbqaw4bl5-blank-me-up-0.1.0.0/bin/blank-me-up
+ExecStart=/nix/store/<hash>-blank-me-up-0.1.0.0/bin/blank-me-up
 KillMode=process
 Restart=always
 ```
