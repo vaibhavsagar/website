@@ -108,7 +108,7 @@ dateRoute = metadataRoute createDateRoute
             in customRoute (addDate datePath . toFilePath)
         addDate date path = takeDirectory path </> date </> takeBaseName path
 
-prependBlogRoute = customRoute $ combine "blog" . toFilePath
+prependBlogRoute = customRoute $ (</>) "blog" . toFilePath
 
 fixupUrls :: Item String -> Compiler (Item String)
 fixupUrls = relativizeUrls >=> cleanIndexUrls
