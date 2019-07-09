@@ -9,9 +9,8 @@ let
   myFilter = ls: src: name: type: let
     relPath = lib.removePrefix (toString src + "/") (toString name);
   in lib.cleanSourceFilter name type && (builtins.any (lib.flip lib.hasPrefix relPath) ls);
-  sourceFilter = myFilter [ "site.hs" "website.cabal" "LICENSE" ];
   contentFilter = myFilter [ "blog" "css" "drafts" "extra" "index.html" "pages" "templates" ];
-  drv = nixpkgs.haskellPackages.callCabal2nix "website" (builtins.filterSource (sourceFilter ./.) ./.) {};
+  drv = nixpkgs.haskellPackages.callPackage ./website.nix {};
   site = nixpkgs.runCommand "site" {
     buildInputs = drv.env.nativeBuildInputs;
     src = builtins.filterSource (contentFilter ./.) ./.;
