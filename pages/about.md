@@ -2,8 +2,8 @@
 title: About
 ---
 
-I am learning to build and maintain dependable systems through functional
-programming, reproducibility, and automation. Have a look at my [GitHub
+I am building and maintaining dependable systems with functional programming,
+reproducibility, and automation. Have a look at my [GitHub
 profile](https://github.com/vaibhavsagar) and [résumé](/resume) for more
 details.
 
