@@ -19,8 +19,8 @@ let
     workdir=$(${nixpkgs.coreutils}/bin/mktemp -d)
     cp -R $src/* $workdir
     cd $workdir
-    runhaskell ${./site.hs} build
     mkdir -p $out
-    cp -R _site/* $out
+    ln -sfn $out _site
+    runhaskell ${./site.hs} build
   '';
 in site
