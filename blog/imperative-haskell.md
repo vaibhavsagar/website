@@ -324,7 +324,7 @@ way to provide a principled pure interface to mutable state by passing the
 references as arguments into each function that makes use of them and
 leveraging the type system to make sure any impurity is well contained. The
 correctness of this approach was [very recently
-verified](http://iris-project.org/pdfs/2017-icfp-runST-submission.pdf). If
+verified](https://iris-project.org/pdfs/2018-popl-runST-final.pdf). If
 desired, we can replace any of the functions with purer and more idiomatic
 definitions without changing the output, and that satisfies the definition of
 referential transparency!
