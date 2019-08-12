@@ -6,8 +6,8 @@ tags: haskell, nix
 
 Today I learned how to turn an IHaskell Nix expression into a Docker image. Here is an example:
 
-`default.nix`
 ```nix
+# default.nix
 let
   pkgs = {
     ihaskell = builtins.fetchTarball {
@@ -52,7 +52,7 @@ in nixpkgs.dockerTools.buildImage {
 
 This is how to use it:
 
-```shell
+```bash
 $ docker load < $(nix-build default.nix)
 $ docker run -p8888:8888 -it ihaskell-nix:latest
 ```
