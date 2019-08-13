@@ -22,32 +22,43 @@ let
   nixpkgs = import pkgs.nixpkgs {};
   NB_USER = "jovyan";
   NB_UID = "1000";
+  dockerEtc = nixpkgs.runCommand "docker-etc" {} ''
+    mkdir -p $out/etc/pam.d
+
+    echo "root:x:0:0::/root:/bin/sh" > $out/etc/passwd
+    echo "jovyan:x:1000:1000::/home/jovyan:" >> $out/etc/passwd
+    echo "root:!x:::::::" > $out/etc/shadow
+    echo "jovyan:!:::::::" >> $out/etc/shadow
+
+    echo "root:x:0:" > $out/etc/group
+    echo "jovyan:x:1000:" >> $out/etc/group
+    echo "root:x::" > $out/etc/gshadow
+    echo "jovyan:!::" >> $out/etc/gshadow
+  '';
   ihaskell = import "${pkgs.ihaskell}/release.nix" {
     inherit nixpkgs;
     compiler = "ghc864";
     packages = self: with self; [];
   };
-in nixpkgs.dockerTools.buildImage {
-  name = "ihaskell-nix";
-  tag = "latest";
-  contents =  [
-    ihaskell
-    nixpkgs.bashInteractive
-  ];
-  runAsRoot = ''
-    #!${nixpkgs.runtimeShell}
-    ${nixpkgs.dockerTools.shadowSetup}
-    mkdir -m 1777 /tmp
-    mkdir -p /home/${NB_USER}
-    ${nixpkgs.busybox}/bin/adduser --disabled-password --gecos "Default user" --uid ${NB_UID} ${NB_USER}
-    chown -R ${NB_UID} /home/${NB_USER}
-  '';
-  config = {
-    Cmd = ["ihaskell-notebook" "--ip" "0.0.0.0" "--no-browser"];
-    User = NB_USER;
-    WorkingDir = "/home/${NB_USER}";
-  };
-}
+in nixpkgs.dockerTools.buildLayeredImage {
+    name = "ihaskell-nix";
+    tag = "latest";
+    contents =  [
+      dockerEtc
+      ihaskell
+      nixpkgs.bashInteractive
+    ];
+    config = {
+      Cmd = ["ihaskell-notebook" "--ip" "0.0.0.0"];
+      User = NB_USER;
+      WorkingDir = "/home/${NB_USER}";
+    };
+    extraCommands = ''
+      mkdir -m 1777 ./tmp
+      mkdir -m 777 -p ./home/${NB_USER}
+    '';
+    maxLayers = 100;
+};
 ```
 
 This is how to use it:
@@ -68,8 +79,9 @@ things:
    around in the image and for using `:!` from within a notebook
 
 Building the image and loading it into Docker are both very slow compared to
-using Nix directly, so I wouldn't recommend using this approach for local
-development. I'm primarily interested in doing this to:
+using Nix directly (even though I'm using the Nix support for layered images),
+so I wouldn't recommend using this approach for local development. I'm
+primarily interested in doing this to:
 
 1. Share IHaskell notebooks with people who are less comfortable with Nix
 2. Deploy to platforms such as Amazon's Elastic Container Service and Google's
