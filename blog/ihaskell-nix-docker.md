@@ -97,3 +97,6 @@ to post instructions when I get around to trying this myself.
 In the meantime, I hope this is useful as a way of making IHaskell even more
 widely available, and as a demonstration of using `dockerTools` to bridge the
 gap between Nix and Docker!
+
+_Thanks to [Graham Christensen](https://grahamc.com) for improving the Nix
+expression to use `buildLayeredImage`._
