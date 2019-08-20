@@ -152,6 +152,7 @@ files](https://github.com/vaibhavsagar/nixos-config/commit/5126d9dba971d6480aeec
 With all of our prerequisites taken care of, deploying the system closure is straightforward:
 
 
+*deploy.sh*
 ```bash
 #!/usr/bin/env bash
 
