@@ -14,6 +14,11 @@ title: Talks
 - Where: !!Con 2019
 - [Slides](https://vaibhavsagar.com/presentations/popcount), [Video](https://www.youtube.com/watch?v=bLFqLfz2Fmc)
 
+#### Now You’re Cooking with DAGs!
+
+- Where: StarCon 2019
+- [Slides](https://vaibhavsagar.com/presentations/tarjans-scc/), [Video](https://www.youtube.com/watch?v=ByDNPmgPRjg)
+
 #### I Haskell a Git
 
 - Where: YOW! Lambda Jam 2018, Haskell eXchange 2018
