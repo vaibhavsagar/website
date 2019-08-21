@@ -1,7 +1,7 @@
 --------------------------------------------------------------------------------
 title: Industrial-strength Deployments in Three Commands
 published: 2019-08-19
-tags: nix
+tags: nix, programming
 --------------------------------------------------------------------------------
 
 If your deployment target is running NixOS, a full-system deployment is only
