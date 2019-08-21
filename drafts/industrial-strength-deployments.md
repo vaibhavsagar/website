@@ -107,8 +107,8 @@ in
   }
 ```
 
-but the downside there is that there's no automated way (AFAICT) to update the
-revision of `nixpkgs`. I have [my own approach to pinning
+but the downside there is that there's no automated way to update the revision
+of `nixpkgs`. I have [my own approach to pinning
 `nixpkgs`](https://vaibhavsagar.com/blog/2018/05/27/quick-easy-nixpkgs-pinning/),
 where I have a `versions.json` that stores version information:
 
@@ -143,7 +143,7 @@ in
   nixos.system
 ```
 
-and this allows me to be explicit about `nixpkgs` as well as easily update it
+and this allows me to both be explicit about `nixpkgs` as well as easily update it
 when necessary. [Here's the commit that adds those
 files](https://github.com/vaibhavsagar/nixos-config/commit/5126d9dba971d6480aeec43c4263c5a7f7b1f1b5).
 
@@ -164,6 +164,8 @@ PROFILE_PATH="$(nix-build --no-out-link default.nix)"
 nix-copy-closure --to --use-substitutes $TARGET $PROFILE_PATH
 ssh $TARGET -- "nix-env --profile /nix/var/nix/profiles/system --set $PROFILE_PATH && /nix/var/nix/profiles/system/bin/switch-to-configuration switch"
 ```
+
+This takes care of both building and deploying.
 
 [Here's the commit that adds `deploy.sh`](https://github.com/vaibhavsagar/nixos-config/commit/be6aaa026c8ebf1efd7c44743a8770b921111a2e).
 
@@ -274,7 +276,7 @@ Enabling the service is as easy as adding two lines to `configuration.nix`:
 #### Deploying the service
 
 ```bash
-$ ./deploy.sh 
+$ ./deploy.sh
 + TARGET=root@147.75.38.113
 ++ nix-build --no-out-link default.nix
 + PROFILE_PATH=/nix/store/<hash>-nixos-system-nixos-19.03pre-git
@@ -295,7 +297,8 @@ $ curl http://147.75.38.113:3000/beam
 
 It's definitely the case that `deploy.sh` is short and unsophisticated, but the
 three commands it invokes are what's really important here. Once you begin
-looking for them, you will find them everywhere! They're used in
+looking for them, you will find them everywhere, since they're the best way of
+deploying NixOS! They're used in
 [NixOps](https://github.com/NixOS/nixops/blob/c8d3a3ff5fb20e8e4d494de972ebb2a1a1ec1e08/nixops/backends/__init__.py#L339-L367),
 [nix-deploy](https://github.com/awakesecurity/nix-deploy/blob/68217cea7ba6746c9a262ddccb11178909841988/src/Main.hs#L159-L229),
 and
@@ -306,3 +309,37 @@ turns up many more examples. At a previous job, our deployment platform used
 these three commands as well, and we routinely deployed to hundreds of servers
 without any deployment-related issues, so I'm comfortable saying that this is
 an industrial-grade deployment solution.
+
+#### What about provisioning?
+
+These tools don't care how you provision your servers, as long as the end state
+is NixOS targets with SSH access. For quick demonstrations and small
+deployments, manual provisioning is fine, but for anything beyond that, I'd
+recommend using a tool like [Terraform](https://www.terraform.io/). You can
+even specify your Terraform configuration with Nix using something like
+[terranix](https://github.com/mrVanDalo/terranix).
+
+#### Should I use this instead of my current deployment solution?
+
+My aim with this post is not to convince you to drop whatever you're currently
+using in favour of a hand-rolled bash script and NixOS, especially if your
+current solution works well for you. I do, however, want to encourage you to
+think about how the process I've outlined here compares. In which ways is it
+better or worse?
+
+In my [Functional
+DevOps](https://vaibhavsagar.com/blog/2019/07/04/functional-devops/) post, I
+outlined some characteristics of an ideal DevOps workflow, and I think the
+process I've outlined here meets them all:
+
+- **Automatic**: The process is completely scriptable.
+- **Repeatable**: I can leverage NixOS to get the same results every time.
+- **Idempotent**: Deploying the same thing twice is a no-op.
+- **Reversible**: Rolling back is very easy.
+- **Atomic**: A deploy either fails or succeeds, there's no weird in-between.
+
+I think this is pretty great for three commands, and this is my baseline for
+what a deployment pipeline can be, which means I'm frequently frustrated by
+many of the systems that I have to work on. I hope this blog post can help move
+us towards less frustrating systems by making this corner of NixOS more
+approachable!
