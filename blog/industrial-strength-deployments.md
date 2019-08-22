@@ -345,8 +345,13 @@ process I've outlined here meets them all:
 - **Repeatable**: I can leverage NixOS to get the same results every time.
 - **Idempotent**: Deploying the same thing a second time is a no-op.
 - **Reversible**: Rolling back is very easy.
-- **Atomic**: A deploy either fails or succeeds, there's no weird in-between.
+- **Atomic**: A deploy either fails or succeeds, there's no weird in-between[^1].
 
 I think this is pretty great for three commands. I hope this blog post can help
 move us towards better systems by making this corner of NixOS more
 approachable!
+
+
+[^1]: As [ElvishJerricco points out on
+  Reddit](https://www.reddit.com/r/NixOS/comments/ctx8ii/industrialstrength_deployments_in_three_commands/expfqpv),
+  this isn't quite true in the case of broken services.
