@@ -1,6 +1,6 @@
 --------------------------------------------------------------------------------
 title: Industrial-strength Deployments in Three Commands
-published: 2019-08-19
+published: 2019-08-21
 tags: nix, programming
 --------------------------------------------------------------------------------
 
@@ -165,7 +165,7 @@ nix-copy-closure --to --use-substitutes $TARGET $PROFILE_PATH
 ssh $TARGET -- "nix-env --profile /nix/var/nix/profiles/system --set $PROFILE_PATH && /nix/var/nix/profiles/system/bin/switch-to-configuration switch"
 ```
 
-This takes care of both building and deploying.
+This takes care of both building the new system closure and deploying it.
 
 [Here's the commit that adds `deploy.sh`](https://github.com/vaibhavsagar/nixos-config/commit/be6aaa026c8ebf1efd7c44743a8770b921111a2e).
 
@@ -173,8 +173,8 @@ This takes care of both building and deploying.
 
 Let's deploy the final version of the small Haskell web service from my
 [Functional
-DevOps](https://vaibhavsagar.com/blog/2019/07/04/functional-devops/) blog post.
-The application consists of two files:
+DevOps](https://vaibhavsagar.com/blog/2019/07/04/functional-devops/) post. The
+application consists of two files:
 
 *Main.hs*
 ```haskell
@@ -239,10 +239,9 @@ in {
 }
 ```
 
-For more information about what's happening in `service.nix`, see the relevant
-section of my [Functional
-DevOps](https://vaibhavsagar.com/blog/2019/07/04/functional-devops/#service-configuration)
-post.
+For more information about what's happening in `service.nix`, see [the relevant
+section of my Functional DevOps
+post](https://vaibhavsagar.com/blog/2019/07/04/functional-devops/#service-configuration).
 
 [Here's the commit that adds these
 files](https://github.com/vaibhavsagar/nixos-config/commit/466e0e1867e47346ed8cc706b812a8cb21c76c19).
@@ -257,13 +256,13 @@ Enabling the service is as easy as adding two lines to `configuration.nix`:
   imports =
     [
       ./packet.nix
-      ./deploy/nix/service.nix
+      ./deploy/nix/service.nix        #1
     ];
 
   boot.loader.grub.enable = true;
   boot.loader.grub.version = 2;
 
-  services.blank-me-up.enable = true;
+  services.blank-me-up.enable = true; #2
 
   system.stateVersion = "19.03";
 
@@ -298,7 +297,7 @@ $ curl http://147.75.38.113:3000/beam
 It's definitely the case that `deploy.sh` is short and unsophisticated, but the
 three commands it invokes are what's really important here. Once you begin
 looking for them, you will find them everywhere, since they're the best way of
-deploying NixOS! They're used in
+deploying to NixOS! They're used in
 [NixOps](https://github.com/NixOS/nixops/blob/c8d3a3ff5fb20e8e4d494de972ebb2a1a1ec1e08/nixops/backends/__init__.py#L339-L367),
 [nix-deploy](https://github.com/awakesecurity/nix-deploy/blob/68217cea7ba6746c9a262ddccb11178909841988/src/Main.hs#L159-L229),
 and
@@ -312,12 +311,16 @@ an industrial-grade deployment solution.
 
 #### What about provisioning?
 
-These tools don't care how you provision your servers, as long as the end state
-is NixOS targets with SSH access. For quick demonstrations and small
+These tools don't care how you provision your servers, as long as you end up
+with NixOS targets you can SSH into. For quick demonstrations and small
 deployments, manual provisioning is fine, but for anything beyond that, I'd
 recommend using a tool like [Terraform](https://www.terraform.io/). You can
 even specify your Terraform configuration with Nix using something like
-[terranix](https://github.com/mrVanDalo/terranix).
+[terranix](https://github.com/mrVanDalo/terranix), and this is in fact what we
+did at the previous job I mentioned earlier, since Nix makes a great templating
+language and comes with excellent support for producing JSON which can then be
+fed into Terraform. It's also possible to output YAML from Nix, which means
+it's easy to interoperate with most infrastructure tooling.
 
 #### Should I use this instead of my current deployment solution?
 
@@ -327,6 +330,12 @@ current solution works well for you. I do, however, want to encourage you to
 think about how the process I've outlined here compares. In which ways is it
 better or worse?
 
+Since this is the workflow I've had the most experience with, it was a rude
+shock to start working with container-based deployments where even tiny changes
+require a full (slow) rebuild, and the actual deployment lifecycle is more
+complex and error-prone. I think it's important to point out that things don't
+have to be this way.
+
 In my [Functional
 DevOps](https://vaibhavsagar.com/blog/2019/07/04/functional-devops/) post, I
 outlined some characteristics of an ideal DevOps workflow, and I think the
@@ -334,12 +343,10 @@ process I've outlined here meets them all:
 
 - **Automatic**: The process is completely scriptable.
 - **Repeatable**: I can leverage NixOS to get the same results every time.
-- **Idempotent**: Deploying the same thing twice is a no-op.
+- **Idempotent**: Deploying the same thing a second time is a no-op.
 - **Reversible**: Rolling back is very easy.
 - **Atomic**: A deploy either fails or succeeds, there's no weird in-between.
 
-I think this is pretty great for three commands, and this is my baseline for
-what a deployment pipeline can be, which means I'm frequently frustrated by
-many of the systems that I have to work on. I hope this blog post can help move
-us towards less frustrating systems by making this corner of NixOS more
+I think this is pretty great for three commands. I hope this blog post can help
+move us towards better systems by making this corner of NixOS more
 approachable!
