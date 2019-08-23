@@ -87,7 +87,7 @@ main = hakyll $ do
             let feedCtx = postCtx <> bodyField "description"
             posts <- fmap (take 10) . recentFirst =<<
                 loadAllSnapshots "blog/*" "content"
-            renderAtom feedConfig feedCtx posts
+            renderAtom feedConfig feedCtx posts >>= cleanIndexUrls
 
     where matcher path router compiler =
             match path $ route router >> compile compiler
