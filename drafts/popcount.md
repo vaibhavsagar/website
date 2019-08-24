@@ -37,6 +37,55 @@ discusses its uses inside and outside cryptography. It is rumoured that it was
 originally added to CPU instructions at the behest of the NSA. As [this
 archived email thread](http://cryptome.org/jya/sadd.htm) puts it:
 
-> It was almost a tradition that one of the first of any new faster CDC machine was delivered to a “good customer” - picked up at the factory by an anonymous truck, and never heard from again.
+> It was almost a tradition that one of the first of any new faster CDC machine
+> was delivered to a “good customer” - picked up at the factory by an anonymous
+> truck, and never heard from again.
 
 This makes for a great story, but what were they using it for?
+
+One measure of information content is the [Hamming
+weight](https://en.wikipedia.org/wiki/Hamming_weight), which is the number of
+symbols in a string that are different from the zero-symbol of the alphabet.
+For a binary string, this is exactly `popcount`!
+
+[As explained here](http://www.talkchess.com/forum3/viewtopic.php?t=38521), the
+NSA wanted to do cryptanalysis on intercepted messages, and since the CDC 6000
+had 60-bit words, one word was enough to store most alphabets they were
+interested in. They were able to:
+
+1. Split a message into lines
+2. Set a bit for each unique character they encountered per line
+3. Use `popcount` to count the distinct characters
+4. Use the count as a hash for further cryptanalysis
+
+Curiously, `popcount` seems to have disappeared from instruction sets between
+the mid-1970s and the mid-2000s, so there has to be more to it than
+cryptographic applications to explain its return. What else can it be used for?
+
+#### Error Correction
+
+Related to the concept of Hamming weight is [Hamming
+distance](https://en.wikipedia.org/wiki/Hamming_distance), which is the number
+of differing positions between two strings of identical length. For two binary
+strings `x` and `y`, this is just the `popcount` of them XORed together. For
+example:
+
+```default
+00100110
+01100000 ^
+--------
+01000110
+
+popcount(01000110) = 3
+```
+
+For telecommunications applications, this helps us calculate the signal
+distance, where a known word is sent over the wire and the number of flipped
+bits are counted to provide an estimate of the error introduced by transmission.
+
+We can then design an [error-correcting
+code](https://en.wikipedia.org/wiki/Hamming_distance#Error_detection_and_error_correction)
+accordingly, e.g. if we want to be robust against up to 2 flipped bits, our
+code words need to differ in Hamming distance by at least 5.
+
+#### Binary Convolutional Neural Networks
