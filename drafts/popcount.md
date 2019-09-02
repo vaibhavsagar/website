@@ -89,3 +89,42 @@ accordingly, e.g. if we want to be robust against up to 2 flipped bits, our
 code words need to differ in Hamming distance by at least 5.
 
 #### Binary Convolutional Neural Networks
+
+And now for something completely different: binary convolutional neural
+networks! But first, what are they?
+
+Binary means that we're using matrices consisting of only the values +1 (coded
+as `1`) and -1 (coded as `0`), as opposed to 32-bit floating-point values.
+
+Convolutional means matrix multiplication is involved?
+
+Neural networks are systems inspired by animal brains (I'm a bit hazy on
+this part).
+
+In summary, we have to do binary matrix multiplication. But why?
+
+Ordinary matrix multiplication on 32-bit values is a good fit on desktop
+computers with powerful CPUs and GPUs, but increasingly we also want to do
+useful work on smaller and simpler devices, such as smartphones, routers,
+smartwatches, etc. We can decompose these more complex matrices into layers of
+binary matrices, and these resulting matrices are so much easier to store and
+operate on that we are better off even though there are more layers.
+
+Where does `popcount` come into play? It's used to calculate the dot product of
+two binary matrices:
+
+```default
+a = xnor(x, y)
+b = popcount(a)
+c = len(a)
+dot(x, y) = 2 × b − c
+```
+
+More details are available
+[here](https://sushscience.wordpress.com/2017/10/01/understanding-binary-neural-networks/)
+and
+[here](https://developer.apple.com/documentation/metalperformanceshaders/mpscnnbinaryconvolution).
+
+#### Chess Programming
+
+
