@@ -155,7 +155,7 @@ grow and shrink as required. Calculating the index for a given element
 efficiently can then be done using `popcount`. You can learn more about how
 they work from [this blog
 post](/blog/2018/07/29/hamts-from-scratch/), where I
-implement this myself.
+implement them myself.
 
 #### Succinct Data Structures
 
