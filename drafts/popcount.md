@@ -93,15 +93,14 @@ code words need to differ in Hamming distance by at least 5.
 And now for something completely different: binary convolutional neural
 networks! But first, what are they?
 
-Binary means that we're using matrices consisting of only the values +1 (coded
+- Binary means that we're using matrices consisting of only the values +1 (coded
 as `1`) and -1 (coded as `0`), as opposed to 32-bit floating-point values.
-
-Convolutional means matrix multiplication is involved?
-
-Neural networks are systems inspired by animal brains (I'm a bit hazy on
+- Convolutional means matrix multiplication is involved?
+- Neural networks are systems inspired by animal brains (I'm a bit hazy on
 this part).
 
-In summary, we have to do binary matrix multiplication. But why?
+In summary, we have to do binary matrix multiplication. But what's special
+about binary matrices?
 
 Ordinary matrix multiplication on 32-bit values is a good fit on desktop
 computers with powerful CPUs and GPUs, but increasingly we also want to do
@@ -127,4 +126,69 @@ and
 
 #### Chess Programming
 
+Many chess programs store data using a
+[bitboard](https://www.chessprogramming.org/Bitboards) representation, which
+conveniently fits into a 64-bit word. [Population
+Count](https://www.chessprogramming.org/Population_Count) has been used to
+perform meaningful operations with this representation, such as calculating the
+[mobility](https://www.chessprogramming.org/Mobility#Mobility_with_Bitboards)
+of a piece.
 
+#### Molecular Fingerprinting
+
+This is related to the notion of Hamming distance above: molecules are hashed
+in some way and compared (with `popcount`) to determine how similar they are.
+More details on that
+[here](http://www.dalkescientific.com/writings/diary/archive/2008/06/26/fingerprint_background.html).
+
+#### Hash Array Mapped Tries
+
+This is where I first learned about `popcount`! The HAMT is a data structure
+([pioneered by Phil
+Bagwell](https://lampwww.epfl.ch/papers/idealhashtrees.pdf)) that can store a
+very large number of values (usually 32 or 64) in an array at each level of the
+trie. However, allocating memory for a 32 or 64-element array can be incredibly
+wasteful, especially if it only actually contains a handful of elements. The
+solution is to add a bitmask in which the number of bits that are set
+corresponds to the number of elements in the array, which allows the array to
+grow and shrink as required. Calculating the index for a given element
+efficiently can then be done using `popcount`. You can learn more about how
+they work from [this blog
+post](https://vaibhavsagar.com/blog/2018/07/29/hamts-from-scratch/), where I
+implement this myself.
+
+#### Succinct Data Structures
+
+This is an exciting new area of research that focuses on how to store data in
+as little space as possible, without having to decompress it in order to do
+useful work. One technique is to think in terms of arrays of bits (bitvectors), which can be
+queried using two operations:
+
+- `rank(i)` counts the number of bits set upto the `i`th index in the bitvector
+- `select(i)` finds the index where the `i`th ranked bit is set
+
+Making these operations efficient on large bitvectors requires constructing an
+index and using it effectively, both involving `popcount`. There's [a good
+overview of the RRR index here](https://alexbowe.com/rrr/), and as far as I can
+tell the current state-of-the-art approach is described in [Space-Efficient,
+High-Performance Rank & Select Structures on Uncompressed Bit
+Sequences](http://www.cs.cmu.edu/~./dga/papers/zhou-sea2013.pdf).
+
+#### Compiler Optimisations
+
+`popcount` has become so pervasive that both
+[GCC](https://godbolt.org/z/JUzmD8) and [Clang](https://godbolt.org/z/AVqMGl)
+will detect an implementation of `popcount` and replace it with the built-in
+instruction. Imagine Clippy going "I see you are trying to implement
+`popcount`, let me go ahead and fix that for you"! The relevant LLVM code is
+[here](https://github.com/llvm-mirror/llvm/blob/f36485f7ac2a8d72ad0e0f2134c17fd365272285/lib/Transforms/Scalar/LoopIdiomRecognize.cpp#L960).
+Daniel Lemire points to this as an example of [the surprising cleverness of
+modern
+compilers](https://lemire.me/blog/2016/05/23/the-surprising-cleverness-of-modern-compilers/).
+
+#### Conclusion
+
+From beginnings shrouded in mystery, `popcount` has emerged as a generally
+useful, if slightly unusual, CPU instruction. I love how it ties together such
+different fields of computing, and I wonder how many other similarly weird
+instructions are out there. If you have a favourite, I'd love to hear about it!
