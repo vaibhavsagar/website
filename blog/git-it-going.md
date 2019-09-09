@@ -27,7 +27,7 @@ I really enjoyed giving this talk, and would happily do so again. My
 presentation contents are [here](https://github.com/vaibhavsagar/git-it-going),
 complete with a `.travis.yml` file which uses `pandoc` to regenerate the slides
 on each push. The slides themselves are
-[available](http://www.vaibhavsagar.com/git-it-going) although I think they're
+[available](/git-it-going) although I think they're
 pretty pointless on their own. If you would like to use these materials, you
 are more than welcome to do so.
 

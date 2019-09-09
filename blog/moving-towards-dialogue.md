@@ -6,7 +6,7 @@ tags: programming, haskell, idris
 
 _This blog post is essentially a transcript of [a 10-minute talk I gave at
 !!Con](https://www.youtube.com/watch?v=0oo8wIi2qBE), the slides for which are
-available [here](https://vaibhavsagar.com/presentations/typed-holes/)._
+available [here](/presentations/typed-holes/)._
 
 Let's talk about typed holes. What's a typed hole? A definition I like is _"a
 placeholder for an expression with a known type and an unknown value"_.

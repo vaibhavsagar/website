@@ -109,7 +109,7 @@ in
 
 but the downside there is that there's no automated way to update the revision
 of `nixpkgs`. I have [my own approach to pinning
-`nixpkgs`](https://vaibhavsagar.com/blog/2018/05/27/quick-easy-nixpkgs-pinning/),
+`nixpkgs`](/blog/2018/05/27/quick-easy-nixpkgs-pinning/),
 where I have a `versions.json` that stores version information:
 
 ```json
@@ -173,7 +173,7 @@ This takes care of both building the new system closure and deploying it.
 
 Let's deploy the final version of the small Haskell web service from my
 [Functional
-DevOps](https://vaibhavsagar.com/blog/2019/07/04/functional-devops/) post. The
+DevOps](/blog/2019/07/04/functional-devops/) post. The
 application consists of two files:
 
 *Main.hs*
@@ -241,7 +241,7 @@ in {
 
 For more information about what's happening in `service.nix`, see [the relevant
 section of my Functional DevOps
-post](https://vaibhavsagar.com/blog/2019/07/04/functional-devops/#service-configuration).
+post](/blog/2019/07/04/functional-devops/#service-configuration).
 
 [Here's the commit that adds these
 files](https://github.com/vaibhavsagar/nixos-config/commit/466e0e1867e47346ed8cc706b812a8cb21c76c19).
@@ -337,7 +337,7 @@ complex and error-prone. I think it's important to point out that things don't
 have to be this way.
 
 In my [Functional
-DevOps](https://vaibhavsagar.com/blog/2019/07/04/functional-devops/) post, I
+DevOps](/blog/2019/07/04/functional-devops/) post, I
 outlined some characteristics of an ideal DevOps workflow, and I think the
 process I've outlined here meets them all:
 

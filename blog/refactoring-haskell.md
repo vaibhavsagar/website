@@ -17,7 +17,7 @@ problem](https://en.wikipedia.org/wiki/2-satisfiability) is satisfiable or not,
 and was written to complete [an online
 course](https://online.stanford.edu/course/algorithms-design-and-analysis-part-1)
 that is now offered in a different form. I've [written about Tarjan's algorithm
-previously](http://vaibhavsagar.com/blog/2017/06/10/dag-toolkit/) and it can be
+previously](/blog/2017/06/10/dag-toolkit/) and it can be
 used to determine the satisfiability of a 2-SAT problem by checking if any SCC
 contains both a variable and its negation. If it does, we have a contradiction
 and the problem is unsatisfiable, otherwise the problem is satisfiable.

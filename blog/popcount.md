@@ -154,7 +154,7 @@ corresponds to the number of elements in the array, which allows the array to
 grow and shrink as required. Calculating the index for a given element
 efficiently can then be done using `popcount`. You can learn more about how
 they work from [this blog
-post](https://vaibhavsagar.com/blog/2018/07/29/hamts-from-scratch/), where I
+post](/blog/2018/07/29/hamts-from-scratch/), where I
 implement this myself.
 
 #### Succinct Data Structures

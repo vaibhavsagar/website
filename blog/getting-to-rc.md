@@ -50,7 +50,7 @@ but still unsure of how to bridge the gap between learning about lenses and
 monads and writing real code that does things. I considered myself a pretty
 decent user of Git and people talk about how Git is functional, so I
 offered to give [a presentation I had prepared
-before](http://vaibhavsagar.com/git-it-going/) a second time. The co-founder I
+before](/git-it-going/) a second time. The co-founder I
 spoke to didn't like that idea, but he had been looking into how Git is
 implemented, and he said he'd love to hear a talk on Git internals in Haskell.
 I had my project.
