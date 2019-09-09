@@ -146,15 +146,14 @@ More details on that
 This is where I first learned about `popcount`! The HAMT is a data structure
 ([pioneered by Phil
 Bagwell](https://lampwww.epfl.ch/papers/idealhashtrees.pdf)) that can store a
-very large number of values (usually 32 or 64) in an array at each level of the
-trie. However, allocating memory for a 32 or 64-element array can be incredibly
-wasteful, especially if it only actually contains a handful of elements. The
-solution is to add a bitmask in which the number of bits that are set
-corresponds to the number of elements in the array, which allows the array to
-grow and shrink as required. Calculating the index for a given element
+very large number of values (usually 32 or 64) in an array at each node of the
+trie. However, allocating memory for a 32 or 64-element array every time can be
+incredibly wasteful, especially if the array only actually contains a handful
+of elements. The solution is to add a bitmask in which the number of bits that
+are set corresponds to the number of elements in the array, which allows the
+array to grow and shrink as required. Calculating the index for a given element
 efficiently can then be done using `popcount`. You can learn more about how
-they work from [this blog
-post](/blog/2018/07/29/hamts-from-scratch/), where I
+they work from [this blog post](/blog/2018/07/29/hamts-from-scratch/), where I
 implement them myself.
 
 #### Succinct Data Structures
