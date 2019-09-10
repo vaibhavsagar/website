@@ -218,8 +218,24 @@ existing `<nixpkgs>`! The following code snippet is identical to
 ```nix
 fetcher = { owner, repo, rev, sha256 }: builtins.fetchTarball {
   inherit sha256;
-  url = "https://github.com/${owner}/${repo}/archive/${rev}.tar.gz";
+  url = "https://github.com/${owner}/${repo}/tarball/${rev}";
 };
+```
+
+and an updated expression can look something like:
+
+```nix
+let
+  fetcher = { owner, repo, rev, sha256, ... }: builtins.fetchTarball {
+    inherit sha256;
+    url = "https://github.com/${owner}/${repo}/tarball/${rev}";
+  };
+  nixpkgs = import (fetcher (builtins.fromJSON (builtins.readFile ./versions.json)).nixpkgs) {};
+  lib = nixpkgs.lib;
+  versions = lib.mapAttrs
+    (_: fetcher)
+    (builtins.fromJSON (builtins.readFile ./versions.json));
+in versions
 ```
 
 Thanks to [Ahmad Jarara](https://jarmac.org/), [Chris
