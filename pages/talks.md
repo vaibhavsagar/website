@@ -31,8 +31,8 @@ title: Talks
 
 #### Functional DevOps (in a dysfunctional world)
 
-- Where: linux.conf.au 2018 Real World Functional Programming Miniconf, EMPEX NYC 2019
-- [Slides](https://vaibhavsagar.com/presentations/functional-devops/), [Video (linux.conf.au)](https://www.youtube.com/watch?v=RsSNEkBGmj0), [Video (EMPEX)](https://www.youtube.com/watch?v=P1gE68ESWYE)
+- Where: linux.conf.au 2018 Real World Functional Programming Miniconf, EMPEX NYC 2019, Strange Loop 2019
+- [Slides](https://vaibhavsagar.com/presentations/functional-devops/), [Video (linux.conf.au)](https://www.youtube.com/watch?v=RsSNEkBGmj0), [Video (EMPEX)](https://www.youtube.com/watch?v=P1gE68ESWYE), [Video (Strange Loop)](https://www.youtube.com/watch?v=baTsrF9_zi0)
 
 #### Git it Going
 - Where: DrupalGov Canberra 2016
