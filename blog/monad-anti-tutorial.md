@@ -92,7 +92,7 @@ bar a b =
     a >>= \a' ->
     let a'' = a' + 1 in
     b >>= \b' ->
-    return (a'' + b)
+    return (a'' + b')
 ```
 
 Sometimes you don't care about the variable on the left hand side of the `<-`,
