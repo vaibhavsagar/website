@@ -26,14 +26,14 @@ let
     mkdir -p $out/etc/pam.d
 
     echo "root:x:0:0::/root:/bin/sh" > $out/etc/passwd
-    echo "jovyan:x:1000:1000::/home/jovyan:" >> $out/etc/passwd
+    echo "${NB_USER}:x:1000:1000::/home/${NB_USER}:" >> $out/etc/passwd
     echo "root:!x:::::::" > $out/etc/shadow
-    echo "jovyan:!:::::::" >> $out/etc/shadow
+    echo "${NB_USER}:!:::::::" >> $out/etc/shadow
 
     echo "root:x:0:" > $out/etc/group
-    echo "jovyan:x:1000:" >> $out/etc/group
+    echo "${NB_USER}:x:1000:" >> $out/etc/group
     echo "root:x::" > $out/etc/gshadow
-    echo "jovyan:!::" >> $out/etc/gshadow
+    echo "${NB_USER}:!::" >> $out/etc/gshadow
   '';
   ihaskell = import "${pkgs.ihaskell}/release.nix" {
     inherit nixpkgs;
