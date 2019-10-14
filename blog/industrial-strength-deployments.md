@@ -147,6 +147,12 @@ and this allows me to both be explicit about `nixpkgs` as well as easily update 
 when necessary. [Here's the commit that adds those
 files](https://github.com/vaibhavsagar/nixos-config/commit/5126d9dba971d6480aeec43c4263c5a7f7b1f1b5).
 
+Building the closure locally is also straightforward (as described [here](https://typeclasses.com/nixos-on-aws#building-nixos-locally)):
+
+```bash
+$ nix-build --no-out-link default.nix
+```
+
 #### Deploying the system closure
 
 With all of our prerequisites taken care of, deploying the system closure is straightforward:
@@ -350,6 +356,9 @@ process I've outlined here meets them all:
 I think this is pretty great for three commands. I hope this blog post can help
 move us towards better systems by making this corner of NixOS more
 approachable!
+
+*Thanks to [Brian Hicks](https://www.brianthicks.com/) for comments and
+feedback!*
 
 
 [^1]: As [ElvishJerricco points out on
