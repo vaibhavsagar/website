@@ -229,7 +229,6 @@ function(e, string) {
     e.innerHTML = element.outerHTML;
   })
   .catch(function(error) {
-    viz = new Viz();
     e.innerHTML = error;
   })
 }
@@ -269,7 +268,6 @@ vizJs = eval
   \    e.innerHTML = element.outerHTML; \
   \  }) \
   \  .catch(function(error) { \
-  \    viz = new Viz(); \
   \    e.innerHTML = error; \
   \  }) \
   \})"
@@ -336,4 +334,72 @@ value, convert both it and the reference to the element we want to update to
 earlier. Now we should have a working GraphViz renderer in our browser!
 
 We could stop here, but I think we can do better than evaluating JavaScript
-strings. JSaddle is an EDSL, so we can rewrite our JavaScript in Haskell.
+strings. JSaddle is an EDSL, so we can rewrite our JavaScript in Haskell:
+
+<details>
+<summary style="cursor: pointer">`Viz.hs`</summary>
+```haskell
+module Viz where
+
+import Language.Javascript.JSaddle
+
+viz :: JSVal -> JSVal -> JSM ()
+viz element string = do
+  viz <- new (jsg "Viz") ()
+  render <- viz # "renderSVGElement" $ [string]
+  result <- render # "then" $ [(fun $ \_ _ [e] -> do
+    outer <- e ! "outerHTML"
+    element <# "innerHTML" $ outer
+  )]
+  result # "catch" $ [(fun $ \_ _ [err] ->
+    element <# "innerHTML" $ err
+  )]
+  pure ()
+```
+</details>
+
+This is recognisably the same logic as before, but using some new JSaddle operators:
+
+- [`#`](http://hackage.haskell.org/package/jsaddle-0.9.6.0/docs/Language-Javascript-JSaddle.html#v:-35-)
+  is for calling a JavaScript function
+- [`!`](http://hackage.haskell.org/package/jsaddle-0.9.6.0/docs/Language-Javascript-JSaddle.html#v:-33-)
+  is for property access
+- [`<#`](http://hackage.haskell.org/package/jsaddle-0.9.6.0/docs/Language-Javascript-JSaddle.html#v:-60--35-)
+  is a setter
+
+This is an improvement, but we can do even better using the lensy API (after
+adding `lens` to our dependencies):
+
+<details>
+<summary style="cursor: pointer">`Viz.hs`</summary>
+```haskell
+module Viz where
+
+import Language.Javascript.JSaddle
+import Control.Lens ((^.))
+
+viz :: JSVal -> JSVal -> JSM ()
+viz element string = do
+  viz <- new (jsg "Viz") ()
+  render <- viz ^. js1 "renderSVGElement" string
+  result <- render ^. js1 "then" (fun $ \_ _ [e] -> do
+    outer <- e ! "outerHTML"
+    element ^. jss "innerHTML" outer)
+  result ^. js1 "catch" (fun $ \_ _ [err] ->
+    element ^. jss "innerHTML" err)
+  pure ()
+```
+</details>
+
+Not much has changed except that we can use convenience functions like
+[`js1`](http://hackage.haskell.org/package/jsaddle-0.9.6.0/docs/Language-Javascript-JSaddle.html#v:js1)
+and
+[`jss`](http://hackage.haskell.org/package/jsaddle-0.9.6.0/docs/Language-Javascript-JSaddle.html#v:jss).
+
+I'm told it's possible to get rid of the JSaddle overhead entirely by using a
+library like [`ghcjs-dom`](https://hackage.haskell.org/package/ghcjs-dom), but
+I haven't explored this approach, and I will leave this as an exercise for the
+reader. If you figure out how to do this, please let me know!
+
+Finally we are able to run Haskell on the frontend without having to write any
+JavaScript ourselves.
