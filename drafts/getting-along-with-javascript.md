@@ -154,7 +154,7 @@ We also have to add `reflex-dom` and `reflex` to our dependencies in our
 with one command:
 
 ```bash
-$ nix-shell -A shells.ghc --run 'ghcid -T ":main" --command "cabal new-repl"'
+$ nix-shell -A shells.ghc --run 'ghcid -T "Main.main" --command "cabal new-repl"'
 ```
 
 This allows a native Haskell process to control a web page, so we can navigate
@@ -162,7 +162,9 @@ to it using our browser at `http://localhost:3003` and have a fast feedback
 loop. In practice there is a lot of brower refreshing involved, but this is
 still much nicer than having to do a GHCJS build each time we want to look at
 our changes. Now we have an input box that repeats what we type into it, which
-is a good start.
+is a good start. I should point out that this works a lot better on Google
+Chrome (or Chromium) than it does on Firefox, and that's what I'll be using for
+development.
 
 So where are we going with this? My plan is to build a crude version of the
 [Viz.js](http://viz-js.com) homepage, where you can write
@@ -174,3 +176,160 @@ fine as far as I can tell. In order to do this I want to use some kind of
 JavaScript FFI to call out to `viz.js`, but first I want to swap out our text
 input for a text area, and move the repeated output to just below the text area
 instead of beside it.
+
+<details>
+<summary style="cursor: pointer">`Main.hs`</summary>
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+import Reflex.Dom
+
+main = mainWidget $ el "div" $ do
+  t <- textArea def
+  el "div" $
+    dynText $ _textArea_value t
+```
+</details>
+
+The latest version of Viz.js is available
+[here](https://www.jsdelivr.com/package/npm/viz.js), and we can include it
+using `mainWidgetWithHead`:
+
+<details>
+<summary style="cursor: pointer">`Main.hs`</summary>
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+import Reflex.Dom
+
+main = mainWidgetWithHead widgetHead $ el "div" $ do
+  t <- textArea def
+  el "div" $
+    dynText $ _textArea_value t
+  where
+    widgetHead :: DomBuilder t m => m ()
+    widgetHead = do
+      script "https://cdn.jsdelivr.net/npm/viz.js@2.1.2/viz.min.js"
+      script "https://cdn.jsdelivr.net/npm/viz.js@2.1.2/full.render.min.js"
+    script src = elAttr "script" ("type" =: "text/javascript" <> "src" =: src) blank
+```
+</details>
+
+Now we can poke around with our browser developer tools until we have a useful
+function. Here's what I came up with, based on the examples in the
+[wiki](https://github.com/mdaines/viz.js/wiki/Usage#using-a-script-tag):
+
+```javascript
+function(e, string) {
+  var viz = new Viz();
+  viz.renderSVGElement(string)
+  .then(function(element) {
+    e.innerHTML = element.outerHTML;
+  })
+  .catch(function(error) {
+    viz = new Viz();
+    e.innerHTML = error;
+  })
+}
+```
+
+Now we can start thinking about how we want to do JavaScript interop! Although
+there is a GHCJS FFI as described [in the
+wiki](https://github.com/ghcjs/ghcjs/wiki/A-few-examples-of-Foreign-Function-Interface),
+this doesn't seem to work at all with GHC, and that means we can't use it
+during development. I don't think that's good enough, and fortunately we don't
+have to settle for this and instead can use
+[`jsaddle`](http://hackage.haskell.org/package/jsaddle-0.9.6.0), which bills
+itself as "an EDSL for calling JavaScript that can be used both from GHCJS and
+GHC". We can add `jsaddle` to our dependencies, add `Viz` to the
+`exposed-modules` stanza in our `.cabal` file, and create a new module `Viz`,
+and then we can use the `eval` and `call` functions to call our JavaScript
+directly:
+
+<details>
+<summary style="cursor: pointer">`Viz.hs`</summary>
+```haskell
+module Viz where
+
+import Language.Javascript.JSaddle
+
+viz :: JSVal -> JSVal -> JSM ()
+viz element string = do
+  call vizJs vizJs [element, string]
+  pure ()
+
+vizJs :: JSM JSVal
+vizJs = eval
+  "(function(e, string) { \
+  \  var viz = new Viz(); \
+  \  viz.renderSVGElement(string) \
+  \  .then(function(element) { \
+  \    e.innerHTML = element.outerHTML; \
+  \  }) \
+  \  .catch(function(error) { \
+  \    viz = new Viz(); \
+  \    e.innerHTML = error; \
+  \  }) \
+  \})"
+```
+</details>
+
+JSaddle runs operations in `JSM`, which is similar to `IO`, and all functions
+take values of type `JSVal` to ensure they can be represented as JavaScript
+values. We pass `vizJs` to `call` twice because the second parameter represents
+the `this` keyword.
+
+Wiring everything up together is just a few more lines of code:
+
+<details>
+<summary style="cursor: pointer">`Main.hs`</summary>
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+import Reflex.Dom
+import Language.Javascript.JSaddle (liftJSM, toJSVal)
+import Viz (viz)
+
+main = mainWidgetWithHead widgetHead $ el "div" $ do
+  t <- textArea def
+  e <- _element_raw . fst <$> el' "div" blank
+  performEvent_ $ ffor (updated (_textArea_value t)) $ \text -> liftJSM $ do
+    jsE <- toJSVal e
+    jsT <- toJSVal text
+    viz jsE jsT
+  where
+    widgetHead :: DomBuilder t m => m ()
+    widgetHead = do
+      script "https://cdn.jsdelivr.net/npm/viz.js@2.1.2/viz.min.js"
+      script "https://cdn.jsdelivr.net/npm/viz.js@2.1.2/full.render.min.js"
+    script src = elAttr "script" ("type" =: "text/javascript" <> "src" =: src) blank
+```
+</details>
+
+There's a lot going on here, so I'll explain in a little more detail.
+
+Instead of an element which displays the textarea contents as they are updated,
+we just want a reference to a blank `<div>`, so we use the
+[`el'`](https://hackage.haskell.org/package/reflex-dom-core-0.5/docs/Reflex-Dom-Widget-Basic.html#v:el-39-)
+function and pull out the raw element.
+[`performEvent_`](http://hackage.haskell.org/package/reflex-0.6.2.4/docs/Reflex-PerformEvent-Class.html#v:performEvent_)
+mediates the interaction between Reflex and side-effecting actions, like our
+function that updates the DOM with a rendered graph, so we want to use it to
+render a new graph every time the textarea is updated.
+
+An introduction to Reflex is out of scope for this blog post, but it's worth
+mentioning that the textarea value is represented as a
+[`Dynamic`](http://hackage.haskell.org/package/reflex-0.6.2.4/docs/Reflex-Class.html#t:Dynamic),
+which can change over time and notify consumers when it has changed. This can
+be thought of as the combination of a related
+[`Behavior`](http://hackage.haskell.org/package/reflex-0.6.2.4/docs/Reflex-Class.html#t:Behavior)
+and
+[`Event`](http://hackage.haskell.org/package/reflex-0.6.2.4/docs/Reflex-Class.html#t:Event).
+`performEvent_` only takes an `Event`, and we can get the underlying `Event`
+out of a `Dynamic` with
+[`updated`](http://hackage.haskell.org/package/reflex-0.6.2.4/docs/Reflex-Class.html#v:updated).
+
+`ffor` is just `flip fmap`, and we use it to operate on the underlying `Text`
+value, convert both it and the reference to the element we want to update to
+`JSVal`s, and then pass them as arguments to the `viz` function we defined
+earlier. Now we should have a working GraphViz renderer in our browser!
+
+We could stop here, but I think we can do better than evaluating JavaScript
+strings. JSaddle is an EDSL, so we can rewrite our JavaScript in Haskell.
