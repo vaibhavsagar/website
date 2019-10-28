@@ -31,6 +31,8 @@ set of changes and overrides to a revision of
 [Nixpkgs](https://github.com/NixOS/nixpkgs) to best support building full-stack
 and mobile Haskell applications.
 
+### Setting up reflex-platform
+
 I like to use the `updater` script described in [a previous blog
 post](/blog/quick-easy-nixpkgs-pinning), so I'll start by copying that over and
 creating a `versions.json` with the following contents:
@@ -75,6 +77,8 @@ revision I used:
 </details>
 
 *([revision](https://gist.github.com/vaibhavsagar/24b1754b8a269fd8c54a89cb73e64fa8/c21e62ecdcc053273ee5e4815ef538e1e8a29e55#file-versions-json))*
+
+### Creating a project skeleton
 
 The next step is to get a Haskell project skeleton in place. I used `cabal
 init` for this as follows:
@@ -142,6 +146,8 @@ This should download a lot (and build almost nothing from source since we are
 pulling from the cache), and then enter a shell environment with our
 dependencies in scope.
 
+### Starting our Reflex app
+
 Now we can start developing our Reflex app! We can start from the small example
 described
 [here](https://github.com/reflex-frp/reflex-platform/tree/8f4b8973a06f78c7aaf1a222f8f8443cd934569f#dynamics-and-events):
@@ -202,6 +208,8 @@ main = mainWidget $ el "div" $ do
 </details>
 
 *([revision](https://gist.github.com/vaibhavsagar/24b1754b8a269fd8c54a89cb73e64fa8/d5ff4725b26db3dd596abb2e751711f5c568b6bc#file-main-hs))*
+
+### Integrating with Viz.js
 
 The latest version of Viz.js is available
 [here](https://www.jsdelivr.com/package/npm/viz.js), and we can include it
@@ -348,6 +356,8 @@ value, convert both it and the reference to the element we want to update to
 `JSVal`s, and then pass them as arguments to the `viz` function we defined
 earlier. Now we should have a working GraphViz renderer in our browser!
 
+### Using the FFI better
+
 We could stop here, but I think we can do better than evaluating JavaScript
 strings. JSaddle is an EDSL, so we can rewrite our JavaScript in Haskell:
 
@@ -426,6 +436,8 @@ you learn how to do this, please teach me!
 
 Now we are able to run Haskell on the frontend without having to write any
 JavaScript ourselves. The final step is to put this on the internet somewhere!
+
+### Deploying our app
 
 Building with GHCJS is straightforward:
 
@@ -543,3 +555,15 @@ in pkgs.runCommand "glitch" {} ''
 *([revision](https://gist.github.com/vaibhavsagar/24b1754b8a269fd8c54a89cb73e64fa8/aac5fe1258ccfc8c9b8ca685b9db1a4f538ae183#file-glitch-nix))*
 
 And this brings the size down to under 2MB.
+
+I think this is a good stopping point. We've:
+
+- built a frontend-only Reflex app
+- which integrates with a JavaScript library
+- using the JSaddle FFI idiomatically
+- deployed to Glitch
+
+and I hope I've convinced you to take a closer look at Haskell in the browser.
+
+*Thanks to [Ali Abrar](https://github.com/ali-abrar) and [Farseen Abdul
+Salam](https://twitter.com/itsfarseen)*
