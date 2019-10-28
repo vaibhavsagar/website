@@ -563,7 +563,8 @@ I think this is a good stopping point. We've:
 1. Used the JSaddle FFI idiomatically
 1. Deployed to Glitch
 
-and I hope I've convinced you to take a closer look at Haskell in the browser.
+and I hope I've convinced you to take a closer look at Haskell the next time
+you want to write something that runs in the browser.
 
 *Thanks to [Ali Abrar](https://github.com/ali-abrar) and [Farseen Abdul
 Salam](https://twitter.com/itsfarseen) for comments and feedback.*
