@@ -175,7 +175,7 @@ still much nicer than having to do a GHCJS build each time we want to look at
 our changes. Now we have an input box that repeats what we type into it, which
 is a good start. I should point out that this works a lot better on Google
 Chrome (or Chromium) than it does on Firefox, and that's what I'll be using for
-development.
+development. The final GHCJS output does not have this limitation.
 
 So where are we going with this? My plan is to build a crude version of the
 [Viz.js](http://viz-js.com) homepage, where you can write
