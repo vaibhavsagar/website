@@ -466,19 +466,16 @@ let
   reflex-platform = fetcher (builtins.fromJSON (builtins.readFile ./versions.json)).reflex-platform;
   pkgs = (import reflex-platform {}).nixpkgs;
   project = import ./default.nix;
-  html = pkgs.writeTextFile {
-    name = "index.html";
-    text = ''
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <script language="javascript" src="all.js"></script>
-        </head>
-        <body>
-        </body>
-      </html>
-    '';
-  };
+  html = pkgs.writeText "index.html" ''
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <script language="javascript" src="all.js"></script>
+      </head>
+      <body>
+      </body>
+    </html>
+  '';
 in pkgs.runCommand "glitch" {} ''
   mkdir -p $out
   cp ${html} $out/index.html
@@ -487,7 +484,7 @@ in pkgs.runCommand "glitch" {} ''
 ```
 </details>
 
-*([revision](https://gist.github.com/vaibhavsagar/24b1754b8a269fd8c54a89cb73e64fa8/1e90440e2d9bd4f3bf39f6ad5d3e75610f3d9ee5#file-glitch-nix))*
+*([revision](https://gist.github.com/vaibhavsagar/24b1754b8a269fd8c54a89cb73e64fa8/a0127badaee44f316156121153c0e4bc41af9460#file-glitch-nix))*
 
 And then produce the files we need to copy over with:
 
