@@ -26,9 +26,8 @@ at least one NixOS target that will host your website, all of which mean it
 doesn't yet scale down to my comparatively modest needs. It is possible to use
 Obelisk anyway, but I found myself using too few of its features to justify the
 effort, and I decided to move down a level and use [Reflex
-Platform](https://github.com/reflex-frp/reflex-platform) directly.
-
-The Reflex Platform is a set of changes and overrides to a revision of
+Platform](https://github.com/reflex-frp/reflex-platform) directly, which is a
+set of changes and overrides to a revision of
 [Nixpkgs](https://github.com/NixOS/nixpkgs) to best support building full-stack
 and mobile Haskell applications.
 
