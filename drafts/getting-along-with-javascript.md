@@ -492,4 +492,54 @@ And then produce the files we need to copy over with:
 $ nix-build glitch.nix
 ```
 
-I've gone ahead and done this, and it's up on [small-viz.glitch.me/](https://small-viz.glitch.me/).
+I've gone ahead and done this, and it's up on
+[small-viz.glitch.me/](https://small-viz.glitch.me/).
+
+Now that everything's working, it would be nice to reduce the size of `all.js`,
+which is currently over 5MB. Obelisk uses the [Closure
+Compiler](https://developers.google.com/closure/compiler) to minify JavaScript,
+and we can adapt [what it
+does](https://github.com/obsidiansystems/obelisk/blob/071e2edb92e623b4415fb6deedc4219ad1f829f0/default.nix#L147)
+and [another example by Tom
+Smalley](https://github.com/tomsmalley/marking/blob/a522b8c75a96146883a7e32acf5b17bb5f4abf1b/makefile#L5-L10)
+that I found when I was looking into this to update `glitch.nix`:
+
+<details>
+<summary style="cursor: pointer">`glitch.nix`</summary>
+```nix
+let
+  # ./updater versions.json reflex-platform
+  fetcher = { owner, repo, rev, sha256, ... }: builtins.fetchTarball {
+    inherit sha256;
+    url = "https://github.com/${owner}/${repo}/tarball/${rev}";
+  };
+  reflex-platform = fetcher (builtins.fromJSON (builtins.readFile ./versions.json)).reflex-platform;
+  pkgs = (import reflex-platform {}).nixpkgs;
+  project = import ./default.nix;
+  html = pkgs.writeText "index.html" ''
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <script language="javascript" src="all.js"></script>
+      </head>
+      <body>
+      </body>
+    </html>
+  '';
+in pkgs.runCommand "glitch" {} ''
+  mkdir -p $out
+  cp ${html} $out/index.html
+  ${pkgs.closurecompiler}/bin/closure-compiler \
+    --externs=${project.ghcjs.small-viz}/bin/small-viz.jsexe/all.js.externs \
+    --jscomp_off=checkVars \
+    --js_output_file="$out/all.js" \
+    -O ADVANCED \
+    -W QUIET \
+    ${project.ghcjs.small-viz}/bin/small-viz.jsexe/all.js
+''
+```
+</details>
+
+*([revision](https://gist.github.com/vaibhavsagar/24b1754b8a269fd8c54a89cb73e64fa8/aac5fe1258ccfc8c9b8ca685b9db1a4f538ae183#file-glitch-nix))*
+
+And this brings the size down to under 2MB.
