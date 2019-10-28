@@ -470,4 +470,4 @@ And then produce the files we need to copy over with:
 $ nix-build glitch.nix
 ```
 
-I've gone ahead and done this, and it's up on http://small-viz.glitch.me/.
+I've gone ahead and done this, and it's up on [http://small-viz.glitch.me/](http://small-viz.glitch.me/).
