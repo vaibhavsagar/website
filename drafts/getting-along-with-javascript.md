@@ -74,12 +74,16 @@ revision I used:
 ```
 </details>
 
+*([revision](https://gist.github.com/vaibhavsagar/24b1754b8a269fd8c54a89cb73e64fa8/c21e62ecdcc053273ee5e4815ef538e1e8a29e55#file-versions-json))*
+
 The next step is to get a Haskell project skeleton in place. I used `cabal
 init` for this as follows:
 
 ```bash
 $ nix-shell -p ghc cabal-install --run 'cabal init -lBSD3'
 ```
+
+*([revision](https://gist.github.com/vaibhavsagar/24b1754b8a269fd8c54a89cb73e64fa8/d4c4f9ff39b595f5c8858892328adfa6ab4a4cc8#file-small-viz-cabal))*
 
 which generated an executable-only project, just like I wanted. I named this
 project `small-viz`, because it's a small project using the
@@ -111,6 +115,8 @@ in (import reflex-platform { system = builtins.currentSystem; }).project ({ pkgs
 })
 ```
 </details>
+
+*([revision](https://gist.github.com/vaibhavsagar/24b1754b8a269fd8c54a89cb73e64fa8/348b759019bc19aec9833a6b5f042c1d2f5e9b13#file-default-nix))*
 
 This sets up our project to build with both GHC and GHCJS, because we want to
 develop with GHC but eventually use GHCJS to create our final artifact. I also
@@ -151,6 +157,8 @@ main = mainWidget $ el "div" $ do
   dynText $ _inputElement_value t
 ```
 </details>
+
+*([revision](https://gist.github.com/vaibhavsagar/24b1754b8a269fd8c54a89cb73e64fa8/93c510d77f7a8d6b1d8d63bb1cb0be37c6d575b5#file-main-hs))*
 
 We also have to add `reflex-dom` and `reflex` to our dependencies in our
 `.cabal` file, and then we can get a automatically-reloading development build
@@ -193,6 +201,8 @@ main = mainWidget $ el "div" $ do
 ```
 </details>
 
+*([revision](https://gist.github.com/vaibhavsagar/24b1754b8a269fd8c54a89cb73e64fa8/d5ff4725b26db3dd596abb2e751711f5c568b6bc#file-main-hs))*
+
 The latest version of Viz.js is available
 [here](https://www.jsdelivr.com/package/npm/viz.js), and we can include it
 using `mainWidgetWithHead`:
@@ -216,8 +226,10 @@ main = mainWidgetWithHead widgetHead $ el "div" $ do
 ```
 </details>
 
+*([revision](https://gist.github.com/vaibhavsagar/24b1754b8a269fd8c54a89cb73e64fa8/6a856c34755f730793f3b588a82f0fc9f836bf9c#file-main-hs))*
+
 Now we can poke around with our browser developer tools until we have a useful
-function. Here's what I came up with, based on the examples in the
+JavaScript function. Here's what I came up with, based on the examples in the
 [wiki](https://github.com/mdaines/viz.js/wiki/Usage#using-a-script-tag):
 
 ```javascript
@@ -233,15 +245,15 @@ function(e, string) {
 }
 ```
 
-Now we can start thinking about how we want to do JavaScript interop! Although
+Then we can start thinking about how we want to do JavaScript interop! Although
 there is a GHCJS FFI as described [in the
 wiki](https://github.com/ghcjs/ghcjs/wiki/A-few-examples-of-Foreign-Function-Interface),
 this doesn't seem to work at all with GHC, and that means we can't use it
 during development. I don't think that's good enough, and fortunately we don't
 have to settle for this and instead can use
-[`jsaddle`](http://hackage.haskell.org/package/jsaddle-0.9.6.0), which bills
-itself as "an EDSL for calling JavaScript that can be used both from GHCJS and
-GHC". We can add `jsaddle` to our dependencies, add `Viz` to the
+[`jsaddle`](http://hackage.haskell.org/package/jsaddle-0.9.6.0), which
+describes itself as "an EDSL for calling JavaScript that can be used both from
+GHCJS and GHC". We can add `jsaddle` to our dependencies, add `Viz` to the
 `exposed-modules` stanza in our `.cabal` file, and create a new module `Viz`,
 and then we can use the `eval` and `call` functions to call our JavaScript
 directly:
@@ -273,10 +285,12 @@ vizJs = eval
 ```
 </details>
 
+*([revision](https://gist.github.com/vaibhavsagar/24b1754b8a269fd8c54a89cb73e64fa8/b234b2649022b1b560df1281f053bac30289ce12#file-viz-hs))*
+
 JSaddle runs operations in `JSM`, which is similar to `IO`, and all functions
-take values of type `JSVal` to ensure they can be represented as JavaScript
-values. We pass `vizJs` to `call` twice because the second parameter represents
-the `this` keyword.
+take values of type `JSVal` that can be represented as JavaScript values. We
+pass `vizJs` to `call` twice because the second parameter represents the `this`
+keyword.
 
 Wiring everything up together is just a few more lines of code:
 
@@ -303,6 +317,8 @@ main = mainWidgetWithHead widgetHead $ el "div" $ do
     script src = elAttr "script" ("type" =: "text/javascript" <> "src" =: src) blank
 ```
 </details>
+
+*([revision](https://gist.github.com/vaibhavsagar/24b1754b8a269fd8c54a89cb73e64fa8/e0e886959e338803f9c4a1a3596f8eb88474424d#file-main-hs))*
 
 There's a lot going on here, so I'll explain in a little more detail.
 
@@ -357,6 +373,8 @@ viz element string = do
 ```
 </details>
 
+*([revision](https://gist.github.com/vaibhavsagar/24b1754b8a269fd8c54a89cb73e64fa8/96e0dbda1ba9dc5712342bf1b123fe5d463201d0#file-viz-hs))*
+
 This is recognisably the same logic as before, but using some new JSaddle operators:
 
 - [`#`](http://hackage.haskell.org/package/jsaddle-0.9.6.0/docs/Language-Javascript-JSaddle.html#v:-35-)
@@ -365,6 +383,9 @@ This is recognisably the same logic as before, but using some new JSaddle operat
   is for property access
 - [`<#`](http://hackage.haskell.org/package/jsaddle-0.9.6.0/docs/Language-Javascript-JSaddle.html#v:-60--35-)
   is a setter
+
+Note also that all callables take a list of `JSVal`s as arguments, since
+JSaddle doesn't know how many arguments we intend to pass in advance.
 
 This is an improvement, but we can do even better using the lensy API (after
 adding `lens` to our dependencies):
@@ -390,15 +411,18 @@ viz element string = do
 ```
 </details>
 
+*([revision](https://gist.github.com/vaibhavsagar/24b1754b8a269fd8c54a89cb73e64fa8/2ede687d9969666897fb1ca944ed83d239b4386b#file-viz-hs))*
+
 Not much has changed except that we can use convenience functions like
 [`js1`](http://hackage.haskell.org/package/jsaddle-0.9.6.0/docs/Language-Javascript-JSaddle.html#v:js1)
 and
 [`jss`](http://hackage.haskell.org/package/jsaddle-0.9.6.0/docs/Language-Javascript-JSaddle.html#v:jss).
 
-I'm told it's possible to get rid of the JSaddle overhead entirely by using a
-library like [`ghcjs-dom`](https://hackage.haskell.org/package/ghcjs-dom), but
-I haven't explored this approach, and I will leave this as an exercise for the
-reader. If you figure out how to do this, please let me know!
+I'm told that there is some overhead to using JSaddle which it's possible to
+get rid of by using a library like
+[`ghcjs-dom`](https://hackage.haskell.org/package/ghcjs-dom), but I haven't
+explored this approach and I will leave this as an exercise for the reader. If
+you learn how to do this, please teach me!
 
 Now we are able to run Haskell on the frontend without having to write any
 JavaScript ourselves. The final step is to put this on the internet somewhere!
@@ -463,10 +487,12 @@ in pkgs.runCommand "glitch" {} ''
 ```
 </details>
 
+*([revision](https://gist.github.com/vaibhavsagar/24b1754b8a269fd8c54a89cb73e64fa8/1e90440e2d9bd4f3bf39f6ad5d3e75610f3d9ee5#file-glitch-nix))*
+
 And then produce the files we need to copy over with:
 
 ```bash
 $ nix-build glitch.nix
 ```
 
-I've gone ahead and done this, and it's up on [http://small-viz.glitch.me/](http://small-viz.glitch.me/).
+I've gone ahead and done this, and it's up on [small-viz.glitch.me/](https://small-viz.glitch.me/).
