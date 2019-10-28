@@ -558,12 +558,12 @@ And this brings the size down to under 2MB.
 
 I think this is a good stopping point. We've:
 
-- built a frontend-only Reflex app
-- which integrates with a JavaScript library
-- using the JSaddle FFI idiomatically
-- deployed to Glitch
+1. Built a frontend-only Reflex app
+1. Integrated with a JavaScript library
+1. Used the JSaddle FFI idiomatically
+1. Deployed to Glitch
 
 and I hope I've convinced you to take a closer look at Haskell in the browser.
 
 *Thanks to [Ali Abrar](https://github.com/ali-abrar) and [Farseen Abdul
-Salam](https://twitter.com/itsfarseen)*
+Salam](https://twitter.com/itsfarseen) for comments and feedback.*
