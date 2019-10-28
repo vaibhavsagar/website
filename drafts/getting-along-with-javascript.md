@@ -401,5 +401,73 @@ library like [`ghcjs-dom`](https://hackage.haskell.org/package/ghcjs-dom), but
 I haven't explored this approach, and I will leave this as an exercise for the
 reader. If you figure out how to do this, please let me know!
 
-Finally we are able to run Haskell on the frontend without having to write any
-JavaScript ourselves.
+Now we are able to run Haskell on the frontend without having to write any
+JavaScript ourselves. The final step is to put this on the internet somewhere!
+
+Building with GHCJS is straightforward:
+
+```bash
+$ nix-build -A ghcjs.small-viz
+```
+
+I'm enamoured of the idea of deploying this to [Glitch](https://glitch.com/),
+so let's look into doing that. The `index.html` created by the default GHCJS
+build is unnecessary, and we can simplify it:
+
+<details>
+<summary style="cursor: pointer">`index.html`</summary>
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <script language="javascript" src="all.js"></script>
+  </head>
+  <body>
+  </body>
+</html>
+```
+</details>
+
+The only JavaScript file that needs to be copied over is then `all.js`. We can
+write a `glitch.nix` file to simplify this process:
+
+<details>
+<summary style="cursor: pointer">`glitch.nix`</summary>
+```nix
+let
+  # ./updater versions.json reflex-platform
+  fetcher = { owner, repo, rev, sha256, ... }: builtins.fetchTarball {
+    inherit sha256;
+    url = "https://github.com/${owner}/${repo}/tarball/${rev}";
+  };
+  reflex-platform = fetcher (builtins.fromJSON (builtins.readFile ./versions.json)).reflex-platform;
+  pkgs = (import reflex-platform {}).nixpkgs;
+  project = import ./default.nix;
+  html = pkgs.writeTextFile {
+    name = "index.html";
+    text = ''
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <script language="javascript" src="all.js"></script>
+        </head>
+        <body>
+        </body>
+      </html>
+    '';
+  };
+in pkgs.runCommand "glitch" {} ''
+  mkdir -p $out
+  cp ${html} $out/index.html
+  cp ${project.ghcjs.small-viz}/bin/small-viz.jsexe/all.js $out/all.js
+''
+```
+</details>
+
+And then produce the files we need to copy over with:
+
+```bash
+$ nix-build glitch.nix
+```
+
+I've gone ahead and done this, and it's up on http://small-viz.glitch.me/.
