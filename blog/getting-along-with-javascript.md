@@ -562,7 +562,7 @@ And this brings the size down to under 2MB.
 [Tom Smalley](https://github.com/tomsmalley) points out that there is even a
 `-dedupe` flag that GHCJS accepts, and although I couldn't find good
 documentation for this (beyond
-[this](https://www.reddit.com/r/haskell/comments/54knub/ghcjs_dedupe/)), it
+[a Reddit post](https://www.reddit.com/r/haskell/comments/54knub/ghcjs_dedupe/)), it
 does get the filesize down to 1MB:
 
 <details>
