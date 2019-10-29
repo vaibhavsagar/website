@@ -29,7 +29,9 @@ and mobile Haskell applications.
 
 If you'd like to follow along, I have the code available [at this
 gist](https://gist.github.com/vaibhavsagar/24b1754b8a269fd8c54a89cb73e64fa8)
-with each revision representing a step in the progression.
+with [each
+revision](https://gist.github.com/vaibhavsagar/24b1754b8a269fd8c54a89cb73e64fa8/revisions)
+representing a step in the progression.
 
 ### Setting up reflex-platform
 
