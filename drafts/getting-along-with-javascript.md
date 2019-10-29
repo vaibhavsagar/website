@@ -12,10 +12,6 @@ users. I'm looking for something lighter that I can serve statically using
 GitHub Pages or [Glitch](https://glitch.com), so I can plop some code on a
 webpage and never worry about hosting ever again.
 
-If you'd like to follow along, I have the code available [at this
-gist](https://gist.github.com/vaibhavsagar/24b1754b8a269fd8c54a89cb73e64fa8)
-with each revision representing a step in the progression.
-
 My first instinct was to reach for a tool like
 [Obelisk](https://github.com/obsidiansystems/obelisk), which bills itself as
 "an easy way to develop and deploy your Reflex project". Although it does work
@@ -30,6 +26,10 @@ Platform](https://github.com/reflex-frp/reflex-platform) directly, which is a
 set of changes and overrides to a revision of
 [Nixpkgs](https://github.com/NixOS/nixpkgs) to best support building full-stack
 and mobile Haskell applications.
+
+If you'd like to follow along, I have the code available [at this
+gist](https://gist.github.com/vaibhavsagar/24b1754b8a269fd8c54a89cb73e64fa8)
+with each revision representing a step in the progression.
 
 ### Setting up reflex-platform
 
