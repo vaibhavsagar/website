@@ -36,7 +36,7 @@ representing a step in the progression.
 ### Setting up reflex-platform
 
 I like to use the `updater` script described in [a previous blog
-post](/blog/quick-easy-nixpkgs-pinning), so I'll start by copying that over and
+post](/blog/2018/05/27/quick-easy-nixpkgs-pinning), so I'll start by copying that over and
 creating a `versions.json` with the following contents:
 
 <details>
