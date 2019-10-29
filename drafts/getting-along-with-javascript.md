@@ -359,7 +359,8 @@ earlier. Now we should have a working GraphViz renderer in our browser!
 ### Using the FFI better
 
 We could stop here, but I think we can do better than evaluating JavaScript
-strings. JSaddle is an EDSL, so we can rewrite our JavaScript in Haskell:
+strings directly. JSaddle is an EDSL, which means we can rewrite our JavaScript
+in Haskell:
 
 <details>
 <summary style="cursor: pointer">`Viz.hs`</summary>
@@ -385,7 +386,7 @@ viz element string = do
 
 *([revision](https://gist.github.com/vaibhavsagar/24b1754b8a269fd8c54a89cb73e64fa8/96e0dbda1ba9dc5712342bf1b123fe5d463201d0#file-viz-hs))*
 
-This is recognisably the same logic as before, but using some new JSaddle operators:
+This is recognisably the same logic as before, using some new JSaddle operators:
 
 - [`#`](http://hackage.haskell.org/package/jsaddle-0.9.6.0/docs/Language-Javascript-JSaddle.html#v:-35-)
   is for calling a JavaScript function
@@ -423,7 +424,7 @@ viz element string = do
 
 *([revision](https://gist.github.com/vaibhavsagar/24b1754b8a269fd8c54a89cb73e64fa8/2ede687d9969666897fb1ca944ed83d239b4386b#file-viz-hs))*
 
-Not much has changed except that we can use convenience functions like
+Again, not much has changed except that we can use convenience functions like
 [`js1`](http://hackage.haskell.org/package/jsaddle-0.9.6.0/docs/Language-Javascript-JSaddle.html#v:js1)
 and
 [`jss`](http://hackage.haskell.org/package/jsaddle-0.9.6.0/docs/Language-Javascript-JSaddle.html#v:jss).
