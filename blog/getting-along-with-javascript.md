@@ -614,6 +614,6 @@ I think this is a good stopping point. We've:
 and I hope I've convinced you to take a closer look at Haskell the next time
 you want to write something that runs in the browser.
 
-*Thanks to [Ali Abrar](https://github.com/ali-abrar) and [Farseen Abdul
+*Thanks to [Ali Abrar](https://github.com/ali-abrar), [Farseen Abdul
 Salam](https://twitter.com/itsfarseen), and [Tom
 Smalley](https://github.com/tomsmalley) for comments and feedback.*
