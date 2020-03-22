@@ -11,7 +11,7 @@ do a lot of work all over again. After experimenting with some of my own
 repositories, I'm going to talk about how I've successfully used it and when
 I think it makes (or doesn't make) sense to use it.
 
-## GHC Dev CI
+## GHC-in-GHCi CI
 
 When I learned about
 [GHC-in-GHCi](https://gitlab.haskell.org/ghc/ghc/wikis/building/in-ghci), I was
@@ -39,24 +39,8 @@ improvement over Travis is the granularity of the `cron` support: GitHub
 actions can run every hour at most, while Travis builds cannot be configured to
 run more frequently than once a day. I was happy to test my instructions daily,
 but it's good to know that I can do something more often if I feel like it. In
-the end I was able to repurpose my testing script from my earlier attempts:
-
-```bash
-#!/usr/bin/env nix-shell
-#! nix-shell -i bash
-#! nix-shell -p cabal-install haskellPackages.ghcid nix
-
-set -euxo pipefail
-
-git clone --recursive https://gitlab.haskell.org/ghc/ghc/
-cd ghc
-git clone https://github.com/alpmestan/ghc.nix
-cabal update
-nix-shell ghc.nix --run './boot && ./configure && ghcid --run=":q" -o output.txt' || true
-tail -n2 output.txt | head -n1 | grep 'All good'
-```
-
-and the rest of the workflow was straightforward:
+the end I was able to repurpose my testing script from my earlier attempts and
+the rest of the workflow was straightforward:
 
 ```yaml
 name: "Test"
@@ -74,11 +58,51 @@ jobs:
     - run: ./steps.sh
 ```
 
+Here's what each section is doing:
+
+```yaml
+name: "Test"
+```
+
+This is what the workflow is called in the UI.
+
+```yaml
+on:
+  pull_request:
+  push:
+  schedule:
+    - cron: '0 1 * * *'
+```
+
+This action runs on every push, pull request, and at 1:00AM every day.
+
+```yaml
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - uses: cachix/install-nix-action@v6
+    - run: ./steps.sh
+```
+
+There's one job (called `tests`) which runs on the latest Ubuntu virtual
+machine image and
+
+1. Checks out the repository using the `actions/checkout` action tagged `v1`
+1. Installs Nix using the `cachix/install-nix-action` action tagged `v6`
+1. Runs `steps.sh`
+
+GitHub Actions distinguish between `uses` for actions and `run` for scripts.
+
 I think this example highlights the two biggest advantages of GitHub actions
 over e.g. Travis CI:
 
 1. Extremely generous resource limits
 1. Preconfigured, reusable building blocks
+
+You can see the final repository
+[here](https://github.com/vaibhavsagar/ghc-dev-ci/).
 
 ## IHaskell Docker
 
@@ -86,21 +110,22 @@ I help maintain [IHaskell](https://github.com/gibiansky/IHaskell), and people
 recently requested [an official IHaskell Docker
 image](https://github.com/gibiansky/IHaskell/issues/1030). Although this seems
 like a relatively easy request to fulfill, it's not feasible to include
-a Docker build as part of CI, as this can easily take over 50 minutes on its own.
-I toyed with the idea of using Docker Hub's own CI infrastructure to build the
-Docker image, but that only seems to work correctly if it's wired up by the
-owner of the repository (not just someone with commit permissions).
+a Docker build as part of our Travis CI setup, as this can easily take over 50
+minutes on its own. I toyed with the idea of using Docker Hub's own CI
+infrastructure to build the Docker image, but that only seems to work correctly
+if it's wired up by the owner of the repository (not just someone with commit
+permissions).
 
-I also looked into replacing Travis CI (which we use for this repository) with
-GitHub Actions completely, but it turned out that the repository owner was on
-a legacy plan, and GitHub Actions wasn't available.
+I also looked into replacing Travis CI with GitHub Actions completely, but it
+turned out that the repository owner was on a legacy plan, and GitHub Actions
+wasn't available. It seemed like I was stuck.
 
 Eventually I realised that there was nothing stopping me from creating
 a repository using my own account and effectively polling the IHaskell
 repository using the `cron` support. This turned out to be even easier than my
 previous example, because there is [a preconfigured action for building and
 pushing a Docker
-image](https://github.com/elgohr/Publish-Docker-Github-Action)! Here's what
+image](https://github.com/elgohr/Publish-Docker-Github-Action)! This is what
 I came up with:
 
 ```yaml
