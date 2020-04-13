@@ -6,8 +6,8 @@ tags: nix, programming
 
 GitHub Actions has been generally available for a while now, but if you already
 have painstakingly crafted CI infrastructure using another provider such as
-Travis, it's not clear if it's worth switching over and potentially having to
-do a lot of work all over again. After experimenting with some of my own
+Travis, it's not clear whether it's worth switching over and potentially having
+to do a lot of work all over again. After experimenting with some of my own
 repositories, I'm going to talk about how I've successfully used it and when
 I think it makes (or doesn't make) sense to use it.
 
@@ -149,9 +149,55 @@ jobs:
         cache: true
 ```
 
+Here's what each section does:
+
+```yaml
+name: "Docker"
+```
+
+I called this workflow `Docker`.
+
+```yaml
+on:
+  push:
+  schedule:
+    - cron: '0 1 * * *'
+```
+
+It runs on every push to this repository, but not on pull requests because
+I didn't want to make it possible for a malicious actor to upload anything that
+way. It also runs at 1:00AM every day.
+
+```yaml
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@722adc63f1aa60a57ec37892e133b1d319cae598
+      with:
+        repository: 'gibiansky/IHaskell'
+    - uses: elgohr/Publish-Docker-Github-Action@a72734e15780689886c6518c4dc2e17876d05d4e
+      with:
+        name: gibiansky/ihaskell
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        cache: true
+```
+
+There's one job (`build`) which pins each of its steps to a particular commit
+and
+
+1. Uses the `checkout` action to clone `gibiansky/IHaskell` by passing it as an
+   argument
+2. Uses the `elgohr/Publish-Docker-Github-Action` to build and push a Docker
+   image to `gibiansky/ihaskell`, with caching enabled and credentials provided
+
 Again, I'm happy with running this daily for now, but it's nice to know that
 I can run it more frequently if I want to. The combination of generous resource
 limits and preconfigured building blocks makes working like this very easy.
+When the repository hasn't changed, the caching support ,which pulls down the
+latest Docker image before doing anything else, means that nothing is pushed
+and a CI run takes only a few minutes.
 
 ## Caching
 
