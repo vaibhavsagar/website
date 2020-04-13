@@ -4,6 +4,11 @@ title: Talks
 
 ## Conference
 
+#### Compilers for Nothing, Executables for Free!
+
+- Where: !!Con West 2020
+- [Slides](https://vaibhavsagar.com/presentations/partial-evaluation), [Video](https://www.youtube.com/watch?v=Dcug6bu_wUE)
+
 #### Yes, IHaskell Can Do That!
 
 - Where: New York :: Compose 2019
@@ -39,6 +44,10 @@ title: Talks
 - [Slides](https://vaibhavsagar.com/git-it-going/), [Video](https://www.youtube.com/watch?v=eTjQOfMYiM8)
 
 ## Meetup
+
+#### Space-efficient Static Trees and Graphs
+- Where: Papers We Love NYC October 2019
+- [Slides](http://vaibhavsagar.com/presentations/space-efficient-static-trees-graphs/), [Video](https://www.youtube.com/watch?v=bbr67HUNBVI&t=1380)
 
 #### HAMTs From Scratch
 - Where: NYHUG April 2019
