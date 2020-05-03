@@ -17,8 +17,7 @@ here](https://mybinder.org/v2/gh/gibiansky/IHaskell/master).
 
 I started with the simplest thing I could think of, which was to install system
 dependencies and Jupyter to an Ubuntu container and then run `stack install
-ihaskell`. You can see the Dockerfile for that
-[here](https://github.com/vaibhavsagar/ihaskell-mybinder/blob/6d093c5cd06cde77e13a5a98ae8ce093ba51fee9/Dockerfile).
+ihaskell`.
 
 Once I had that working, my next step was to roll these changes into
 [IHaskell's `Dockerfile`](https://github.com/gibiansky/IHaskell/pull/848) and
@@ -35,9 +34,8 @@ FROM vaibhavsagar/ihaskell:4afa0aee339e
 
 Ideally I would also like to get this running with Nix, because that approach
 results in a much smaller image and is easily extensible just by editing
-`default.nix`. I have a small repo that [builds but doesn't run on
-mybinder.org](https://github.com/vaibhavsagar/ihaskell-mybinder-nix), and I've
-[opened an issue](https://github.com/jupyterhub/binder/issues/87).
+`default.nix`. I have a small repo that builds but doesn't run on mybinder.org,
+and I've [opened an issue](https://github.com/jupyterhub/binder/issues/87).
 
 I'm pretty excited about what this means for the Jupyter ecosystem and IHaskell
 in particular, and I'm looking forward to seeing what other people do with
