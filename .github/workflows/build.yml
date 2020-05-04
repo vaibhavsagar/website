@@ -7,10 +7,11 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - uses: cachix/install-nix-action@v8
-    - uses: cachix/cachix-action@v5
+    - uses: cachix/cachix-action@v6
       with:
         name: vaibhavsagar
         signingKey: '${{ secrets.CACHIX_SIGNING_KEY }}'
+    - run: nix-build
     - run: ./.github/workflows/update_pages.sh
       env:
         GITHUB_TOKEN: ${{ secrets.BLOG_GITHUB_TOKEN }}
