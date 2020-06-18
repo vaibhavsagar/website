@@ -178,7 +178,7 @@ $ nix-shell -A shells.ghc --run 'ghcid -T "Main.main" --command "cabal new-repl"
 
 This allows a native Haskell process to control a web page, so we can navigate
 to it using our browser at `http://localhost:3003` and have a fast feedback
-loop. In practice there is a lot of brower refreshing involved, but this is
+loop. In practice there is a lot of browser refreshing involved, but this is
 still much nicer than having to do a GHCJS build each time we want to look at
 our changes. Now we have an input box that repeats what we type into it, which
 is a good start. I should point out that this works a lot better on Google
