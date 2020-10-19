@@ -272,7 +272,7 @@ of the language, see
 1. If you squint this looks a lot like a regular unit file. More on this below.
 
 It would be useful to look at the systemd service file that gets generated
-from this configuraation. To do this, we'll need one more file:
+from this configuration. To do this, we'll need one more file:
 
 *ops/webserver.nix*
 ```nix
