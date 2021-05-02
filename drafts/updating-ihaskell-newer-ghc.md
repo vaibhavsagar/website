@@ -1,7 +1,7 @@
 --------------------------------------------------------------------------------
 title: Updating IHaskell to a Newer GHC
-published: 2021-05-10
-tags: programming, nix, haskell
+published: 2021-05-02
+tags: haskell, programming, nix
 --------------------------------------------------------------------------------
 
 As the current maintainer of IHaskell, I see myself as having one primary
@@ -126,19 +126,108 @@ build.
 so it makes sense to start there. I'm relatively low-tech as far as development
 workflow goes and I prefer `ghcid` and a text editor, mostly because I haven't
 yet figured out how to get anything more advanced to work. To get `ghcid`
-running, assuming you have it installed globally like I do, you can run
+running, assuming you have it installed globally like I do, you relax the
+version bounds in `ghc-parser.cabal` and run
 
 ```shell
 $ nix-shell release-9.0.nix -A passthru.haskellPackages.ghc-parser.env
 $ cd ghc-parser
 $ runhaskell Setup.hs configure
-Warning: ghc-parser.cabal:17:28: Packages with 'cabal-version: 1.12' or later
-should specify a specific version of the Cabal spec of the form
-'cabal-version: x.y'. Use 'cabal-version: 1.16'.
-Configuring ghc-parser-0.2.2.0...
-Setup.hs: Encountered missing or private dependencies:
-ghc >=8.0 && <8.11
-$ # After fixing the error above by editing `ghc-parser.cabal`
-$ runhaskell Setup.hs configure
 $ ghcid -c runhaskell Setup.hs repl lib:ghc-parser
+```
+
+Most of the compilation errors are related to [this GHC module
+restructuring](https://gitlab.haskell.org/ghc/ghc/-/issues/13009) that started
+in GHC 8.10 and continued in GHC 9.0. If I had kept better notes from last time
+I would have looked at
+[`ghc-api-compat`](https://github.com/hsyl20/ghc-api-compat/) which offers
+a compatibility shim and whose
+[`.cabal`](https://github.com/hsyl20/ghc-api-compat/blob/master/ghc-api-compat.cabal)
+file makes translating between old and new module names very easy. Instead
+I ended up looking at the [GHC 9.0 API
+Haddocks](https://downloads.haskell.org/ghc/9.0.1/docs/html/libraries/ghc-9.0.1/index.html)
+and the [GHC 8.10 API
+Haddocks](https://hackage.haskell.org/package/ghc-8.10.2). As an aside, I am
+irritated that the most recently released GHC API documentation isn't available
+on Hackage. I also like to have a local checkout of the GHC source so that
+I can look at the code across different commits if required.
+
+[These are the changes I needed to make to
+`ghc-parser`](https://github.com/gibiansky/IHaskell/pull/1215/commits/063e6bb0459b7ff8d9a2e92090332bf7a1e92a63).
+
+## Updating `ipython-kernel`
+
+`ipython-kernel` doesn't depend on the GHC API directly, so changes to it are
+usually related to breaking API changes in other dependencies. In this case, no
+changes were required!
+
+## Updating `ihaskell`
+
+This is usually the most involved package to update, as its operation is
+intimately tied with the details of the GHC API. Most of the changes required
+were for three reasons:
+
+1. The aforementioned module hierarchy change
+
+2. Changing the terminology from
+"packages" to "units" as described in [this
+commit](https://gitlab.haskell.org/ghc/ghc/-/commit/10a2ba90aa6a788677104cc43318c66f46e2e2b0)
+
+3. Removing specialised `gcatch`, `gtry`, etc. functions in favour of the more
+general versions in `exceptions`, as detailed in [this section of the release
+notes](https://downloads.haskell.org/ghc/9.0.1/docs/html/users_guide/9.0.1-notes.html#ghc-library)
+
+As before, it's possible to get `ghcid` running with
+
+```shell
+$ nix-shell release-9.0.nix -A passthru.haskellPackages.ghc-parser.env
+$ runhaskell Setup.hs configure --enable-tests
+$ ghcid -c runhaskell Setup.hs repl lib:ihaskell
+```
+
+After getting everything compiling, I like to build the `ihaskell` package by
+running
+
+```shell
+$ nix-build release-9.0.nix -A passthru.haskellPackages.ihaskell
+```
+
+because this sets up the test environment correctly (i.e. putting the built
+`ihaskell` executable in the `$PATH`) before running tests, although course you
+could do this manually. This usually catches any issues that have slipped
+through and small formatting changes in GHC output across versions.
+
+[Here are the changes I made to
+`ihaskell`](https://github.com/gibiansky/IHaskell/pull/1215/commits/1796c35119ced7a564e75fe07067797fb182149d).
+
+## Acceptance testing
+
+Since IHaskell bridges the Jupyter and GHC ecosystems, we have an acceptance
+test that essentially runs an IHaskell notebook through
+[`nbconvert`](https://nbconvert.readthedocs.io/en/latest/) and ensures that the
+output is identical to the input. Because GHC output (amongst other things)
+differs across GHC versions, this acceptance test was frequently broken and/or
+a bad indicator of whether any changes were correct. Recently [James
+Brock](https://github.com/jamesdbrock) simplified and greatly improved the
+acceptance test to be more reliable. Unfortunately the latest releases of
+Jupyter now include additional metadata with each response including the time
+of reply, which cannot be expected to be the same across runs. In the past it's
+been possible to filter the offending fields out using `grep -e` but a more
+sophisticated approach was required this time so I took the opportunity to
+learn a little more about `[jq`](https://stedolan.github.io/jq/) and used that
+instead. This new approach should also be more flexible and better at
+accommodating future output changes.
+
+[Here are the changes I made to the acceptance
+tests](https://github.com/gibiansky/IHaskell/pull/1215/commits/4b62c964fb8937353d39a8798dc13d06260c9257).
+
+## Using the updated IHaskell
+
+We're done! I like to quickly try out a new notebook, as a quick test that
+everything works as expected (and also for the novelty of being the first
+person to try IHaskell on the newest GHC). To do this, I run
+
+```shell
+$ nix-build release-9.0.nix
+$ result/bin/ihaskell-notebook
 ```
