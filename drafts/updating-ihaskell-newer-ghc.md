@@ -195,7 +195,8 @@ $ nix-build release-9.0.nix -A passthru.haskellPackages.ihaskell
 because this sets up the test environment correctly (i.e. putting the built
 `ihaskell` executable in the `$PATH`) before running tests, although course you
 could do this manually. This usually catches any issues that have slipped
-through and small formatting changes in GHC output across versions.
+through and [small formatting changes in GHC output across
+versions](https://github.com/gibiansky/IHaskell/pull/1215/commits/1796c35119ced7a564e75fe07067797fb182149d#diff-409dc396158ef9f7f39928cb144c6c3037072f0d9932499d2213862e0f5fbae6).
 
 [Here are the changes I made to
 `ihaskell`](https://github.com/gibiansky/IHaskell/pull/1215/commits/1796c35119ced7a564e75fe07067797fb182149d).
