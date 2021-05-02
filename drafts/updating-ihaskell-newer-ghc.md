@@ -214,7 +214,7 @@ Jupyter now include additional metadata with each response including the time
 of reply, which cannot be expected to be the same across runs. In the past it's
 been possible to filter the offending fields out using `grep -e` but a more
 sophisticated approach was required this time so I took the opportunity to
-learn a little more about `[jq`](https://stedolan.github.io/jq/) and used that
+learn a little more about [`jq`](https://stedolan.github.io/jq/) and used that
 instead. This new approach should also be more flexible and better at
 accommodating future output changes.
 
