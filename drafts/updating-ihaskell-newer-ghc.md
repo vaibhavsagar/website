@@ -8,20 +8,19 @@ As the current maintainer of IHaskell, I see myself as having one primary
 responsibility: keeping it up-to-date with newer GHC releases. The chain of
 events that led to me becoming a maintainer started with the then-latest
 version of IHaskell not having support for GHC 8.0, and I still remember how
-frustrated I felt when dealing with this limitation, which drives me to make
-sure nobody else has to experience this.
+frustrated I felt when dealing with this limitation.
 
 Since then I've had the opportunity to add GHC 8.2, 8.4, 8.6, 8.8, 8.10, and
 now 9.0 support, but because I only have to do this every 6 months or so (at
 the earliest) I promptly forget the details of this work afterwards and have to
-spelunk through old (often retroactively amended) commits to rediscover what
+spelunk through old, often heavily amended, commits to rediscover what
 past me (who is notoriously bad at documentation) did.
 
 At the time of writing, GHC 9.2 is expected to be released soon and I don't
 want to forget everything I've just (re)learned when that happens.
 Additionally, it is conceivable that at some point someone other than me would
 like to take a crack at updating IHaskell to the newest version of GHC. This
-blog post exists to make these tasks easier.
+blog post details the steps I took to make these tasks easier in the future.
 
 ## Building IHaskell's dependencies
 
