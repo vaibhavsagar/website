@@ -4,6 +4,10 @@ published: 2019-09-08
 tags: programming
 --------------------------------------------------------------------------------
 
+_Translated to
+[Russian](https://pngset.com/ru-weird-cpu-instruction) by
+[Babur Muradov](https://pngset.com/)._
+
 _This is a pseudo-transcript of [a presentation I did at !!Con
 2019](https://www.youtube.com/watch?v=bLFqLfz2Fmc)._
 
