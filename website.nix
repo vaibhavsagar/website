@@ -1,4 +1,4 @@
-{ mkDerivation, base, filepath, hakyll, stdenv }:
+{ mkDerivation, base, filepath, hakyll, lib }:
 mkDerivation {
   pname = "website";
   version = "0.1.0.0";
@@ -6,5 +6,5 @@ mkDerivation {
   isLibrary = false;
   isExecutable = true;
   executableHaskellDepends = [ base filepath hakyll ];
-  license = stdenv.lib.licenses.bsd3;
+  license = lib.licenses.bsd3;
 }
