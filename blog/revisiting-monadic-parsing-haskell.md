@@ -4,7 +4,8 @@ published: 2018-02-04
 tags: haskell, programming, monads
 --------------------------------------------------------------------------------
 
-_Translated to [Russian](http://clipartmag.com/ru-revisiting-monadic-parsing-haskell) by [Clipart Team](http://clipartmag.com/)_
+_Translated to [Russian](http://clipartmag.com/ru-revisiting-monadic-parsing-haskell) by [Clipart Team](http://clipartmag.com/) and [Sindhi](
+https://mobilemall.pk/blog/revisiting-monadic-parsing-haskell/) by [Samuel Badree](https://mobilemall.pk/)_
 
 ['Monadic Parsing in Haskell'](http://www.cs.nott.ac.uk/~pszgmh/pearl.pdf) is a short paper that laid the groundwork for libraries like Parsec and Attoparsec. Although it was published in 1998 (almost 20 years ago!) it has aged gracefully and the code samples will run with almost no changes. However, the state of the art has advanced since then and I think the use of modern Haskell can make this material simpler to follow and implement.
 
