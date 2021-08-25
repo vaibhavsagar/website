@@ -22,7 +22,7 @@ Here's what each command does:
 3. Switches to the new system configuration.
 
 This workflow has been described before [in
-Typeclasses](https://typeclasses.com/nixos-on-aws) and [by Gabriel
+Typeclasses](https://typeclasses.com/nixos-on-aws) and [by Gabriella
 Gonzalez](http://www.haskellforall.com/2018/08/nixos-in-production.html), but I
 thought one more post demonstrating how to use these commands wouldn't hurt.
 Since the AWS use case has been covered so thoroughly by Typeclasses, I'm going
@@ -84,7 +84,7 @@ in
 ```
 
 but this doesn't provide any way of pinning `nixpkgs`. Another way ([as
-described by Gabriel
+described by Gabriella
 Gonzalez](http://www.haskellforall.com/2018/08/nixos-in-production.html#pinning-nixpkgs)),
 is to explicitly depend on a particular revision of `nixpkgs`:
 
