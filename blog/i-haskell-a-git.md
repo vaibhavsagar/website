@@ -15,7 +15,7 @@ That was enough motivation to start working on a [Git library](https://github.co
 I've chosen to write this as an IHaskell notebook that is available [here](https://github.com/vaibhavsagar/notebooks/tree/master/git-from-scratch), and I've included a `default.nix` to make things easier if you have Nix installed. You should be able to run
 
 ```bash
-$ $(nix-build --no-out-link)/bin/ihaskell-notebook
+$ $(nix-build --no-out-link)/bin/jupyter-notebook
 ```
 
 to open a Jupyter notebook environment with all the dependencies you'll need to follow along.

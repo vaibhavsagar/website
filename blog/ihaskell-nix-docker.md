@@ -49,7 +49,7 @@ in nixpkgs.dockerTools.buildLayeredImage {
       nixpkgs.bashInteractive
     ];
     config = {
-      Cmd = ["ihaskell-notebook" "--ip" "0.0.0.0"];
+      Cmd = ["jupyter-notebook" "--ip=0.0.0.0"];
       User = NB_USER;
       WorkingDir = "/home/${NB_USER}";
     };

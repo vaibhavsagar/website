@@ -229,5 +229,5 @@ person to try IHaskell on the newest GHC). To do this, I run
 
 ```shell
 $ nix-build release-9.0.nix
-$ result/bin/ihaskell-notebook
+$ result/bin/jupyter-notebook
 ```
