@@ -1,4 +1,5 @@
 --------------------------------------------------------------------------------
+{-# LANGUAGE LambdaCase        #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE ViewPatterns      #-}
 
@@ -10,7 +11,15 @@ import           Hakyll
 import           System.FilePath
 import           Data.List (isSuffixOf)
 import           Data.Maybe (fromMaybe)
+import qualified Data.Text as T
+import qualified Data.Text.Lazy as L
 
+import           GHC.SyntaxHighlighter
+import           Text.Pandoc.Definition (Block (CodeBlock, RawBlock), Pandoc)
+import           Text.Pandoc.Walk (walk, walkM)
+import           Text.Blaze.Html.Renderer.Text (renderHtml)
+import qualified Text.Blaze.Html5 as H
+import qualified Text.Blaze.Html5.Attributes as A
 
 --------------------------------------------------------------------------------
 main :: IO ()
@@ -40,18 +49,18 @@ main = hakyll $ do
                 >>= finalise                                  tagsCtx
 
     matcher "blog/*" (dateRoute `composeRoutes` cleanRoute) $
-        pandocCompiler
+        customPandocCompiler
         >>= loadAndApplyTemplate "templates/post.html"   postCtx
         >>= saveSnapshot "content"
         >>= finalise                                     postCtx
 
     matcher "drafts/*" cleanRoute $
-        pandocCompiler
+        customPandocCompiler
         >>= loadAndApplyTemplate "templates/post.html" postCtx
         >>= finalise                                   postCtx
 
     matcher "pages/*" (rootRoute `composeRoutes` cleanRoute) $
-        pandocCompiler >>= finalise defaultContext
+        customPandocCompiler >>= finalise defaultContext
 
     matcher "extra/*" rootRoute copyFileCompiler
 
@@ -93,6 +102,13 @@ main = hakyll $ do
             match path $ route router >> compile compiler
 
 --------------------------------------------------------------------------------
+customPandocCompiler :: Compiler (Item String)
+customPandocCompiler =
+    pandocCompilerWithTransformM
+        defaultHakyllReaderOptions
+        defaultHakyllWriterOptions
+        ghcSyntaxHighlight
+
 cleanRoute, rootRoute, dateRoute, prependBlogRoute :: Routes
 cleanRoute = customRoute createIndexRoute
     where createIndexRoute (toFilePath -> p) =
@@ -133,3 +149,40 @@ feedConfig = FeedConfiguration
     , feedAuthorEmail = "vaibhavsagar@gmail.com"
     , feedRoot        = "https://vaibhavsagar.com"
     }
+
+ghcSyntaxHighlight :: Pandoc -> Compiler Pandoc
+ghcSyntaxHighlight = walkM $ \case
+    CodeBlock (_, (isHaskell -> True):_, _) (tokenizeHaskell -> Just tokens) ->
+        pure . RawBlock "html" . L.toStrict . renderHtml $
+            formatHaskellTokens tokens
+    block -> pure block
+    where isHaskell = (== "haskell")
+
+formatHaskellTokens :: [(Token, T.Text)] -> H.Html
+formatHaskellTokens tokens =
+    H.div H.! A.class_ "sourceCode" $
+        H.pre H.! A.class_ "sourceCode haskell" $
+            H.code H.! A.class_ "sourceCode haskell" $
+                mapM_ tokenToHtml tokens
+
+tokenToHtml :: (Token, T.Text) -> H.Html
+tokenToHtml (tokenClass -> className, text) =
+    H.span H.!? (not $ T.null className, A.class_ (H.toValue className)) $
+        H.toHtml text
+
+-- | Return class corresponding to given 'TokenType'. Adapted from `mmark-ext`.
+tokenClass :: Token -> T.Text
+tokenClass = \case
+  KeywordTok -> "kw"
+  PragmaTok -> "pp" -- Preprocessor
+  SymbolTok -> "ot" -- Other
+  VariableTok -> "va"
+  ConstructorTok -> "dt" -- DataType
+  OperatorTok -> "op"
+  CharTok -> "ch"
+  StringTok -> "st"
+  IntegerTok -> "dv" -- DecVal
+  RationalTok -> "dv" -- DecVal
+  CommentTok -> "co"
+  SpaceTok -> ""
+  OtherTok -> "ot"
