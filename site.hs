@@ -14,10 +14,10 @@ import           Data.Maybe (fromMaybe)
 import qualified Data.Text as T
 import qualified Data.Text.Lazy as L
 
-import           GHC.SyntaxHighlighter
-import           Text.Pandoc.Definition (Block (CodeBlock, RawBlock), Pandoc)
-import           Text.Pandoc.Walk (walk, walkM)
+import           GHC.SyntaxHighlighter (Token(..), tokenizeHaskell)
 import           Text.Blaze.Html.Renderer.Text (renderHtml)
+import           Text.Pandoc.Definition (Block (CodeBlock, RawBlock), Pandoc)
+import           Text.Pandoc.Walk (walk)
 import qualified Text.Blaze.Html5 as H
 import qualified Text.Blaze.Html5.Attributes as A
 
@@ -104,7 +104,7 @@ main = hakyll $ do
 --------------------------------------------------------------------------------
 customPandocCompiler :: Compiler (Item String)
 customPandocCompiler =
-    pandocCompilerWithTransformM
+    pandocCompilerWithTransform
         defaultHakyllReaderOptions
         defaultHakyllWriterOptions
         ghcSyntaxHighlight
@@ -150,12 +150,11 @@ feedConfig = FeedConfiguration
     , feedRoot        = "https://vaibhavsagar.com"
     }
 
-ghcSyntaxHighlight :: Pandoc -> Compiler Pandoc
-ghcSyntaxHighlight = walkM $ \case
+ghcSyntaxHighlight :: Pandoc -> Pandoc
+ghcSyntaxHighlight = walk $ \case
     CodeBlock (_, (isHaskell -> True):_, _) (tokenizeHaskell -> Just tokens) ->
-        pure . RawBlock "html" . L.toStrict . renderHtml $
-            formatHaskellTokens tokens
-    block -> pure block
+        RawBlock "html" . L.toStrict . renderHtml $ formatHaskellTokens tokens
+    block -> block
     where isHaskell = (== "haskell")
 
 formatHaskellTokens :: [(Token, T.Text)] -> H.Html
