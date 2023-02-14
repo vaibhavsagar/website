@@ -110,19 +110,19 @@ changes for styling purposes:
 ```haskell
 tokenClass :: Token -> T.Text
 tokenClass = \case
-  KeywordTok -> "kw"
-  PragmaTok -> "pp" -- Preprocessor
-  SymbolTok -> "ot" -- Other
-  VariableTok -> "va"
-  ConstructorTok -> "dt" -- DataType
-  OperatorTok -> "op"
-  CharTok -> "ch"
-  StringTok -> "st"
-  IntegerTok -> "dv" -- DecVal
-  RationalTok -> "dv" -- DecVal
-  CommentTok -> "co"
-  SpaceTok -> ""
-  OtherTok -> "ot"
+    KeywordTok -> "kw"
+    PragmaTok -> "pp" -- Preprocessor
+    SymbolTok -> "ot" -- Other
+    VariableTok -> "va"
+    ConstructorTok -> "dt" -- DataType
+    OperatorTok -> "op"
+    CharTok -> "ch"
+    StringTok -> "st"
+    IntegerTok -> "dv" -- DecVal
+    RationalTok -> "dv" -- DecVal
+    CommentTok -> "co"
+    SpaceTok -> ""
+    OtherTok -> "ot"
 ```
 
 Finally we have to actually use `ghcSyntaxHighlight`, for which we define
