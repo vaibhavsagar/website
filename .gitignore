@@ -1,3 +1,5 @@
+dist/
+dist-newstyle/
 .stack-work/
 _site/
 _cache/
