@@ -1315,7 +1315,7 @@ The array looks like this:
   0
 ```
 
-Let's now insert an element `y` with a hash fragment of `0b1010`. This is interpreted as `9`, so we set that:
+Let's now insert an element `y` with a hash fragment of `0b1001`. This is interpreted as `9`, so we set that:
 
 ```
 ┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┐
