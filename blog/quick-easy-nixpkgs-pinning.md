@@ -112,7 +112,7 @@ suggested is to update the `rev`, change one character in the `sha256`, and let
 the Nix error message tell you the correct hash to use. I think we can do
 better than this.
 
-[Joe Hermaszewski](https://github.com/expipiplus1) has a handy tool called
+[Ellie Hermaszewska](https://github.com/expipiplus1) has a handy tool called
 [update-nix-fetchgit](https://github.com/expipiplus1/update-nix-fetchgit) that
 parses Nix files and automatically updates any `fetchFromGitHub` calls to the
 latest `master` revision and SHA256 of the repository. This is certainly a lot
