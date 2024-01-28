@@ -239,7 +239,7 @@ eval env expr = case expr of
     AbsUD f -> eval env f
     AppUD f x -> let
         x' = eval env x
-        in eval (x':env) f
+        in eval (env ++ [x']) f
 ```
 
 Let's see it in action!
@@ -253,7 +253,7 @@ eval [] . anonymise . desugar Map.empty $ AppLet (AppLet konst (LitLet 1)) (LitL
 ```
 
 
-    2
+    1
 
 
 Awesome! We have composable compiler passes that are easier to write and to think about. Even with this small example, I hope the benefits are clear.
