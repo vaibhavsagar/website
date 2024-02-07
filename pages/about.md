@@ -8,5 +8,5 @@ profile](https://github.com/vaibhavsagar) and [résumé](/resume) for more
 details.
 
 If you'd like to get in touch, find me on [my favourite echo
-chamber](https://twitter.com/vbhvsgr) or send me an email at the address listed
+chamber](https://twitter.com/vbhvsgr) or email me at the address listed
 in my résumé.

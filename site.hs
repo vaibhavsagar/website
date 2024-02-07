@@ -78,7 +78,7 @@ main = hakyll $ do
                 >>= finalise                                      archiveCtx
 
     matcher "index.html" idRoute $ do
-        let posts = fmap (take 10) . recentFirst =<< loadAll "blog/*"
+        let posts = fmap (take 20) . recentFirst =<< loadAll "blog/*"
         let indexCtx
                 =  listField "posts" postCtx posts
                 <> constField "title" "Home"
