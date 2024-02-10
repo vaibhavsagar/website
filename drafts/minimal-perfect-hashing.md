@@ -42,14 +42,15 @@ all possible inputs to be known in advance.
 ### *Minimal* perfect hashing
 
 Bringing it all together, a *minimal perfect hash* function is one that has no
-gaps in its outputs, i.e. it maps $$n$$ different inputs to $$n$$ consecutive
-integers, e.g. $[0..n)$ or $[1..n]$. It's important to note that *minimal*
-does not imply anything about the space or time complexity of these functions,
-e.g. it would be totally valid to have an internal hashtable that maps each
-input to a distinct integer without gaps and then use that to implement our
-hash function. In practice, however, we want these functions to be as efficient
-as possible to construct, store, and use, and this is an active area of
-research.
+gaps in its outputs, i.e. it
+[bijectively](https://en.wikipedia.org/wiki/Bijection) maps $$n$$ different
+inputs to $$n$$ consecutive integers, e.g. $[0..n)$ or $[1..n]$. It's important
+to note that *minimal* does not imply anything about the space or time
+complexity of these functions, e.g. it would be totally valid to have an
+internal hashtable that maps each input to a distinct integer without gaps and
+then use that to implement our hash function. In practice, however, we want
+these functions to be as efficient as possible to construct, store, and use,
+and this is an active area of research.
 
 You'd probably want to use a minimal perfect hash when
 
@@ -96,17 +97,17 @@ and for the bitvectors I used the
 [past Vaibhav asked for `rank` and `select`
 support](https://github.com/recursion-ninja/bv-little/issues/3).
 
-### Pseudocode
+### Construction
 
 At a high level, this is what the construction algorithm looks like:
 
-1. Repeat steps 2-4 until the maximum level is reached or we have no more keys
-2. Hash each key to a number $i \in [0..n)$
-3. If $bitvector[i]$ has not been set this iteration, set it to $1$, otherwise unset it
-4. Remove all keys that have been set successfully
+1. Repeat the following steps until the maximum level is reached or we have no more keys:
+    1. Hash each key to a number $i \in [0..n)$
+    1. If $bitvector[i]$ has not been set this iteration, set it to $1$, otherwise unset it
+    1. Remove all keys that have been set successfully
 5. If there are any leftover keys, store them separately
 
-### Hashing
+#### Hashing
 
 As I mentioned previously, I used `hashWithSalt`:
 
@@ -118,4 +119,240 @@ The role of `gamma` is to control the amount of "slack" in the bitvector, since
 sometimes making it larger than strictly necessary can reduce the probability
 of collisions. More on this later.
 
-### Populating the bitvector
+#### Populating the bitvector
+
+The approach is roughly as follows:
+
+1. Initialise two bitvectors $B$ and $C$ with $0$s
+1. When setting an index $i$:
+    1. If $B[i] \equiv 0$ and $C[i] \equiv 0$ then set $B[i] = 1$
+    1. If $B[i] \equiv 1$ then set $B[i] = 0$ and $C[i] = 1$
+    1. If $B[i] \equiv 0$ and $C[i] \equiv 1$ then do nothing
+
+$B$ is the bitarray we use for the hash function and $C$ is only used to track
+collisions.
+
+### Lookup
+
+To actually use our hash function, we can do the following:
+
+1. For each level:
+    1. Hash the key and check if the corresponding index is set
+    1. If so, find the rank
+    1. If not, increment the level count and repeat
+1. Otherwise check the leftovers
+
+## Example
+
+Let's look at a small example. The [Bondi to Coogee
+walk](https://www.bonditocoogeewalk.com/) here in Sydney passes through the
+following beaches:
+
+- Bondi
+- Tamarama
+- Bronte
+- Clovelly
+- Gordons Bay
+- Coogee
+
+and we can use these as keys for a minimal perfect hash function.
+
+### Construction
+
+The results of the first iteration are
+
+<details open>
+<summary style="cursor: pointer">Level 0</summary>
+```
+┌─┐
+│0│ <- ["Clovelly","Bronte"]
+├─┤
+│1│ <- ["Gordons Bay"]
+├─┤
+│0│
+├─┤
+│0│
+├─┤
+│0│ <- ["Coogee","Tamarama"]
+├─┤
+│1│ <- ["Bondi"]
+└─┘
+```
+</details>
+
+So far, so good.
+
+<details open>
+<summary style="cursor: pointer">Level 1</summary>
+```
+┌─┐
+│0│
+├─┤
+│0│
+├─┤
+│0│
+├─┤
+│0│ <- ["Coogee","Clovelly","Bronte","Tamarama"]
+└─┘
+```
+</details open>
+
+Hmm, that's a little concerning.
+
+<details open>
+<summary style="cursor: pointer">Level 2</summary>
+```
+┌─┐
+│0│ <- ["Coogee","Clovelly","Bronte","Tamarama"]
+├─┤
+│0│
+├─┤
+│0│
+├─┤
+│0│
+└─┘
+```
+</details>
+
+This is not going well.
+
+<details open>
+<summary style="cursor: pointer">Level 3</summary>
+```
+┌─┐
+│0│
+├─┤
+│0│ <- ["Coogee","Clovelly","Bronte","Tamarama"]
+├─┤
+│0│
+├─┤
+│0│
+└─┘
+```
+</details>
+
+It's like the algorithm is taunting me.
+
+
+<details open>
+<summary style="cursor: pointer">Level 4</summary>
+```
+┌─┐
+│0│
+├─┤
+│0│
+├─┤
+│0│ <- ["Coogee","Clovelly","Bronte","Tamarama"]
+├─┤
+│0│
+└─┘
+```
+</details>
+
+I tried this for another 20 levels, and all 4 keys keep colliding.
+
+If we take a step back, an easily-identifiable problem is that there are only
+4 possible slots for each key to fit into, which increases the likelihood of
+a collision. This is where the `gamma` parameter from earlier comes into play.
+We can try again with a `gamma` of `1.5`:
+
+<details open>
+<summary style="cursor: pointer">Level 0</summary>
+```
+┌─┐
+│1│ <- ["Bronte"]
+├─┤
+│1│ <- ["Gordons Bay"]
+├─┤
+│0│
+├─┤
+│0│
+├─┤
+│0│ <- ["Coogee","Tamarama"]
+├─┤
+│0│
+├─┤
+│1│ <- ["Clovelly"]
+├─┤
+│0│
+├─┤
+│1│ <- ["Bondi"]
+└─┘
+```
+</details>
+
+Okay, this is already looking better.
+
+
+<details open>
+<summary style="cursor: pointer">Level 1</summary>
+```
+┌─┐
+│0│ <- ["Coogee","Tamarama"]
+├─┤
+│0│
+├─┤
+│0│
+└─┘
+```
+</details>
+
+Maybe I spoke too soon?
+
+<details open>
+<summary style="cursor: pointer">Level 2</summary>
+
+```
+┌─┐
+│1│ <- ["Tamarama"]
+├─┤
+│1│ <- ["Coogee"]
+├─┤
+│0│
+└─┘
+```
+</details>
+
+Phew.
+
+### Lookup
+
+Suppose we wanted to hash `Coogee`. This is what the final bitarrays look like:
+
+<details open>
+<summary style="cursor: pointer">Bitarrays</summary>
+```
+ 0 1 2 3 4 5 6 7 8
+┌─┬─┬─┬─┬─┬─┬─┬─┬─┐
+│1│1│0│0│0│0│1│0│1│ b0
+└─┴─┴─┴─┴─┴─┴─┴─┴─┘
+         ^------------ hashWithSalt 0 "Coogee" `mod` 9
+┌─┬─┬─┐
+│0│0│0│ b1
+└─┴─┴─┘
+ ^-------------------- hashWithSalt 1 "Coogee" `mod` 3
+┌─┬─┬─┐
+│1│1│0│ b2
+└─┴─┴─┘
+   ^------------------ hashWithSalt 2 "Coogee" `mod` 3
+```
+</details>
+
+We try each bitarray in sequence until we find a $1$ at our index, and we find the $rank$ of that index:
+
+```haskell
+> hashWithSalt 0 "Coogee" `mod` 9
+4
+> b0 ! 4 -- collision
+0
+> hashWithSalt 1 "Coogee" `mod` 3
+0
+> b1 ! 0 -- collision
+0
+> hashWithSalt 2 "Coogee" `mod` 3
+1
+> b2 ! 1 -- hit
+1
+> popCount b0 + popCount b1 + rank b2 1
+6
+```
