@@ -8,7 +8,7 @@
       nixpkgs = import nixpkgs-src { inherit system; };
       content = nix-filter {
         root = ./.;
-        include = [ "blog" "css" "drafts" "extra" "index.html" "pages" "templates" ];
+        include = [ "blog" "css" "drafts" "extra" "images" "index.html" "pages" "templates" ];
       };
       drv = nixpkgs.haskellPackages.callPackage ./website.nix {};
       site = nixpkgs.runCommand "site" {
