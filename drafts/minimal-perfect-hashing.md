@@ -39,6 +39,8 @@ distinct inputs always hash to different values, i.e. that the function is
 with this useful property are known as *perfect hash functions*. This requires
 all possible inputs to be known in advance.
 
+![Injective function](//upload.wikimedia.org/wikipedia/commons/5/5c/Gen_injection_not_surjection.svg)
+
 ### *Minimal* perfect hashing
 
 Bringing it all together, a *minimal perfect hash* function is one that has no
@@ -51,6 +53,8 @@ internal hashtable that maps each input to a distinct integer without gaps and
 then use that to implement our hash function. In practice, however, we want
 these functions to be as efficient as possible to construct, store, and use,
 and this is an active area of research.
+
+![Bijective function](//upload.wikimedia.org/wikipedia/commons/a/a5/Bijection.svg)
 
 You'd probably want to use a minimal perfect hash when
 
@@ -65,7 +69,9 @@ where each value's index is the hash of the corresponding key.
 ## How it works
 
 The approach used in the paper is based on cascading collisionless bitarrays,
-as illustrated here:
+as illustrated below. I have a more detailed example later so if you aren't
+able to follow this one that's totally okay! It exists to give you a quick
+taste of the algorithm.
 
 ![*Cascading Collisionless Bitarrays*](/images/cascading-collisionless-arrays.svg)
 
@@ -121,16 +127,14 @@ of collisions. More on this later.
 
 #### Populating the bitvector
 
-The approach is roughly as follows:
+The approach described in the paper involves using an auxiliary bitvector $C$
+to keep track of collisions:
 
 1. Initialise two bitvectors $B$ and $C$ with $0$s
 1. When setting an index $i$:
     1. If $B[i] \equiv 0$ and $C[i] \equiv 0$ then set $B[i] = 1$
     1. If $B[i] \equiv 1$ then set $B[i] = 0$ and $C[i] = 1$
     1. If $B[i] \equiv 0$ and $C[i] \equiv 1$ then do nothing
-
-$B$ is the bitarray we use for the hash function and $C$ is only used to track
-collisions.
 
 ### Lookup
 
@@ -326,15 +330,15 @@ Suppose we wanted to hash `Coogee`. This is what the final bitarrays look like:
 ┌─┬─┬─┬─┬─┬─┬─┬─┬─┐
 │1│1│0│0│0│0│1│0│1│ b0
 └─┴─┴─┴─┴─┴─┴─┴─┴─┘
-         ^------------ hashWithSalt 0 "Coogee" `mod` 9
+         └──────────── hashWithSalt 0 "Coogee" `mod` 9
 ┌─┬─┬─┐
 │0│0│0│ b1
 └─┴─┴─┘
- ^-------------------- hashWithSalt 1 "Coogee" `mod` 3
+ └──────────────────── hashWithSalt 1 "Coogee" `mod` 3
 ┌─┬─┬─┐
 │1│1│0│ b2
 └─┴─┴─┘
-   ^------------------ hashWithSalt 2 "Coogee" `mod` 3
+   └────────────────── hashWithSalt 2 "Coogee" `mod` 3
 ```
 </details>
 
@@ -356,3 +360,24 @@ We try each bitarray in sequence until we find a $1$ at our index, and we find t
 > popCount b0 + popCount b1 + rank b2 1
 6
 ```
+
+### Minimal perfect hash table
+
+All we have to do is create an array $A$ such that $A[hash(k_n)-1] = v_n$
+
+<details open>
+<summary style="cursor: pointer">Values</summary>
+```
+ ╭──────────── Bronte
+ │ ╭────────── Gordons Bay
+ │ │ ╭──────── Clovelly
+ │ │ │ ╭────── Bondi
+ │ │ │ │ ╭──── Tamarama
+ │ │ │ │ │ ╭── Coogee
+ ↓ ↓ ↓ ↓ ↓ ↓
+ 0 1 2 3 4 5
+┌─┬─┬─┬─┬─┬─┐
+│ │ │ │ │ │ │
+└─┴─┴─┴─┴─┴─┘
+```
+</details>
