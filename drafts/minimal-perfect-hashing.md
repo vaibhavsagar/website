@@ -84,7 +84,7 @@ Finally for $A_2$, $k_2$ and $k_4$ do not collide using $h_2$ and we have no
 more keys left. To compute the hash for a key, in this example $k_2$, we find
 the position where $A_n[h_n(k_2)] \equiv 1$ and count the number of `1`s at or
 preceding this position, also known as the *rank*, which will always give us
-a number $[1..n]$.
+a number $[1..n]$. For $k2$, the hash is $5$.
 
 ### Prerequisites
 
@@ -361,6 +361,40 @@ We try each bitarray in sequence until we find a $1$ at our index, and we find t
 6
 ```
 
+Our hash is $6$.
+
+Unfortunately, we also get seemingly-valid output for a key that wasn't in our
+input set, e.g.
+[`Shelly`](https://www.sydney.com/destinations/sydney/sydney-north/manly/attractions/shelly-beach-manly):
+
+<details open>
+<summary style="cursor: pointer">Bitarrays</summary>
+```
+ 0 1 2 3 4 5 6 7 8
+┌─┬─┬─┬─┬─┬─┬─┬─┬─┐
+│1│1│0│0│0│0│1│0│1│ b0
+└─┴─┴─┴─┴─┴─┴─┴─┴─┘
+   └─────────────────  hashWithSalt 0 "Shelly" `mod` 9
+┌─┬─┬─┐
+│0│0│0│ b1
+└─┴─┴─┘
+┌─┬─┬─┐
+│1│1│0│ b2
+└─┴─┴─┘
+```
+</details>
+
+```haskell
+> hashWithSalt 0 "Shelly" `mod` 9
+1
+> rank b0 1
+2
+```
+
+This is a limitation of minimal perfect hash functions in general, and
+something to keep in mind while using them.
+
+
 ### Minimal perfect hash table
 
 All we have to do is create an array $A$ such that $A[hash(k_n)-1] = v_n$
@@ -374,7 +408,6 @@ All we have to do is create an array $A$ such that $A[hash(k_n)-1] = v_n$
  │ │ │ ╭────── Bondi
  │ │ │ │ ╭──── Tamarama
  │ │ │ │ │ ╭── Coogee
- ↓ ↓ ↓ ↓ ↓ ↓
  0 1 2 3 4 5
 ┌─┬─┬─┬─┬─┬─┐
 │ │ │ │ │ │ │
