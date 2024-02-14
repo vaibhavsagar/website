@@ -364,7 +364,7 @@ We try each bitarray in sequence until we find a $1$ at our index, and we find t
 
 Our hash is $6$.
 
-### False positive
+#### False positive
 
 Unfortunately, we also get seemingly-valid output for a key that wasn't in our
 input set, e.g.
@@ -417,6 +417,10 @@ All we have to do is create an array $A$ such that $A[hash(k_n)-1] = v_n$!
 └─┴─┴─┴─┴─┴─┘
 ```
 </details>
+
+The authors point out that trying to save a few bits per key by tweaking
+$gamma$ doesn't make much sense in this case, since the values account for the
+vast majority of the space usage.
 
 ### Code
 
