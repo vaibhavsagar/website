@@ -6,18 +6,19 @@ tags: programming
 
 When I lived in Singapore, I attended a fascinating talk at FOSSASIA 2018 about
 [Indeed's fast and compact immutable key-value
-stores](https://www.youtube.com/watch?v=8Zu-EVjN24s). In fact, if you listen
-carefully during the Q&A session at the end, you can hear me ask some
-not-very-good questions in an ill-advised and ultimately futile attempt to
-relate to the speaker.
+stores](https://www.youtube.com/watch?v=8Zu-EVjN24s) that went almost
+completely over my head. In fact, if you listen carefully during the Q&A
+session at the end, you can hear me ask some not-very-good questions in an
+ill-advised and ultimately futile attempt to relate to the speaker.
 
 This was my first encounter with the concept of minimal perfect hashing.
 Unfortunately for me, I found most of the existing literature so impenetrable
 that I gave up on learning more. [Hash, displace, and
 compress](https://cmph.sourceforge.net/papers/esa09.pdf)? [Hypergraph
-peeling](https://cmph.sourceforge.net/papers/wads07.pdf)? Eventually I found
-a suitable entry point: [Fast and scalable minimal perfect hashing for massive
-key sets](https://arxiv.org/abs/1702.03154).
+peeling](https://cmph.sourceforge.net/papers/wads07.pdf)?
+[RecSplit](https://arxiv.org/abs/1910.06416)? Eventually I found a suitable
+entry point: [Fast and scalable minimal perfect hashing for massive key
+sets](https://arxiv.org/abs/1702.03154).
 
 ## Minimal perfect hashing
 
@@ -363,6 +364,8 @@ We try each bitarray in sequence until we find a $1$ at our index, and we find t
 
 Our hash is $6$.
 
+### False positive
+
 Unfortunately, we also get seemingly-valid output for a key that wasn't in our
 input set, e.g.
 [`Shelly`](https://www.sydney.com/destinations/sydney/sydney-north/manly/attractions/shelly-beach-manly):
@@ -395,9 +398,9 @@ This is a limitation of minimal perfect hash functions in general, and
 something to keep in mind while using them.
 
 
-### Minimal perfect hash table
+### Minimal perfect hash *table*
 
-All we have to do is create an array $A$ such that $A[hash(k_n)-1] = v_n$
+All we have to do is create an array $A$ such that $A[hash(k_n)-1] = v_n$!
 
 <details open>
 <summary style="cursor: pointer">Values</summary>
@@ -414,3 +417,18 @@ All we have to do is create an array $A$ such that $A[hash(k_n)-1] = v_n$
 └─┴─┴─┴─┴─┴─┘
 ```
 </details>
+
+### Code
+
+The authors provide a library called
+[`BBHash`](https://github.com/rizkg/BBHash), and I have [a small implementation
+here](https://github.com/vaibhavsagar/notebooks/blob/master/mph/MPH.ipynb).
+
+
+## That's all!
+
+An interesting thing I noticed was that after I was able to make sense of this
+implementation of minimal perfect hashing, the other approaches were easier to
+grasp. I wouldn't go so far as to say I magically *understood* them when
+I didn't before, but I definitely feel less lost now. Maybe you'll have
+a similar experience?
