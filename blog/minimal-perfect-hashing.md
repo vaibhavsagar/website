@@ -166,7 +166,7 @@ and we can use these as keys for a minimal perfect hash function.
 
 The results of the first iteration are
 
-<details open>
+<details open="1">
 <summary style="cursor: pointer">Level 0</summary>
 ```
 ┌─┐
@@ -187,7 +187,7 @@ The results of the first iteration are
 
 So far, so good.
 
-<details open>
+<details open="1">
 <summary style="cursor: pointer">Level 1</summary>
 ```
 ┌─┐
@@ -200,11 +200,11 @@ So far, so good.
 │0│ <- ["Coogee","Clovelly","Bronte","Tamarama"]
 └─┘
 ```
-</details open>
+</details>
 
 Hmm, that's a little concerning.
 
-<details open>
+<details open="1">
 <summary style="cursor: pointer">Level 2</summary>
 ```
 ┌─┐
@@ -221,7 +221,7 @@ Hmm, that's a little concerning.
 
 This is not going well.
 
-<details open>
+<details open="1">
 <summary style="cursor: pointer">Level 3</summary>
 ```
 ┌─┐
@@ -239,7 +239,7 @@ This is not going well.
 It's like the algorithm is taunting me.
 
 
-<details open>
+<details open="1">
 <summary style="cursor: pointer">Level 4</summary>
 ```
 ┌─┐
@@ -261,7 +261,7 @@ If we take a step back, an easily-identifiable problem is that there are only
 a collision. This is where the `gamma` parameter from earlier comes into play.
 We can try again with a `gamma` of `1.5`:
 
-<details open>
+<details open="1">
 <summary style="cursor: pointer">Level 0</summary>
 ```
 ┌─┐
@@ -289,7 +289,7 @@ We can try again with a `gamma` of `1.5`:
 Okay, this is already looking better.
 
 
-<details open>
+<details open="1">
 <summary style="cursor: pointer">Level 1</summary>
 ```
 ┌─┐
@@ -304,7 +304,7 @@ Okay, this is already looking better.
 
 Maybe I spoke too soon?
 
-<details open>
+<details open="1">
 <summary style="cursor: pointer">Level 2</summary>
 
 ```
@@ -324,7 +324,7 @@ Phew.
 
 Suppose we wanted to hash `Coogee`. This is what the final bitarrays look like:
 
-<details open>
+<details open="1">
 <summary style="cursor: pointer">Bitarrays</summary>
 ```
  0 1 2 3 4 5 6 7 8
@@ -370,7 +370,7 @@ Unfortunately, we also get seemingly-valid output for a key that wasn't in our
 input set, e.g.
 [`Shelly`](https://www.sydney.com/destinations/sydney/sydney-north/manly/attractions/shelly-beach-manly):
 
-<details open>
+<details open="1">
 <summary style="cursor: pointer">Bitarrays</summary>
 ```
  0 1 2 3 4 5 6 7 8
@@ -402,7 +402,7 @@ something to keep in mind while using them.
 
 All we have to do is create an array $A$ such that $A[hash(k_n)-1] = v_n$!
 
-<details open>
+<details open="1">
 <summary style="cursor: pointer">Values</summary>
 ```
  ╭──────────── Bronte

@@ -1506,7 +1506,6 @@ dotFromHAMT :: (Show k, Show v) => HashArrayMappedTrie k v -> String
 dotFromHAMT = makeDot . makeDotLines. concatMap nodeLinesHAMT . flip evalState 0 . execWriterT . numberHAMT
 ```
 
-</div>
 </details>
 
 <details>
