@@ -436,3 +436,8 @@ implementation of minimal perfect hashing, the other approaches were easier to
 grasp. I wouldn't go so far as to say I magically *understood* them when
 I didn't before, but I definitely feel less lost now. Maybe you'll have
 a similar experience?
+
+## More links
+
+- [Throw away the keys: Easy, Minimal Perfect Hashing](http://stevehanov.ca/blog/?id=119)
+- [Minimal Perfect Hashing Resources](http://iswsa.acm.org/mphf/index.html)
