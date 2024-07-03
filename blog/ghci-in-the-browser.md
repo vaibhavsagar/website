@@ -52,5 +52,5 @@ out immediately. Wouldn't that be amazing?
 download ~700MB of WASM.
 
 [^2]: It's not something I'm working on and I don't know how to go from this
-giant blob of WASM to a kernel that would work with JupyterLite. If you have
-ideas, please get in touch!
+Goldbergian blob of WASM to a kernel that would work with JupyterLite. If you
+have ideas, please get in touch!
