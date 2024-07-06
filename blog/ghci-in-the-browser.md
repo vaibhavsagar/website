@@ -47,6 +47,15 @@ the backend entirely. Another wild idea: the Hackage documentation for
 a package could provide a REPL with that package pre-installed for users to try
 out immediately. Wouldn't that be amazing?
 
+## Why not compile GHCi directly to JavaScript/WASM using the new backends?
+
+I don't think that would work/result in a usable Haskell interpreter with
+access to `base` or other GHC boot packages. As of this writing it is on [the
+roadmap for GHC
+9.12+](https://gitlab.haskell.org/ghc/ghc/-/wikis/javascript-backend?version_id=bff087ec5b0231e12b3a8d902522f3d41aed530b)
+so hopefully that will eventually be possible. If you get this working I'd love
+to know about it!
+
 
 [^1]: As long as your browser supports WebAssembly and you are willing to
 download ~700MB of WASM.
