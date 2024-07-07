@@ -6,7 +6,7 @@ tags: haskell, programming
 
 I'm happy to announce that you can now run GHCi entirely in your browser (if
 your browser supports WebAssembly and you're willing to download approximately
-700MB of WASM).
+220MB of compressed WASM).
 
 ## Where?
 
