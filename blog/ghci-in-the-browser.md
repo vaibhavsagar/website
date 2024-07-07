@@ -4,7 +4,9 @@ published: 2024-07-03
 tags: haskell, programming
 --------------------------------------------------------------------------------
 
-I'm happy to announce that you can now run GHCi entirely in your browser[^1].
+I'm happy to announce that you can now run GHCi entirely in your browser (if
+your browser supports WebAssembly and you're willing to download approximately
+700MB of WASM).
 
 ## Where?
 
@@ -35,7 +37,7 @@ be great if a user could simply navigate to a webpage and have a correctly
 configured Jupyter notebook waiting for them? The Jupyter folks also seem to be
 thinking the same thing, based on the existence of
 [JupyterLite](https://jupyterlite.readthedocs.io/en/stable/). Unfortunately
-we're a long way off from Haskell support[^2], but I hope my proof-of-concept
+we're a long way off from Haskell support[^1], but I hope my proof-of-concept
 shows that this is possible.
 
 Even outside Jupyter-land, a fully-functional GHCi REPL in the browser would be
@@ -57,9 +59,6 @@ so hopefully that will eventually be possible. If you get this working I'd love
 to know about it!
 
 
-[^1]: As long as your browser supports WebAssembly and you are willing to
-download ~700MB of WASM.
-
-[^2]: It's not something I'm working on and I don't know how to go from this
+[^1]: It's not something I'm working on and I don't know how to go from this
 Goldbergian blob of WASM to a kernel that would work with JupyterLite. If you
 have ideas, please get in touch!
