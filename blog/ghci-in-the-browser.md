@@ -55,8 +55,9 @@ I don't think that would work/result in a usable Haskell interpreter with
 access to `base` or other GHC boot packages. As of this writing it is on [the
 roadmap for GHC
 9.12+](https://gitlab.haskell.org/ghc/ghc/-/wikis/javascript-backend?version_id=bff087ec5b0231e12b3a8d902522f3d41aed530b)
-so hopefully that will eventually be possible. If you get this working I'd love
-to know about it!
+so hopefully that will eventually be possible (tracked
+[here](https://gitlab.haskell.org/ghc/ghc/-/issues/25067)). If you get this
+working I'd love to know about it!
 
 
 [^1]: It's not something I'm working on and I don't know how to go from this
