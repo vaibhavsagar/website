@@ -17,6 +17,7 @@ import qualified Data.Text.Lazy as L
 import           GHC.SyntaxHighlighter (Token(..), tokenizeHaskell)
 import           Text.Blaze.Html.Renderer.Text (renderHtml)
 import           Text.Pandoc.Definition (Block (CodeBlock, RawBlock), Pandoc)
+import           Text.Pandoc.Options
 import           Text.Pandoc.Walk (walk)
 import qualified Text.Blaze.Html5 as H
 import qualified Text.Blaze.Html5.Attributes as A
@@ -106,7 +107,7 @@ customPandocCompiler :: Compiler (Item String)
 customPandocCompiler =
     pandocCompilerWithTransform
         defaultHakyllReaderOptions
-        defaultHakyllWriterOptions
+        (defaultHakyllWriterOptions { writerHTMLMathMethod = MathJax "" })
         ghcSyntaxHighlight
 
 cleanRoute, rootRoute, dateRoute, prependBlogRoute :: Routes
