@@ -213,8 +213,8 @@ $$\begin{align}
 ## $a$
 
 <div style="display: flex">
-<div style="flex: 33%"><img src="images/tree1x1.svg"></div>
-<div style="flex: 33%"><img src="images/graph1x1.svg"></div>
+<div style="flex: 33%"><img src="/images/tree1x1.svg"></div>
+<div style="flex: 33%"><img src="/images/graph1x1.svg"></div>
 <div style="flex: 33%">
 $$\begin{align}
 & {\color{red} a} \vee {\color{green} d} \\
@@ -232,8 +232,8 @@ $$\begin{align}
 ## $c$
 
 <div style="display: flex">
-<div style="flex: 33%"><img src="images/tree1x3.svg"></div>
-<div style="flex: 33%"><img src="images/graph1x3.svg"></div>
+<div style="flex: 33%"><img src="/images/tree1x3.svg"></div>
+<div style="flex: 33%"><img src="/images/graph1x3.svg"></div>
 <div style="flex: 33%">
 $$\begin{align}
 & {\color{red} a} \vee {\color{green} d} \\
@@ -251,8 +251,8 @@ $$\begin{align}
 ## $b$
 
 <div style="display: flex">
-<div style="flex: 33%"><img src="images/tree1x2.svg"></div>
-<div style="flex: 33%"><img src="images/graph1x2.svg"></div>
+<div style="flex: 33%"><img src="/images/tree1x2.svg"></div>
+<div style="flex: 33%"><img src="/images/graph1x2.svg"></div>
 <div style="flex: 33%">
 $$\begin{align}
 & {\color{red} a} \vee {\color{green} d} \\
@@ -270,8 +270,8 @@ $$\begin{align}
 ## $e$
 
 <div style="display: flex">
-<div style="flex: 33%"><img src="images/tree1.svg"></div>
-<div style="flex: 33%"><img src="images/graph1.svg"></div>
+<div style="flex: 33%"><img src="/images/tree1.svg"></div>
+<div style="flex: 33%"><img src="/images/graph1.svg"></div>
 <div style="flex: 33%">
 $$\begin{align}
 & {\color{red} a} \vee {\color{green} d} \\
@@ -289,7 +289,7 @@ $$\begin{align}
 ## Unique Implication Point
 
 <div style="display: flex">
-<div style="flex: 50%"><img src="images/graph2.svg"></div>
+<div style="flex: 50%"><img src="/images/graph2.svg"></div>
 <div style="flex: 50%">
 $$\displaylines{\neg (\neg f \wedge c \wedge e) \\
 \iff \\
@@ -319,7 +319,7 @@ $$\begin{align}
 
 ## Backjumping
 
-<img src="images/tree2.svg" style="max-height: 14em;">
+<img src="/images/tree2.svg" style="max-height: 14em;">
 
 ## Conflict-driven Clause Learning
 
