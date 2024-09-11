@@ -4,6 +4,13 @@ title: Talks
 
 ## Conference
 
+#### SATisfying Answers to Difficult Problems!
+
+- Where: !!Con 2024
+- [Slides](https://vaibhavsagar.com/presentations/sat-solvers)
+
+[![Video](https://img.youtube.com/vi/J0ZLCHHku6U/hqdefault.jpg)](https://www.youtube.com/watch?v=J0ZLCHHku6U)
+
 #### Compilers for Nothing, Executables for Free!
 
 - Where: !!Con West 2020
