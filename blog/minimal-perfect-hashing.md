@@ -46,8 +46,8 @@ all possible inputs to be known in advance.
 
 Bringing it all together, a *minimal perfect hash* function is one that has no
 gaps in its outputs, i.e. it
-[bijectively](https://en.wikipedia.org/wiki/Bijection) maps $$n$$ different
-inputs to $$n$$ consecutive integers, e.g. $[0..n)$ or $[1..n]$. It's important
+[bijectively](https://en.wikipedia.org/wiki/Bijection) maps $n$ different
+inputs to $n$ consecutive integers, e.g. $[0..n)$ or $[1..n]$. It's important
 to note that *minimal* does not imply anything about the space or time
 complexity of these functions, e.g. it would be totally valid to have an
 internal hashtable that maps each input to a distinct integer without gaps and
