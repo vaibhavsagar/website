@@ -3,14 +3,12 @@ title: Imperative Haskell
 published: 2017-05-29
 tags: haskell, programming
 --------------------------------------------------------------------------------
+
 _[Get Colorings](http://getcolorings.com/) has kindly [translated this
 post](http://getcolorings.com/ru-imperative-haskell) to Russian._
 
-_This post covers essentially the same material as a 5-minute presentation I
-gave at
-[RC](https://www.recurse.com/scout/click?t=5ac465e5d3396a7e491e42afac4c5c90),
-because giving that talk over and over again doesn't scale and there are things
-I would like to cover that are difficult within that time limit._
+_This post covers essentially the same material as a 5-minute presentation
+I gave at [RC](https://www.recurse.com/)._
 
 I was working through Tim Roughgarden's [Algorithms
 1](https://www.coursera.org/learn/algorithm-design-analysis/) (which has now
