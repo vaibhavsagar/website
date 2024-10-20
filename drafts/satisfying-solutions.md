@@ -303,7 +303,8 @@ $$\begin{align}
 </div>
 </div>
 
-## $b$
+We continue by setting $b$ to $False$, which implies $i$ through the clause $b
+\vee i$.
 
 <div style="display: flex">
 <div style="flex: 33%"><img src="/images/tree1x2.svg"></div>
@@ -322,7 +323,9 @@ $$\begin{align}
 </div>
 </div>
 
-## $e$
+Then we set $e$ to $True$, which causes a conflict because $g$ is implied to be
+both $True$ (through the clause $\neg e \vee \neg c \vee g$) and $False$
+(through the clause $\neg e \vee f \vee \neg g$).
 
 <div style="display: flex">
 <div style="flex: 33%"><img src="/images/tree1.svg"></div>
@@ -341,7 +344,16 @@ $$\begin{align}
 </div>
 </div>
 
-## Unique Implication Point
+## Clause learning
+
+Fortunately we can analyse the implication graph to determine a [Unique
+Implication
+Point](https://users.aalto.fi/~tjunttil/2020-DP-AUT/notes-sat/cdcl.html#implication-graphs-learned-clauses-and-backjumping)
+that all edges from the latest decision node to the conflict node pass through,
+and the corresponding *UIP cut* corresponding to a clause. In this case the
+UIP is the decision node $e$ and the clause is $\neg f \vee c \vee e$. We want
+to remove the possibility of reaching this state again, so we negate this
+clause (by De Morgan's theorem).
 
 <div style="display: flex">
 <div style="flex: 50%"><img src="/images/graph2.svg"></div>
@@ -352,11 +364,11 @@ $$\displaylines{\neg (\neg f \wedge c \wedge e) \\
 </div>
 </div>
 
-## Learned clause
+And this gives us our *learned clause*!
 
 $$(f \vee \neg c \vee \neg e)$$
 
-## Learned clause
+We can then add it to our formula.
 
 $$\begin{align}
 \definecolor{comment}{RGB}{161,161,180}
@@ -372,15 +384,21 @@ $$\begin{align}
 & (f \vee \neg c \vee \neg e)
 \end{align}$$
 
-## Backjumping
+## Non-chronological backjumping
+
+Next we *backjump non-chronologically* to the second-highest decision level of
+the literals in our clause, which in this case is $2$, and repeat.
 
 <img src="/images/tree2.svg">
 
+That's CDCL (Conflict-driven clause learning)!
+
 ## Conflict-driven Clause Learning
 
-- Learned clauses!
-- Non-chronological backtracking!
-- Basis of most modern SAT solvers
+Conflict-driven clause learning is an extension of DPLL with learned clauses
+and non-chronological backtracking, effectively addressing most of DPLL's
+downsides. It forms the basis of most modern SAT solvers.
+
 
 ## Okay now let's do a silly one
 
