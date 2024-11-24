@@ -63,7 +63,7 @@ main = hakyll $ do
     matcher "pages/*" (rootRoute `composeRoutes` cleanRoute) $
         customPandocCompiler >>= finalise defaultContext
 
-    matcher "extra/*" rootRoute copyFileCompiler
+    matcher "extra/**" rootRoute copyFileCompiler
 
     create ["archive/index.html"] $ do
         route idRoute
@@ -115,7 +115,7 @@ cleanRoute = customRoute createIndexRoute
     where createIndexRoute (toFilePath -> p) =
             takeDirectory p </> takeBaseName p </> "index.html"
 
-rootRoute = customRoute (takeFileName . toFilePath)
+rootRoute = customRoute (joinPath . tail . splitPath . toFilePath)
 
 dateRoute = metadataRoute createDateRoute
     where
