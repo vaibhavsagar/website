@@ -63,7 +63,10 @@ main = hakyll $ do
     matcher "pages/*" (rootRoute `composeRoutes` cleanRoute) $
         customPandocCompiler >>= finalise defaultContext
 
-    matcher "extra/**" rootRoute copyFileCompiler
+    matcher "extra/*" rootRoute copyFileCompiler
+
+    matcher "extra/bsky/atproto-did" (constRoute ".well-known/atproto-did") $
+        copyFileCompiler
 
     create ["archive/index.html"] $ do
         route idRoute
