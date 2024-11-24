@@ -399,30 +399,35 @@ Conflict-driven clause learning is an extension of DPLL with learned clauses
 and non-chronological backtracking, effectively addressing most of DPLL's
 downsides. It forms the basis of most modern SAT solvers.
 
-
-## Okay now let's do a silly one
-
 # SLS
 
-## What if we just guessed?
-
-1. Generate a random assignment
-2. Pick a random clause
-3. Probabilistically flip a variable in the clause
-4. Repeat until you solve it or get tired!
+In contrast to the rigorous and structured approaches we've seen already, what
+if we tried something more ad-hoc? We could generate a random assignment of
+$True$ and $False$ values for each of our variables, pick a clause at random,
+and flip either the "best" variable (whose negation causes the fewest
+conflicts) or some other variable. We could loop this selection and flipping
+a number of times, and restart the whole assignment upon getting stuck,
+finishing after either finding a solution or after a predetermined number of
+tries.
 
 ## Stochastic Local Search
 
-- Surprisingly effective!
-- WalkSAT
-- Can be done in parallel
-- Can use a form of clause learning
-- Can't conclusively determine unsatisfiability(!)
-- Reminds me of simulated annealing in some ways
+This is known as stochastic local search and it's surprisingly effective! The
+specific algorithm I described above is called
+[WalkSAT](https://en.wikipedia.org/wiki/WalkSAT) and it's possible to [do it in
+parallel and use a form of clause
+learning](https://www.ml.cmu.edu/research/dap-papers/dap_mcdonald.pdf).
+Unfortunately, this approach cannot conclusively determine unsatisfiability
+because an inconclusive result might be due to the solver running out of
+attempts. A more general technique that this family of algorithms reminds me of
+is called [simulated
+annealing](https://en.wikipedia.org/wiki/Simulated_annealing).
 
 # SMT
 
-## Problem
+SAT solvers are great when it's straightforward to express your problem as
+a boolean satisfiability problem, but what if we want to solve more complex
+problems where we might not have the ability or desire to do so?
 
 $$
 \begin{align}
@@ -433,9 +438,19 @@ MONEY
 \end{align}
 $$
 
-## How?
+To solve this puzzle, we need to assign digit values to each of the letters
+such that the sum of the 4-digit number represented by $SEND$ and the 4-digit
+number represented by $MORE$ equals the 5-digit number $MONEY$.
 
-We'd have to teach the SAT solver arithmetic!
+We'd have to essentially teach our SAT solver how to do enough arithmetic for
+it to solve the equation
+
+$$
+\begin{align}
+  (1000 \cdot (S+M)) + (100 \cdot (E+O)) + (10 \cdot (N+R)) + (D+E) &\\
+= (10000 \cdot M) + (1000 \cdot O) + (100 \cdot N) + (10 \cdot E) + Y
+\end{align}
+$$
 
 ## Satisfiability Modulo Theories
 
@@ -443,32 +458,6 @@ We'd have to teach the SAT solver arithmetic!
 - bitvectors, arrays, algebraic datatypes, etc.
 - Z3, CVC, Yices, Boolector
 
-# Recap
-
-## SAT solvers
-
-Solve NP-complete problems expressed as CNF Boolean formulas
-
-## DPLL
-
-- Backtracking search
-- Unit propagation
-- Pure literal elimination
-
-## CDCL
-
-- DPLL++
-- Learned clauses
-- Non-chronological backtracking
-
-## SLS
-
-- Random guessing
-- Probabilistic variable flipping
-
-## SMT solvers
-
-SAT extended with theories
 
 # That's all!
 
