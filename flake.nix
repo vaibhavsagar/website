@@ -1,5 +1,5 @@
 {
-  inputs.nixpkgs-src.url = "github:NixOS/nixpkgs/release-24.11";
+  inputs.nixpkgs-src.url = "github:NixOS/nixpkgs/release-25.05";
   inputs.flake-utils.url = "github:numtide/flake-utils";
   inputs.nix-filter.url = "github:numtide/nix-filter";
   inputs.flake-compat.url = "github:edolstra/flake-compat";
