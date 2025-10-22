@@ -1,11 +1,12 @@
 --------------------------------------------------------------------------------
 title: SATisfying Solutions to Difficult Problems!
-published: 2024-09-10
+published: 2025-10-22
 tags: programming
 --------------------------------------------------------------------------------
 
 _This post covers the same material as [my !!Con 2024
-talk](https://www.youtube.com/watch?v=J0ZLCHHku6U)._
+talk](https://www.youtube.com/watch?v=J0ZLCHHku6U), for which the slides are
+[here](https://vaibhavsagar.com/presentations/sat-solvers/)._
 
 What are SAT solvers, and how are they useful? Let's start by briefly touching on
 [NP-complete problems](https://en.wikipedia.org/wiki/NP-completeness)!
@@ -454,12 +455,21 @@ $$
 
 ## Satisfiability Modulo Theories
 
-- SAT solvers extended
-- bitvectors, arrays, algebraic datatypes, etc.
-- Z3, CVC, Yices, Boolector
-
+This is what an SMT (Satisfiability Modulo Theories) solver is! A SAT solver
+can be extended to reason over bitvectors, fixed-length arrays, Presburger
+arithmetic, algebraic datatypes, and more. One way of doing this would be to
+pre-process a problem into a series of CNF clauses that can be fed to a normal
+SAT solver; this is known as
+[bit-blasting](https://www.cs.cmu.edu/~15414/s23/lectures/21-bitblasting.pdf),
+but deeper integrations are often more practical. Examples of SMT solvers
+include [Z3](https://github.com/Z3Prover/z3), [CVC5](https://cvc5.github.io/),
+[Yices](https://yices.csl.sri.com/), and
+[Bitwuzla](https://bitwuzla.github.io/).
 
 # That's all!
+
+I hope you have a basic understanding of what a SAT/SMT solver is, how they
+(broadly) work, and when it might be a good idea to use them!
 
 ## Resources
 
@@ -474,4 +484,5 @@ $$
 - [CS-E3220: Propositional satisfiability and SAT
   solvers](https://users.aalto.fi/~tjunttil/2020-DP-AUT/notes-sat/overview.html)
 
-# Thank you!!
+_Thanks to [Alex Chen](https://gitlab.com/awjchen) for multiple rounds of
+excellent feedback on my presentation._
