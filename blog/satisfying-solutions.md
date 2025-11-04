@@ -483,6 +483,7 @@ I hope you have a basic understanding of what a SAT/SMT solver is, how they
 - [An Extensible SAT-solver (2003)](http://minisat.se/downloads/MiniSat.pdf)
 - [CS-E3220: Propositional satisfiability and SAT
   solvers](https://users.aalto.fi/~tjunttil/2020-DP-AUT/notes-sat/overview.html)
+- [Modern SAT solvers: fast, neat and underused](https://codingnest.com/tag/sat/)
 
 _Thanks to [Alex Chen](https://gitlab.com/awjchen) for multiple rounds of
 excellent feedback on my presentation._
