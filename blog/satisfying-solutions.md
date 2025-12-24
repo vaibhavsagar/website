@@ -168,9 +168,9 @@ from earlier! At the beginning, we don't know the values of $x$, $y$, or $z$.
 
 $$(x \vee y \vee z) \wedge (x \vee \neg y) \wedge (\neg y \vee \neg x) \wedge (\neg z)$$
 
-$x$: 🤷<br>
-$y$: 🤷<br>
-$z$: 🤷<br>
+$x$: 🤷<br/>
+$y$: 🤷<br/>
+$z$: 🤷<br/>
 
 We begin by picking a variable and assigning it a truth value, preferring unit
 clauses (clauses with a single literal). In this case, let's set $z$ to $False$.
@@ -187,33 +187,33 @@ that clause being satisfied.
 
 $$(x \vee y \vee \cancel{{\color{red} z}}) \wedge (x \vee \neg y) \wedge (\neg y \vee \neg x) \wedge \cancel{{\color{green} (\neg z)}}$$
 
-$x$: 🤷<br>
-$y$: 🤷<br>
-$z$: `False`<br>
+$x$: 🤷<br/>
+$y$: 🤷<br/>
+$z$: `False`<br/>
 
 Next we pick another variable and continue. Let's set $y$ to $True$.
 
 $$\cancel{{\color{green}(x \vee y \vee z)}} \wedge (x \vee \cancel{{\color{red} \neg y}}) \wedge (\cancel{{\color{red} \neg y}} \vee \neg x) \wedge \cancel{{\color{green}(\neg z)}}$$
 
-$x$: 🤷<br>
-$y$: `True`<br>
-$z$: `False`<br>
+$x$: 🤷<br/>
+$y$: `True`<br/>
+$z$: `False`<br/>
 
 Unfortunately, we now have a conflict, since two of the remaining clauses are $x$ and $\neg x$.
 
 $$\cancel{{\color{green}(x \vee y \vee z)}} \wedge ({\color{blue} x} \vee \cancel{{\color{red} \neg y}}) \wedge (\cancel{{\color{red} \neg y}} \vee {\color{blue}\neg x}) \wedge \cancel{{\color{green}(\neg z)}}$$
 
-$x$: 🤷<br>
-$y$: `True`<br>
-$z$: `False`<br>
+$x$: 🤷<br/>
+$y$: `True`<br/>
+$z$: `False`<br/>
 
 The only appropriate thing to do here is backtrack, so we undo our previous assignment and try the other truth value, setting $y$ to $False$.
 
 $$(x \vee \cancel{{\color{red} y}} \vee \cancel{{\color{red} z}}) \wedge \cancel{{\color{green}(x \vee \neg y)}} \wedge \cancel{{\color{green} (\neg y \vee \neg x)}} \wedge \cancel{{\color{green} (\neg z)}}$$
 
-$x$: 🤷<br>
-$y$: `False`<br>
-$z$: `False`<br>
+$x$: 🤷<br/>
+$y$: `False`<br/>
+$z$: `False`<br/>
 
 Now we can perform [pure literal elimination](https://en.wikipedia.org/wiki/DPLL_algorithm#The_algorithm).
 
@@ -225,9 +225,9 @@ literals, and it's obvious what truth value to assign to them. In this case we s
 
 $$\cancel{{\color{green}(x \vee y \vee z)}} \wedge \cancel{{\color{green}(x \vee \neg y)}} \wedge \cancel{{\color{green} (\neg y \vee \neg x)}} \wedge \cancel{{\color{green} (\neg z)}}$$
 
-$x$: `True`<br>
-$y$: `False`<br>
-$z$: `False`<br>
+$x$: `True`<br/>
+$y$: `False`<br/>
+$z$: `False`<br/>
 
 And that's DPLL (Davis-Putnam-Logemann-Loveland)!
 
@@ -267,8 +267,8 @@ $$\begin{align}
 We start by setting $a$ to $False$, which implies $d$ through the clause $a \vee d$.
 
 <div style="display: flex">
-<div style="flex: 33%"><img src="/images/tree1x1.svg"></div>
-<div style="flex: 33%"><img src="/images/graph1x1.svg"></div>
+<div style="flex: 33%"><img src="/images/tree1x1.svg" /></div>
+<div style="flex: 33%"><img src="/images/graph1x1.svg" /></div>
 <div style="flex: 33%">
 $$\begin{align}
 & {\color{red} a} \vee {\color{green} d} \\
@@ -288,8 +288,8 @@ Next we set $c$ to $True$, which implies $\neg f$ through the clause $a \vee
 \neg c \vee \neg f$ and $j$ through the clause $a \vee f \vee j$.
 
 <div style="display: flex">
-<div style="flex: 33%"><img src="/images/tree1x3.svg"></div>
-<div style="flex: 33%"><img src="/images/graph1x3.svg"></div>
+<div style="flex: 33%"><img src="/images/tree1x3.svg" /></div>
+<div style="flex: 33%"><img src="/images/graph1x3.svg" /></div>
 <div style="flex: 33%">
 $$\begin{align}
 & {\color{red} a} \vee {\color{green} d} \\
@@ -308,8 +308,8 @@ We continue by setting $b$ to $False$, which implies $i$ through the clause $b
 \vee i$.
 
 <div style="display: flex">
-<div style="flex: 33%"><img src="/images/tree1x2.svg"></div>
-<div style="flex: 33%"><img src="/images/graph1x2.svg"></div>
+<div style="flex: 33%"><img src="/images/tree1x2.svg" /></div>
+<div style="flex: 33%"><img src="/images/graph1x2.svg" /></div>
 <div style="flex: 33%">
 $$\begin{align}
 & {\color{red} a} \vee {\color{green} d} \\
@@ -329,8 +329,8 @@ both $True$ (through the clause $\neg e \vee \neg c \vee g$) and $False$
 (through the clause $\neg e \vee f \vee \neg g$).
 
 <div style="display: flex">
-<div style="flex: 33%"><img src="/images/tree1.svg"></div>
-<div style="flex: 33%"><img src="/images/graph1.svg"></div>
+<div style="flex: 33%"><img src="/images/tree1.svg" /></div>
+<div style="flex: 33%"><img src="/images/graph1.svg" /></div>
 <div style="flex: 33%">
 $$\begin{align}
 & {\color{red} a} \vee {\color{green} d} \\
@@ -357,7 +357,7 @@ to remove the possibility of reaching this state again, so we negate this
 clause (by De Morgan's theorem).
 
 <div style="display: flex">
-<div style="flex: 50%"><img src="/images/graph2.svg"></div>
+<div style="flex: 50%"><img src="/images/graph2.svg" /></div>
 <div style="flex: 50%">
 $$\displaylines{\neg (\neg f \wedge c \wedge e) \\
 \iff \\
@@ -390,7 +390,7 @@ $$\begin{align}
 Next we *backjump non-chronologically* to the second-highest decision level of
 the literals in our clause, which in this case is $2$, and repeat.
 
-<img src="/images/tree2.svg">
+<img src="/images/tree2.svg" />
 
 That's CDCL (Conflict-driven clause learning)!
 
