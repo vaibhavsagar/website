@@ -118,7 +118,7 @@ cleanRoute = customRoute createIndexRoute
     where createIndexRoute (toFilePath -> p) =
             takeDirectory p </> takeBaseName p </> "index.html"
 
-rootRoute = customRoute (joinPath . tail . splitPath . toFilePath)
+rootRoute = customRoute (joinPath . drop 1 . splitPath . toFilePath)
 
 dateRoute = metadataRoute createDateRoute
     where
