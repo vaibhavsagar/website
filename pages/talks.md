@@ -4,6 +4,11 @@ title: Talks
 
 ## Conference
 
+#### How to Stop Writing Haskell
+
+- Where: ZuriHac 2026
+- [Slides](https://vaibhavsagar.com/presentations/how-to-stop-writing-haskell)
+
 #### SATisfying Answers to Difficult Problems!
 
 - Where: !!Con 2024
